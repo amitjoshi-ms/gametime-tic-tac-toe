@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#16213e"/>
+  <g stroke="#e94560" stroke-width="20" stroke-linecap="round" fill="none">
+    <!-- X mark -->
+    <line x1="80" y1="80" x2="180" y2="180"/>
+    <line x1="180" y1="80" x2="80" y2="180"/>
+  </g>
+  <g stroke="#0f3460" stroke-width="20" fill="none">
+    <!-- O mark -->
+    <circle cx="382" cy="130" r="50"/>
+  </g>
+  <!-- Grid lines -->
+  <g stroke="#eaeaea" stroke-width="10">
+    <line x1="170" y1="260" x2="170" y2="470"/>
+    <line x1="342" y1="260" x2="342" y2="470"/>
+    <line x1="50" y1="330" x2="462" y2="330"/>
+    <line x1="50" y1="400" x2="462" y2="400"/>
+  </g>
+</svg>
