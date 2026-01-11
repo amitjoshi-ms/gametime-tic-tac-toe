@@ -39,7 +39,9 @@ Run the following commands in sequence. Use PowerShell commands when available, 
    
    **sh/bash:**
    ```bash
-   git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+   if git branch -vv | grep -q ': gone]'; then
+     git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+   fi
    ```
 
 3. **Garbage collect and optimize the repository:**
