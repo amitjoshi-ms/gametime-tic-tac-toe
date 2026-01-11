@@ -228,7 +228,7 @@ This project uses structured AI configuration to provide consistent guidance.
 
 Focused rules auto-applied to specific file patterns via `applyTo`:
 
-| File | Purpose | Applies To |
+| File | Purpose | ApplyTo |
 |------|---------|------------|
 | `typescript.instructions.md` | Type system, naming, patterns | `**/*.ts, **/*.tsx` |
 | `testing.instructions.md` | Unit/E2E test structure | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
