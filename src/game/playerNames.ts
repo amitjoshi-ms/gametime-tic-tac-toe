@@ -9,8 +9,12 @@ import { getStorageItem, setStorageItem } from '../utils/storage';
 import type { PlayerNames } from './types';
 
 const STORAGE_KEY = 'player_names';
-const DEFAULT_X_NAME = 'Player X';
-const DEFAULT_O_NAME = 'Player O';
+
+/** Default name for Player X */
+export const DEFAULT_X_NAME = 'Player X';
+
+/** Default name for Player O */
+export const DEFAULT_O_NAME = 'Player O';
 
 /**
  * Gets the default player names.

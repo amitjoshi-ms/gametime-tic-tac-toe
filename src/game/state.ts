@@ -22,11 +22,12 @@ let nextStartingPlayer: Player = 'X';
  * @returns Initial game state with X as the starting player
  */
 export function createInitialState(playerNames?: PlayerNames): GameState {
+  const names = playerNames ?? loadPlayerNames();
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
-    playerNames: playerNames ?? loadPlayerNames(),
+    playerNames: { ...names },
   };
 }
 
@@ -85,5 +86,6 @@ export function resetGame(): GameState {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: startingPlayer,
     status: 'playing',
+    playerNames: loadPlayerNames(),
   };
 }

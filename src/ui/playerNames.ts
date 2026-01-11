@@ -6,6 +6,7 @@
  */
 
 import type { PlayerNames } from '../game/types';
+import { DEFAULT_X_NAME, DEFAULT_O_NAME } from '../game/playerNames';
 
 /**
  * Callback signature for player name changes.
@@ -32,8 +33,8 @@ function handleNameBlur(event: Event): void {
 
   if (xInput !== null && oInput !== null) {
     const names: PlayerNames = {
-      X: xInput.value.trim() || 'Player X',
-      O: oInput.value.trim() || 'Player O',
+      X: xInput.value.trim() || DEFAULT_X_NAME,
+      O: oInput.value.trim() || DEFAULT_O_NAME,
     };
     currentChangeHandler(names);
   }
@@ -77,7 +78,7 @@ export function renderPlayerNames(
           class="player-name-input"
           data-player="X"
           value="${escapeHtml(playerNames.X)}"
-          placeholder="Player X"
+          placeholder="${DEFAULT_X_NAME}"
           maxlength="20"
           aria-label="Player X name"
         />
@@ -92,7 +93,7 @@ export function renderPlayerNames(
           class="player-name-input"
           data-player="O"
           value="${escapeHtml(playerNames.O)}"
-          placeholder="Player O"
+          placeholder="${DEFAULT_O_NAME}"
           maxlength="20"
           aria-label="Player O name"
         />
