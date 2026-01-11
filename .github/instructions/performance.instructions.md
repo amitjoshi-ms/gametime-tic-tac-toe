@@ -193,27 +193,4 @@ function onCellClick(currentState: GameState, cellIndex: number) {
 
 ### Keep Imports Minimal
 
-```typescript
-// ✅ Import only what's needed
-import { checkWin, isValidMove } from './logic';
-
-// ❌ Avoid importing entire modules if not needed
-import * as logic from './logic';
-```
-
-## Measurement
-
-### Use Browser DevTools
-
-- **Performance tab**: Profile rendering, scripting, layout
-- **Lighthouse**: Overall performance score
-- **Network tab**: Bundle sizes, load times
-
-### Target Metrics
-
-| Metric | Target |
-|--------|--------|
-| First Contentful Paint | < 1s |
-| Time to Interactive | < 2s |
-| Total Blocking Time | < 100ms |
-| Cumulative Layout Shift | < 0.1 |
+- Prefer importing only the specific functions or values you need instead of entire modules to keep the bundle smaller.
