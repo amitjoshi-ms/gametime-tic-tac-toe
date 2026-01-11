@@ -247,9 +247,13 @@ Reusable task templates invoked via Copilot Chat (`/` command):
 |--------|------|----------|
 | `start.task.prompt.md` | Agent | Starting new work (creates branch, understands task) |
 | `review.task.prompt.md` | Agent | Pre-commit review (quality, security, tests) |
+| `sync.repo.prompt.md` | Agent | Syncing local work with `main`/remote and updating branches |
+| `submit.task.prompt.md` | Agent | Preparing changes for PR/merge (summaries, checklists, metadata) |
+| `release.latest.prompt.md` | Agent | Working on the latest release (notes, checks, deployment steps) |
 
-**Usage:** Type `/start` or `/review` in Copilot Chat, or reference via `@workspace /start`.
+**Usage:** Common commands: `/start`, `/review`, `/sync`, `/submit`, `/release` in Copilot Chat, or reference via `@workspace /start` (and analogous names).
 
+For additional workflow and spec-related prompts (including `speckit.*.prompt.md`), see the full set in `.github/prompts/`.
 ### AGENTS.md (repo root)
 
 Quick reference for AI coding agents. Contains:
