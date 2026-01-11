@@ -50,7 +50,7 @@ This project uses several configuration files for tooling. Changes to these file
 - Use exact versions or `^` for minor updates
 - Run `npm audit` after adding dependencies
 
-```json
+```jsonc
 // ❌ Wrong - runtime dependency
 {
   "dependencies": {
