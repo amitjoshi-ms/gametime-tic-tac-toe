@@ -107,13 +107,41 @@ npm run preview
 
 ## Deployment
 
-The build output (`dist/` folder) contains pure static files that can be deployed to any static hosting service:
+The build output (`dist/` folder) contains pure static files deployed to **Cloudflare Pages** via Git integration.
 
-- GitHub Pages
-- Netlify
-- Vercel
-- AWS S3 + CloudFront
-- Any CDN
+### Hosting
+
+- **Platform**: Cloudflare Pages (free tier)
+- **Features**: Global CDN, automatic HTTPS, unlimited bandwidth, instant rollbacks
+
+### Branch Strategy
+
+| Branch | Purpose | Cloudflare URL |
+|--------|---------|----------------|
+| `release` | **Production** | `gametime-tic-tac-toe.pages.dev` |
+| `main` | **Preview/Beta** | `main.gametime-tic-tac-toe.pages.dev` |
+| `feature-*` | **Development** | `<branch>.gametime-tic-tac-toe.pages.dev` |
+
+### Deployment Workflow
+
+```
+feature branch → main (beta) → release (production)
+```
+
+1. **Development**: Create feature branches from `main`, push for dev preview URLs
+2. **Beta Testing**: Merge to `main` for beta users to test
+3. **Production Release**: Merge `main` to `release` for production deployment
+
+### Cloudflare Pages Configuration
+
+| Setting | Value |
+|---------|-------|
+| Production branch | `release` |
+| Build command | `npm run build` |
+| Build output | `dist` |
+| Node.js version | `20` (set via `NODE_VERSION` env var) |
+
+Deployments are automatic—push to any branch and Cloudflare builds and deploys within ~60 seconds.
 
 ## License
 
