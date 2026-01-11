@@ -96,6 +96,13 @@ When requested, also remove all untracked and ignored files to restore the repos
    git diff
    git diff --staged
    ```
+   
+   **sh/bash:**
+   ```bash
+   git status
+   git diff
+   git diff --staged
+   ```
 
 2. **Preview untracked/ignored files that will be deleted (dry run):**
    
@@ -127,6 +134,13 @@ When requested, also remove all untracked and ignored files to restore the repos
    ```
 
 > **Note:** Never run `git clean -fdx` without first showing the preview and getting explicit user approval.
+
+### Aggressive One-liner
+
+**PowerShell:**
+```powershell
+git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }; git clean -fdx; git gc --prune=now --aggressive; git branch -a
+```
 
 **sh/bash:**
 ```bash
