@@ -1,164 +1,110 @@
 # Tic-Tac-Toe
 
-A simple, offline-capable Tic-Tac-Toe game built as a Progressive Web App (PWA).
+A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with **zero runtime dependencies**.
 
-## Features
+[![Play Now](https://img.shields.io/badge/Play%20Now-gametime--tic--tac--toe.pages.dev-blue)](https://gametime-tic-tac-toe.pages.dev)
 
-- 🎮 Classic two-player Tic-Tac-Toe gameplay
-- 📱 Responsive design for all devices (mobile, tablet, desktop)
-- ✨ Clear turn indicator showing whose turn it is
-- 🎉 Win detection with congratulations message
-- 🤝 Draw detection when all cells are filled
-- 🔄 New Game button to reset and play again
-- 📴 Works offline after first visit (PWA)
-- ♿ Accessible with keyboard navigation and screen reader support
+## ✨ Features
 
-## Tech Stack
+- 🎮 Classic two-player gameplay with alternating starting player
+- 📱 Responsive design (mobile, tablet, desktop)
+- ✨ Clear turn indicator and congratulations messages
+- 🏁 Win & early draw detection
+- 👤 Custom player names with localStorage persistence
+- 📴 Works offline (PWA)
+- ♿ Full keyboard & screen reader support
+- ⚡ ~10KB total bundle size
 
-- **Language**: TypeScript 5.x (strict mode)
-- **Build Tool**: Vite
-- **Testing**: Vitest (unit), Playwright (E2E)
-- **Styling**: Pure CSS with custom properties
-- **Runtime Dependencies**: None (zero dependencies!)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20.x or later
-- npm 10.x or later
-
-### Installation
+## 🚀 Quick Start
 
 ```bash
-# Clone the repository
+# Clone and install
 git clone <repository-url>
 cd gametime-tic-tac-toe
-
-# Install dependencies
 npm install
 
-# Configure git hooks (prevents commits to main/release)
-git config core.hooksPath .githooks
-```
-
-### Development
-
-```bash
-# Start development server (opens browser automatically)
+# Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+Open [http://localhost:5173](http://localhost:5173) and start playing!
 
-### Production Build
+## 📖 Documentation
 
-```bash
-# Build for production
-npm run build
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](docs/getting-started.md) | Installation, prerequisites, setup |
+| [Architecture](docs/architecture.md) | System design, modules, data flow |
+| [API Reference](docs/api-reference.md) | Complete API for all modules |
+| [Development](docs/development.md) | Testing, linting, debugging |
+| [Deployment](docs/deployment.md) | Cloudflare Pages CI/CD |
+| [Contributing](docs/contributing.md) | How to contribute |
 
-# Preview production build
-npm run preview
-```
+## 🛠️ Tech Stack
 
-## Available Scripts
+| Category | Technology |
+|----------|------------|
+| Language | TypeScript 5.x (strict mode) |
+| Build | Vite |
+| Testing | Vitest + Playwright |
+| Hosting | Cloudflare Pages |
+| Dependencies | **None** (zero runtime deps!) |
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
-| `npm run test` | Run unit tests |
-| `npm run test:watch` | Run unit tests in watch mode |
-| `npm run test:e2e` | Run end-to-end tests |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format code with Prettier |
-| `npm run typecheck` | Run TypeScript type checking |
-
-## Project Structure
-
-```
-├── src/
-│   ├── game/
-│   │   ├── types.ts      # TypeScript type definitions
-│   │   ├── logic.ts      # Game rules and win detection
-│   │   └── state.ts      # Game state management
-│   ├── ui/
-│   │   ├── board.ts      # Board rendering
-│   │   ├── status.ts     # Turn/result display
-│   │   └── controls.ts   # New Game button
-│   ├── styles/
-│   │   └── main.css      # All styles
-│   └── main.ts           # Application entry point
-├── public/
-│   ├── manifest.json     # PWA manifest
-│   └── icons/            # App icons
-├── tests/
-│   ├── unit/             # Unit tests
-│   └── e2e/              # End-to-end tests
-└── index.html            # HTML entry point
-```
-
-## How to Play
-
-1. Player X always goes first
-2. Click/tap an empty cell to place your mark
-3. Players alternate turns (X → O → X → ...)
-4. First player to get 3 in a row (horizontal, vertical, or diagonal) wins!
-5. If all 9 cells are filled with no winner, it's a draw
-6. Click "New Game" to play again
-
-## Deployment
-
-The build output (`dist/` folder) contains pure static files deployed to **Cloudflare Pages** via Git integration.
-
-### Hosting
-
-- **Platform**: Cloudflare Pages (free tier)
-- **Features**: Global CDN, automatic HTTPS, unlimited bandwidth, instant rollbacks
-
-### Branch Strategy
-
-| Branch | Purpose | Cloudflare URL |
-|--------|---------|----------------|
-| `release` | **Production** | `gametime-tic-tac-toe.pages.dev` |
-| `main` | **Preview/Beta** | `main.gametime-tic-tac-toe.pages.dev` |
-| `feature-*` | **Development** | `<branch>.gametime-tic-tac-toe.pages.dev` |
-
-### Deployment Workflow
-
-```
-feature branch → main (beta) → release (production)
-```
-
-1. **Development**: Create feature branches from `main`, push for dev preview URLs
-2. **Beta Testing**: Merge to `main` for beta users to test
-3. **Production Release**: Run the release workflow to merge `main` to `release`
-
-> **Note**: Feature branches are automatically deleted after squash merge into `main`.
-
-### Releasing to Production
-
-To deploy changes from `main` to production, trigger the release workflow:
+## 📋 Scripts
 
 ```bash
-# Using GitHub CLI
-gh workflow run release-to-production.yml -f confirm=release
+npm run dev        # Development server
+npm run build      # Production build
+npm test           # Unit tests
+npm run test:e2e   # E2E tests
+npm run lint       # Lint code
+npm run typecheck  # Type checking
 ```
 
-Alternatively, use the GitHub web UI: **Actions** → **Release to Production** → **Run workflow** → type `release` → **Run**
+## 📁 Project Structure
 
-### Cloudflare Pages Configuration
+```
+src/
+├── game/           # Core logic (pure functions)
+│   ├── types.ts    # Type definitions
+│   ├── logic.ts    # Win detection, validation
+│   └── state.ts    # State management
+├── ui/             # DOM rendering
+│   ├── board.ts    # Game board
+│   └── status.ts   # Turn indicator
+└── main.ts         # Entry point
+```
 
-| Setting | Value |
-|---------|-------|
-| Production branch | `release` |
-| Build command | `npm run build` |
-| Build output | `dist` |
-| Node.js version | `20` (set via `NODE_VERSION` env var) |
+## 🎮 How to Play
 
-Deployments are automatic—push to any branch and Cloudflare builds and deploys within ~60 seconds.
+1. **Player X** starts first
+2. Click any empty cell to place your mark
+3. Alternate turns until someone wins or it's a draw
+4. Click **New Game** to play again
 
-## License
+## 🌐 Deployment
+
+Automatically deployed to Cloudflare Pages:
+
+| Branch | Environment | URL |
+|--------|-------------|-----|
+| `release` | Production | [gametime-tic-tac-toe.pages.dev](https://gametime-tic-tac-toe.pages.dev) |
+| `main` | Preview | [main.gametime-tic-tac-toe.pages.dev](https://main.gametime-tic-tac-toe.pages.dev) |
+
+See [Deployment Guide](docs/deployment.md) for details.
+
+## 🤝 Contributing
+
+Contributions welcome! Please read our [Contributing Guide](docs/contributing.md) first.
+
+```bash
+# Create a feature branch
+git checkout main && git pull
+git checkout -b feature-my-feature
+
+# Make changes, then submit a PR
+```
+
+## 📄 License
 
 MIT
