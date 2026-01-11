@@ -9,7 +9,7 @@ import { createInitialState, makeMove, resetGame } from './game/state';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
 import { renderControls } from './ui/controls';
-import { renderPlayerNames } from './ui/playerNames';
+import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { savePlayerNames } from './game/playerNames';
 import type { GameState, PlayerNames } from './game/types';
 
@@ -60,8 +60,13 @@ function handleNameChange(names: PlayerNames): void {
  * Updates all UI components to reflect current game state.
  */
 function updateUI(): void {
+  const playerNamesContainer = document.getElementById('player-names');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
+
+  if (playerNamesContainer) {
+    updatePlayerNames(playerNamesContainer, gameState.playerNames);
+  }
 
   if (boardContainer) {
     updateBoard(boardContainer, gameState);

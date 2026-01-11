@@ -6,16 +6,11 @@
  */
 
 import { getStorageItem, setStorageItem } from '../utils/storage';
+import type { PlayerNames } from './types';
 
 const STORAGE_KEY = 'player_names';
 const DEFAULT_X_NAME = 'Player X';
 const DEFAULT_O_NAME = 'Player O';
-
-/** Player names for both X and O */
-export interface PlayerNames {
-  X: string;
-  O: string;
-}
 
 /**
  * Gets the default player names.

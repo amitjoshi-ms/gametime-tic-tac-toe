@@ -39,6 +39,18 @@ function handleNameInput(event: Event): void {
 }
 
 /**
+ * Escapes HTML special characters to prevent XSS.
+ *
+ * @param str - String to escape
+ * @returns HTML-escaped string
+ */
+function escapeHtml(str: string): string {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
  * Renders the player name editor UI.
  *
  * @param container - DOM element to render into
@@ -63,7 +75,7 @@ export function renderPlayerNames(
           id="player-x-name"
           class="player-name-input"
           data-player="X"
-          value="${playerNames.X}"
+          value="${escapeHtml(playerNames.X)}"
           placeholder="Player X"
           maxlength="20"
           aria-label="Player X name"
@@ -78,7 +90,7 @@ export function renderPlayerNames(
           id="player-o-name"
           class="player-name-input"
           data-player="O"
-          value="${playerNames.O}"
+          value="${escapeHtml(playerNames.O)}"
           placeholder="Player O"
           maxlength="20"
           aria-label="Player O name"
