@@ -72,7 +72,7 @@ tests/
 ### Type Safety
 
 - **No `any`** - use `unknown` + type narrowing
-- All types defined in `src/game/types.ts`
+- Core game types defined in `src/game/types.ts`
 - Strict mode enabled in TypeScript
 
 ## Branch Workflow
