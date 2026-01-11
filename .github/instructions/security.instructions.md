@@ -101,7 +101,7 @@ function handleNameChange(name: string, player: Player): void {
   
   // Validate content (optional: restrict characters)
   // Allow all Unicode letters and numbers, plus whitespace and hyphens
-  if (!/^[\p{L}\p{N}\s-]+$/u.test(name)) {
+  if (!/^[\p{L}\p{N}\s-]*$/u.test(name)) {
     return; // Reject invalid characters
   }
   
