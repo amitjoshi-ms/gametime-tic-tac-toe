@@ -1,50 +1,87 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+===============================================================================
+SYNC IMPACT REPORT
+===============================================================================
+Version Change: N/A → 1.0.0 (Initial ratification)
+
+Modified Principles: None (initial creation)
+
+Added Sections:
+  - Core Principles (5 principles)
+  - Technology Standards
+  - Development Workflow
+  - Governance
+
+Removed Sections: None (initial creation)
+
+Templates Requiring Updates:
+  ✅ plan-template.md - Compatible (Constitution Check section exists)
+  ✅ spec-template.md - Compatible (Requirements align with principles)
+  ✅ tasks-template.md - Compatible (Phase structure aligns)
+
+Follow-up TODOs: None
+===============================================================================
+-->
+
+# GameTime Tic-Tac-Toe Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Browser-Native SPA
+All functionality MUST run entirely in the browser as a Single Page Application. The application MUST work on all modern browsers (Chrome, Firefox, Safari, Edge) and MUST be responsive across all device form factors (desktop, tablet, mobile). No server-side rendering or backend dependencies for core gameplay. Assets MUST be optimized for fast initial load.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Minimal Dependencies
+External dependencies MUST be justified and minimized. Prefer native browser APIs over third-party libraries. Each dependency added MUST demonstrate clear value that cannot be reasonably achieved with vanilla JavaScript/CSS. Bundle size MUST remain under 100KB gzipped for the entire application. Dependencies MUST be actively maintained and have no known security vulnerabilities.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Clean & Simple UX
+User interface MUST be intuitive and require no instructions to play. Design MUST follow accessibility standards (WCAG 2.1 AA minimum). Touch and mouse interactions MUST be equally supported. Visual feedback MUST be immediate (<100ms response). No complex authentication flows—anonymous play by default. Any optional features (e.g., score persistence) MUST use browser-native storage (localStorage).
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Documentation-First
+All features, behaviors, and design decisions MUST be documented before or during implementation. Code comments MUST explain "why" not just "what". README MUST provide complete setup and usage instructions. Architecture decisions MUST be recorded. This documentation enables effective GitHub Copilot-assisted development through clear context.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Modern Standards
+Use the latest stable versions of languages, frameworks, and libraries. Leverage modern JavaScript (ES2024+) and CSS features with appropriate polyfills only when browser support requires it. Code MUST pass strict linting (ESLint) and formatting (Prettier). TypeScript is preferred for type safety. All code MUST be tested with modern testing frameworks.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technology Standards
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+**Language**: TypeScript 5.x (strict mode enabled)
+**Styling**: CSS3 with CSS Custom Properties, no CSS frameworks required
+**Build Tool**: Vite (latest stable) for fast development and optimized production builds
+**Testing**: Vitest for unit/integration tests, Playwright for E2E tests
+**Target Browsers**: Last 2 versions of Chrome, Firefox, Safari, Edge
+**Target Platforms**: Desktop, tablet, mobile (responsive breakpoints)
+**Performance Goals**: First Contentful Paint < 1.5s, Time to Interactive < 2s
+**Bundle Constraint**: < 100KB gzipped total
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**Copilot-Assisted Development**: This project uses GitHub Copilot with structured prompts and instructions located in `.github/prompts/`. MCP servers MAY be configured to enhance Copilot capabilities.
+
+**Specification Process**:
+1. Features MUST be specified using `/speckit.specify` before implementation
+2. Implementation plans MUST be created using `/speckit.plan`
+3. Tasks MUST be generated using `/speckit.tasks`
+4. Implementation follows task checklist using `/speckit.implement`
+
+**Quality Gates**:
+- All code MUST pass TypeScript strict compilation
+- All code MUST pass ESLint with zero warnings
+- All tests MUST pass before merge
+- Documentation MUST be updated with code changes
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This Constitution is the supreme authority for project decisions. All contributions, reviews, and architectural choices MUST comply with these principles.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Amendment Process**:
+1. Propose amendment with rationale in a dedicated PR
+2. Document impact on existing code and templates
+3. Update version according to semantic versioning:
+   - MAJOR: Principle removal or incompatible redefinition
+   - MINOR: New principle or material expansion
+   - PATCH: Clarification or non-semantic refinement
+4. Sync dependent templates after approval
+
+**Compliance**: Every PR review MUST verify adherence to Constitution principles. Violations require explicit justification documented in the PR.
+
+**Version**: 1.0.0 | **Ratified**: 2026-01-10 | **Last Amended**: 2026-01-10

@@ -1,0 +1,140 @@
+/**
+ * Board rendering and interaction handling.
+ * Manages the 3x3 grid display and cell click events.
+ *
+ * @module ui/board
+ */
+
+import type { GameState, CellValue } from '../game/types';
+
+/**
+ * Callback signature for cell click events.
+ */
+export type CellClickHandler = (cellIndex: number) => void;
+
+/** Reference to the board container element */
+let boardContainer: HTMLElement | null = null;
+
+/** Reference to the current click handler */
+let currentClickHandler: CellClickHandler | null = null;
+
+/**
+ * Creates a cell element for the board.
+ *
+ * @param value - Current cell value (X, O, or null)
+ * @param index - Cell index (0-8)
+ * @param isGameOver - Whether the game has ended
+ * @returns HTMLButtonElement for the cell
+ */
+function createCellElement(
+  value: CellValue,
+  index: number,
+  isGameOver: boolean
+): HTMLButtonElement {
+  const cell = document.createElement('button');
+  cell.className = 'cell';
+  cell.dataset['index'] = String(index);
+  cell.type = 'button';
+  cell.setAttribute('aria-label', `Cell ${index + 1}`);
+
+  if (value) {
+    cell.textContent = value;
+    cell.classList.add(`cell--${value.toLowerCase()}`);
+    cell.classList.add('cell--occupied');
+    cell.setAttribute('aria-label', `Cell ${index + 1}: ${value}`);
+  }
+
+  if (isGameOver) {
+    cell.classList.add('cell--disabled');
+    cell.disabled = true;
+  }
+
+  return cell;
+}
+
+/**
+ * Handles click events on the board using event delegation.
+ *
+ * @param event - Click event
+ */
+function handleBoardClick(event: Event): void {
+  if (!currentClickHandler) return;
+
+  const target = event.target as HTMLElement;
+  if (!target.classList.contains('cell')) return;
+
+  const index = target.dataset['index'];
+  if (index === undefined) return;
+
+  currentClickHandler(parseInt(index, 10));
+}
+
+/**
+ * Renders the game board to the DOM.
+ * Sets up the initial board structure and event delegation.
+ *
+ * @param container - DOM element to render into
+ * @param state - Current game state
+ * @param onCellClick - Handler for cell clicks
+ */
+export function renderBoard(
+  container: HTMLElement,
+  state: GameState,
+  onCellClick: CellClickHandler
+): void {
+  boardContainer = container;
+  currentClickHandler = onCellClick;
+
+  const isGameOver = state.status !== 'playing';
+
+  // Clear and rebuild
+  container.innerHTML = '';
+
+  // Create cells
+  state.board.forEach((value, index) => {
+    const cell = createCellElement(value, index, isGameOver);
+    container.appendChild(cell);
+  });
+
+  // Set up event delegation (single listener on container)
+  container.addEventListener('click', handleBoardClick);
+}
+
+/**
+ * Updates the board display without full re-render.
+ * More efficient for incremental updates.
+ *
+ * @param state - Current game state
+ */
+export function updateBoard(state: GameState): void {
+  if (!boardContainer) return;
+
+  const cells = boardContainer.querySelectorAll('.cell');
+  const isGameOver = state.status !== 'playing';
+
+  cells.forEach((cell, index) => {
+    const button = cell as HTMLButtonElement;
+    const value = state.board[index];
+
+    // Update content
+    button.textContent = value ?? '';
+
+    // Update classes
+    button.className = 'cell';
+    if (value) {
+      button.classList.add(`cell--${value.toLowerCase()}`);
+      button.classList.add('cell--occupied');
+      button.setAttribute('aria-label', `Cell ${index + 1}: ${value}`);
+    } else {
+      button.setAttribute('aria-label', `Cell ${index + 1}`);
+    }
+
+    // Handle game over state
+    if (isGameOver) {
+      button.classList.add('cell--disabled');
+      button.disabled = true;
+    } else {
+      button.disabled = false;
+    }
+  });
+}
