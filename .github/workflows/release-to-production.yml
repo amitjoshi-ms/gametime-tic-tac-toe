@@ -50,7 +50,20 @@ jobs:
         run: |
           set -e
           git checkout release
-          git merge origin/main --ff-only
+          if ! git merge origin/main --ff-only; then
+            echo "## ❌ Production Release Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Reason:** Fast-forward merge from \`main\` to \`release\` failed." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The \`release\` branch has likely diverged from \`main\` (e.g., additional commits on \`release\` or non-fast-forward history)." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Inspect the commit history of \`main\` and \`release\`." >> $GITHUB_STEP_SUMMARY
+            echo "- Resolve any divergence (e.g., via a manual merge or rebase) in a dedicated branch." >> $GITHUB_STEP_SUMMARY
+            echo "- Once history is corrected, re-run this workflow." >> $GITHUB_STEP_SUMMARY
+            echo "Fast-forward merge failed. The release branch has diverged from main. Manual intervention required." >&2
+            exit 1
+          fi
           git push origin release
       - name: Summary
         if: success()
