@@ -92,7 +92,11 @@ export function renderBoard(
     container.appendChild(cell);
   });
 
-  // Remove old event listener to prevent memory leak
+  // Remove any existing event listener before adding a new one.
+  // This handles cases where renderBoard might be called multiple times on the same container,
+  // such as during hot module reloading in development or if the app is re-initialized.
+  // Without this cleanup, multiple listeners would accumulate, causing the handler to fire
+  // multiple times per click.
   container.removeEventListener('click', handleBoardClick);
   // Set up event delegation (single listener on container)
   container.addEventListener('click', handleBoardClick);
