@@ -89,6 +89,8 @@ When requested, also remove all untracked and ignored files to restore the repos
 ### Step-by-Step Process
 
 1. **Show uncommitted changes that will be lost:**
+   
+   **PowerShell:**
    ```powershell
    git status
    git diff
@@ -96,6 +98,8 @@ When requested, also remove all untracked and ignored files to restore the repos
    ```
 
 2. **Preview untracked/ignored files that will be deleted (dry run):**
+   
+   **PowerShell:**
    ```powershell
    git clean -fdxn
    ```
@@ -111,6 +115,8 @@ When requested, also remove all untracked and ignored files to restore the repos
    - **Only proceed if user explicitly confirms (e.g., responds with "yes", "confirm", or "proceed")**
 
 4. **After confirmation, remove all untracked and ignored files:**
+   
+   **PowerShell:**
    ```powershell
    git clean -fdx
    ```
