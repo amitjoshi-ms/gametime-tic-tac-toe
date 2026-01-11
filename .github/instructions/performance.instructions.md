@@ -122,9 +122,26 @@ function updateUI(prevState: GameState | null, newState: GameState) {
 function makeMove(state: GameState, cellIndex: number): GameState {
   if (state.status !== 'playing') return state;
   if (state.board[cellIndex] !== null) return state;
-  
+
   // Only proceed if move is valid
-  // Returning same reference = no re-render needed
+  // NOTE: This pattern assumes an immutable state model where callers
+  //       skip re-renders when the returned state is the same reference
+  //       (e.g. `if (nextState === prevState) { return; }`).
+  //       Callers MUST perform that reference check for this optimization
+  //       to have any effect.
+}
+
+// Example caller using the reference-check contract:
+function onCellClick(currentState: GameState, cellIndex: number) {
+  const nextState = makeMove(currentState, cellIndex);
+  if (nextState === currentState) {
+    // No state change; skip expensive work (e.g., re-render)
+    return;
+  }
+
+  // State changed; proceed with update/render
+  renderBoard(container, nextState);
+  renderStatus(statusEl, nextState);
 }
 ```
 
