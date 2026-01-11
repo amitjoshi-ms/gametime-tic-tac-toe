@@ -273,7 +273,7 @@ Recommended extensions for the best experience:
 |-----------|---------|
 | ESLint | Inline linting |
 | Prettier | Code formatting |
-| TypeScript Vue Plugin (Volar) | TypeScript support |
+| TypeScript and JavaScript Language Features (built-in) | TypeScript/JavaScript language support |
 | Vitest | Test runner integration |
 | Playwright Test | E2E test integration |
 
