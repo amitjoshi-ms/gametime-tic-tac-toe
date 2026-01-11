@@ -1,5 +1,5 @@
 ---
-description: 'Security best practices for this SPA'
+description: 'Security best practices for this Single Page Application (SPA)'
 applyTo: '**/*.ts, **/*.html'
 ---
 
