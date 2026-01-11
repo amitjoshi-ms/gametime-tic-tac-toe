@@ -25,7 +25,7 @@
 
 ### 2. Build Tooling
 
-**Decision**: Vite 6.x
+**Decision**: Vite 7.x
 
 **Rationale**:
 - Fastest development server with HMR
