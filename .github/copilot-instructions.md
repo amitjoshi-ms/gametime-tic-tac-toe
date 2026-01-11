@@ -237,7 +237,7 @@ Focused rules auto-applied to specific file patterns via `applyTo`:
 | `security.instructions.md` | XSS, validation, storage | `**/*.ts, **/*.html` |
 | `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css, **/*.html` |
 | `tooling.instructions.md` | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
-| `ai-config.instructions.md` | Maintaining these files | `**/*.md` |
+| `ai-config.instructions.md` | Maintaining these files | `**/*.md, .github/**/*.md, AGENTS.md, README.md` |
 
 ### Prompts (`.github/prompts/`)
 
