@@ -80,11 +80,12 @@ export function checkWin(board: CellValue[], player: Player): boolean {
 function makeMove(state: GameState, cellIndex: number): GameState {
   const newBoard = [...state.board];
   newBoard[cellIndex] = state.currentPlayer;
-  
+
   return {
-    ...state,
     board: newBoard,
     currentPlayer: state.currentPlayer === 'X' ? 'O' : 'X',
+    status: state.status,
+    playerNames: state.playerNames,
   };
 }
 ```
