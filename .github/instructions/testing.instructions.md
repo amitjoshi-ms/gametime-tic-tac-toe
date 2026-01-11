@@ -66,12 +66,12 @@ scenarios.forEach(({ name }) => {
 });
 
 const edgeCases = [
-  'full board with no winner',
-  'move after game over',
+  'a full board with no winner',
+  'a move after the game is over',
 ];
 
 edgeCases.forEach((edgeCase) => {
-  it(`should handle ${edgeCase} correctly`, () => { /* ... */ });
+  it(`should handle ${edgeCase}`, () => { /* ... */ });
 });
 // ❌ Bad: Vague or implementation-focused
 it('test checkWin', () => { /* ... */ });
