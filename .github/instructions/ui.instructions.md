@@ -91,10 +91,17 @@ export function renderControls(
   container.appendChild(button);
 }
 
-// ❌ Bad: Importing state directly
-import { gameState } from '../main';
+// ❌ Bad: Directly accessing module-level state
+let internalGameState: GameState = resetGame();
+
 export function renderControls(container: HTMLElement): void {
-  // This couples UI to state module
+  const button = document.createElement('button');
+  button.textContent = 'New Game';
+  button.addEventListener('click', () => {
+    internalGameState = resetGame(); // Directly mutating module state
+    // Now main.ts won't know about this change!
+  });
+  container.appendChild(button);
 }
 ```
 
