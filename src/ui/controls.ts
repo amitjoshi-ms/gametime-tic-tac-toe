@@ -13,9 +13,6 @@ export type NewGameHandler = () => void;
 /** Reference to current handler for cleanup */
 let currentHandler: NewGameHandler | null = null;
 
-/** Reference to controls container for event delegation */
-let controlsContainer: HTMLElement | null = null;
-
 /**
  * Handles click events on controls using event delegation.
  */
@@ -38,13 +35,10 @@ export function renderControls(
   container: HTMLElement,
   onNewGame: NewGameHandler
 ): void {
-  // Remove old listener if re-rendering to different container
-  if (controlsContainer && controlsContainer !== container) {
-    controlsContainer.removeEventListener('click', handleControlsClick);
-  }
-
-  container.innerHTML = '';
   currentHandler = onNewGame;
+
+  // Clear and rebuild
+  container.innerHTML = '';
 
   const newGameBtn = document.createElement('button');
   newGameBtn.className = 'btn';
@@ -54,9 +48,8 @@ export function renderControls(
 
   container.appendChild(newGameBtn);
 
-  // Set up event delegation (only once per container)
-  if (controlsContainer !== container) {
-    container.addEventListener('click', handleControlsClick);
-    controlsContainer = container;
-  }
+  // Remove old event listener to prevent memory leak
+  container.removeEventListener('click', handleControlsClick);
+  // Set up event delegation (single listener on container)
+  container.addEventListener('click', handleControlsClick);
 }
