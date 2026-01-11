@@ -1,5 +1,5 @@
 ---
-description: Create and merge pull requests via GitHub with squash merge
+description: Submit pull request and squash merge changes via GitHub CLI
 mode: agent
 instructions:
   - typescript.instructions.md
