@@ -135,7 +135,7 @@ When requested, also remove all untracked and ignored files to restore the repos
 
 > **Note:** Never run `git clean -fdx` without first showing the preview and getting explicit user approval.
 
-### Aggressive One-liner
+### Aggressive Cleanup One-liner
 
 **PowerShell:**
 ```powershell
