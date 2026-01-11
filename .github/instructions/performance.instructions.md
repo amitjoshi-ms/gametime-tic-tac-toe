@@ -8,7 +8,7 @@ applyTo: '**/*.ts, **/*.css, **/*.html'
 ## Bundle Size Target
 
 - **Goal:** < 50KB total (gzipped)
-- **Current:** ~15KB (no runtime dependencies!)
+- **Current (as of 2026-01-10):** ~15KB (no runtime dependencies!)
 
 ## DOM Performance
 
