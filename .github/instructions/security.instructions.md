@@ -173,7 +173,7 @@ This project intentionally has **no runtime dependencies**:
 ```typescript
 // ❌ Exposes implementation details
 catch (error) {
-  console.error('Database query failed:', error.stack);
+  console.error('Game state update failed:', error.stack);
   showUser(error.message);
 }
 
