@@ -340,7 +340,7 @@ Include:
 
 ## Questions?
 
-- Check existing [issues](https://github.com) first
+- Check existing [issues](https://github.com/amitjoshi-ms/gametime-tic-tac-toe/issues) first
 - Open a new issue with the `question` label
 - Be specific about what you need help with
 
