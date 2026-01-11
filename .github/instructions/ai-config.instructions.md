@@ -153,7 +153,7 @@ More instructions.
 ---
 description: Agent purpose
 instructions:
-  - relevant.instructions.md
+  - typescript.instructions.md
 ---
 
 # Agent Role
