@@ -281,12 +281,4 @@ Use discriminated unions for state:
 type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
 ```
 
-❌ **Overly long files**
-```markdown
-# 1000-line copilot-instructions.md
-```
-
-✅ **Split into focused files**
-```markdown
-# copilot-instructions.md (300 lines) + 6 instruction files
-```
+Prefer short, focused instruction files; if a file starts to grow large, split it into smaller topic-specific files instead of letting it exceed the documented line-count guideline.
