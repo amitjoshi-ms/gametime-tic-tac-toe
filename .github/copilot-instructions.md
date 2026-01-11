@@ -62,6 +62,7 @@ This project uses **Cloudflare Pages** with Git integration for automatic deploy
 - Never commit directly to `main` or `release`
 - Merge to `main` for beta user testing
 - Only merge `main` to `release` for production releases
+- Feature branches are **automatically deleted** after squash merge via GitHub
 
 ### Git Hooks (Local Enforcement)
 

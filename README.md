@@ -135,6 +135,8 @@ feature branch → main (beta) → release (production)
 2. **Beta Testing**: Merge to `main` for beta users to test
 3. **Production Release**: Merge `main` to `release` for production deployment
 
+> **Note**: Feature branches are automatically deleted after squash merge into `main`.
+
 ### Cloudflare Pages Configuration
 
 | Setting | Value |
