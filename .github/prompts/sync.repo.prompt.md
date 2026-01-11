@@ -1,3 +1,4 @@
+````prompt
 ---
 description: Sync local Git repository with remote, cleanup stale branches, and optimize storage
 ---
@@ -15,32 +16,66 @@ Sync the local Git repository with the remote, clean up stale branches, and opti
 
 ## Instructions
 
-Run the following commands in sequence:
+Run the following commands in sequence. Use PowerShell commands when available, otherwise fallback to sh/bash.
 
 1. **Fetch all remotes and prune deleted remote-tracking branches:**
+   
+   **PowerShell:**
    ```powershell
+   git fetch --all --prune
+   ```
+   
+   **sh/bash:**
+   ```bash
    git fetch --all --prune
    ```
 
 2. **Delete local branches whose remote tracking branch has been deleted:**
+   
+   **PowerShell:**
    ```powershell
    git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }
    ```
+   
+   **sh/bash:**
+   ```bash
+   git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+   ```
 
 3. **Garbage collect and optimize the repository:**
+   
+   **PowerShell:**
    ```powershell
+   git gc --prune=now --aggressive
+   ```
+   
+   **sh/bash:**
+   ```bash
    git gc --prune=now --aggressive
    ```
 
 4. **Display remaining branches:**
+   
+   **PowerShell:**
    ```powershell
    git branch -a
    ```
+   
+   **sh/bash:**
+   ```bash
+   git branch -a
+   ```
 
-## One-liner (PowerShell)
+## One-liner
 
+**PowerShell:**
 ```powershell
 git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }; git gc --prune=now --aggressive; git branch -a
+```
+
+**sh/bash:**
+```bash
+git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D && git gc --prune=now --aggressive && git branch -a
 ```
 
 ## Aggressive Cleanup
@@ -62,6 +97,11 @@ When requested, also remove all untracked and ignored files to restore the repos
    ```powershell
    git clean -fdxn
    ```
+   
+   **sh/bash:**
+   ```bash
+   git clean -fdxn
+   ```
 
 3. **Ask for user confirmation:**
    - Review the output from steps 1 and 2
@@ -72,8 +112,18 @@ When requested, also remove all untracked and ignored files to restore the repos
    ```powershell
    git clean -fdx
    ```
+   
+   **sh/bash:**
+   ```bash
+   git clean -fdx
+   ```
 
 > **Note:** Never run `git clean -fdx` without first showing the preview and getting explicit user approval.
+
+**sh/bash:**
+```bash
+git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D && git clean -fdx && git gc --prune=now --aggressive && git branch -a
+```
 
 ## What This Does
 
@@ -84,3 +134,5 @@ When requested, also remove all untracked and ignored files to restore the repos
 | `clean -fdx` | **(Aggressive)** Removes untracked files (`-f`), directories (`-d`), and ignored files (`-x`) |
 | `gc --prune=now --aggressive` | Cleans up unnecessary files and optimizes the local repository |
 | `branch -a` | Shows all remaining local and remote branches |
+
+````
