@@ -166,7 +166,7 @@ test('can play a complete game', async ({ page }) => {
 - Includes: `tests/unit/**/*.test.ts`
 
 **Playwright** (`playwright.config.ts`):
-- Browsers: Chromium, Firefox, WebKit
+- Browsers: Chromium
 - Base URL: `http://localhost:5173`
 - Retries: 2 on CI
 - Screenshots: On failure only
