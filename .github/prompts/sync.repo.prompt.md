@@ -157,5 +157,3 @@ git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | 
 | `gc --prune=now` | Cleans up unnecessary files and optimizes the local repository |
 | `gc --prune=now --aggressive` | **(Aggressive)** More thorough optimization (slower, used only in aggressive cleanup mode) |
 | `branch -a` | Shows all remaining local and remote branches |
-
-````
