@@ -9,6 +9,7 @@ import {
   isBoardFull,
   determineStatus,
   isValidMove,
+  isEarlyDraw,
   WINNING_LINES,
 } from '../../src/game/logic';
 import type { CellValue } from '../../src/game/types';
@@ -99,6 +100,74 @@ describe('isBoardFull', () => {
   });
 });
 
+describe('isEarlyDraw', () => {
+  it('should return false for empty board', () => {
+    const board: CellValue[] = Array<CellValue>(9).fill(null);
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+
+  it('should return false when at least one line is not blocked', () => {
+    // Board: X O _ / X O _ / _ _ _
+    // Top-right diagonal [2,4,6] has no marks yet
+    const board: CellValue[] = ['X', 'O', null, 'X', 'O', null, null, null, null];
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+
+  it('should detect early draw with 1 empty cell', () => {
+    // Board: X X O / O O X / X O _
+    // All 8 winning lines are blocked (contain both X and O)
+    const board: CellValue[] = ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'O', null];
+    expect(isEarlyDraw(board)).toBe(true);
+  });
+
+  it('should detect another early draw with 1 empty cell', () => {
+    // Board: X O X / X O O / O X _
+    // All winning lines contain both X and O
+    const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', null];
+    expect(isEarlyDraw(board)).toBe(true);
+  });
+
+  it('should detect early draw with different empty position', () => {
+    // Board: X O O / O X X / X _ O
+    // All lines blocked despite empty cell at position 7
+    const board: CellValue[] = ['X', 'O', 'O', 'O', 'X', 'X', 'X', null, 'O'];
+    expect(isEarlyDraw(board)).toBe(true);
+  });
+
+  it('should return false for board with winning path still available', () => {
+    // Board: X X _ / O O _ / _ _ _
+    // Top row can still be won by X
+    const board: CellValue[] = ['X', 'X', null, 'O', 'O', null, null, null, null];
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+
+  it('should return false when one player can still win diagonally', () => {
+    // Board: X O _ / O X _ / _ _ X
+    // Main diagonal [0,4,8] is all X - already a win, but line not blocked
+    const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, 'X'];
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+
+  it('should return false for typical mid-game position', () => {
+    // Board: X _ _ / _ O _ / _ _ _
+    const board: CellValue[] = ['X', null, null, null, 'O', null, null, null, null];
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+
+  it('should handle actual draw board (all cells filled)', () => {
+    // Board: X O X / X O O / O X X
+    const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'];
+    expect(isEarlyDraw(board)).toBe(true);
+  });
+
+  it('should return false when main diagonal is not blocked', () => {
+    // Board: X O X / O X O / O X _
+    // Main diagonal [0,4,8] has X, X, null - not blocked
+    const board: CellValue[] = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', null];
+    expect(isEarlyDraw(board)).toBe(false);
+  });
+});
+
 describe('determineStatus', () => {
   it('should return x-wins when X has won', () => {
     const board: CellValue[] = ['X', 'X', 'X', null, 'O', 'O', null, null, null];
@@ -116,9 +185,39 @@ describe('determineStatus', () => {
     expect(determineStatus(board, 'X')).toBe('draw');
   });
 
+  it('should return draw for early draw with 1 empty cell', () => {
+    // Board: X X O / O O X / X O _
+    const board: CellValue[] = ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'O', null];
+    expect(determineStatus(board, 'O')).toBe('draw');
+  });
+
+  it('should return draw for another early draw with 1 empty cell', () => {
+    // Board: X O X / X O O / O X _
+    const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', null];
+    expect(determineStatus(board, 'X')).toBe('draw');
+  });
+
+  it('should return draw for early draw with empty at different position', () => {
+    // Board: X O O / O X X / X _ O
+    const board: CellValue[] = ['X', 'O', 'O', 'O', 'X', 'X', 'X', null, 'O'];
+    expect(determineStatus(board, 'O')).toBe('draw');
+  });
+
   it('should return playing when game is ongoing', () => {
     const board: CellValue[] = ['X', 'O', null, null, null, null, null, null, null];
     expect(determineStatus(board, 'O')).toBe('playing');
+  });
+
+  it('should return playing when winning path still exists', () => {
+    // Board: X X _ / O O _ / _ _ _
+    const board: CellValue[] = ['X', 'X', null, 'O', 'O', null, null, null, null];
+    expect(determineStatus(board, 'O')).toBe('playing');
+  });
+
+  it('should return playing when main diagonal not blocked', () => {
+    // Board: X O X / O X O / O X _
+    const board: CellValue[] = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', null];
+    expect(determineStatus(board, 'X')).toBe('playing');
   });
 
   it('should check only the last player who moved', () => {

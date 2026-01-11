@@ -59,6 +59,24 @@ export function isBoardFull(board: CellValue[]): boolean {
 }
 
 /**
+ * Checks if the game is an early draw (no winning moves possible).
+ * A line is "blocked" if it contains both X and O.
+ * If all 8 winning lines are blocked, neither player can win.
+ *
+ * @param board - Current board state
+ * @returns true if all winning lines are blocked (early draw)
+ */
+export function isEarlyDraw(board: CellValue[]): boolean {
+  return WINNING_LINES.every(([a, b, c]) => {
+    const cells = [board[a], board[b], board[c]];
+    const hasX = cells.includes('X');
+    const hasO = cells.includes('O');
+    // Line is blocked if it has both X and O
+    return hasX && hasO;
+  });
+}
+
+/**
  * Determines the game status after a move.
  *
  * @param board - Current board state
@@ -72,6 +90,11 @@ export function determineStatus(
   // Check if the player who just moved has won
   if (checkWin(board, lastPlayer)) {
     return lastPlayer === 'X' ? 'x-wins' : 'o-wins';
+  }
+
+  // Check for early draw (all winning lines blocked)
+  if (isEarlyDraw(board)) {
+    return 'draw';
   }
 
   // Check for draw (board full with no winner)

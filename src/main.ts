@@ -5,7 +5,7 @@
  * @module main
  */
 
-import { createInitialState, makeMove, resetGame } from './game/state';
+import { resetGame, makeMove } from './game/state';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
 import { renderControls } from './ui/controls';
@@ -14,7 +14,7 @@ import { savePlayerNames } from './game/playerNames';
 import type { GameState, PlayerNames } from './game/types';
 
 /** Current game state - module-level for simplicity */
-let gameState: GameState = createInitialState();
+let gameState: GameState = resetGame();
 
 /**
  * Handles a cell click event.
