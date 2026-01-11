@@ -92,8 +92,8 @@ What to avoid with examples.
 - Use in prompts via `instructions:` frontmatter
 
 **Current files:**
-| File | Purpose | ApplyTo |
-|------|---------|---------|
+| File | Purpose | Applies To |
+|------|---------|------------|
 | typescript.instructions.md | Type system, naming | `**/*.ts` |
 | testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts` |
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
