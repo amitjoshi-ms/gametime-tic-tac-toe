@@ -23,6 +23,7 @@ container.innerHTML = `<span>${userInput}</span>`;
 
 // ✅ Safe: Use textContent for user data
 const span = document.createElement('span');
+// textContent treats userInput as plain text and escapes HTML, preventing XSS
 span.textContent = userInput;
 container.appendChild(span);
 ```
