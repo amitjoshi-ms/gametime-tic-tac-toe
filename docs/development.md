@@ -161,7 +161,7 @@ test('can play a complete game', async ({ page }) => {
 ### Test Configuration
 
 **Vitest** (`vitest.config.ts`):
-- Environment: `jsdom` for DOM APIs
+- Environment: `node`
 - Coverage: V8 provider
 - Includes: `tests/unit/**/*.test.ts`
 
