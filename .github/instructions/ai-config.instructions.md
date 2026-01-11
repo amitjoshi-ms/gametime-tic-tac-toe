@@ -116,8 +116,8 @@ What to avoid with examples.
 description: One-line summary shown in picker
 mode: agent | ask
 instructions:
-  - relevant.instructions.md
-  - another.instructions.md
+  - typescript.instructions.md
+  - testing.instructions.md
 ---
 
 # Task Title
