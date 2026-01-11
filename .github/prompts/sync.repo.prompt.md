@@ -82,11 +82,18 @@ git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | 
 
 When requested, also remove all untracked and ignored files to restore the repository to a pristine state.
 
-> ⚠️ **Warning:** This will permanently delete untracked files, build artifacts, and anything in `.gitignore`. Make sure you don't have uncommitted work you want to keep!
+> ⚠️ **Warning:** This will permanently delete uncommitted work, untracked files, build artifacts, and anything in `.gitignore`. Always review and confirm before proceeding!
 
-1. **Preview what will be deleted (dry run):**
-   
-   **PowerShell:**
+### Step-by-Step Process
+
+1. **Show uncommitted changes that will be lost:**
+   ```powershell
+   git status
+   git diff
+   git diff --staged
+   ```
+
+2. **Preview untracked/ignored files that will be deleted (dry run):**
    ```powershell
    git clean -fdxn
    ```
@@ -96,9 +103,12 @@ When requested, also remove all untracked and ignored files to restore the repos
    git clean -fdxn
    ```
 
-2. **Remove all untracked and ignored files:**
-   
-   **PowerShell:**
+3. **Ask for user confirmation:**
+   - Review the output from steps 1 and 2
+   - Confirm with the user: "The above files and changes will be permanently deleted. Do you want to proceed with cleanup?"
+   - **Only proceed if user explicitly confirms (e.g., responds with "yes", "confirm", or "proceed")**
+
+4. **After confirmation, remove all untracked and ignored files:**
    ```powershell
    git clean -fdx
    ```
@@ -108,12 +118,7 @@ When requested, also remove all untracked and ignored files to restore the repos
    git clean -fdx
    ```
 
-### Aggressive Cleanup One-liner
-
-**PowerShell:**
-```powershell
-git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }; git clean -fdx; git gc --prune=now --aggressive; git branch -a
-```
+> **Note:** Never run `git clean -fdx` without first showing the preview and getting explicit user approval.
 
 **sh/bash:**
 ```bash
