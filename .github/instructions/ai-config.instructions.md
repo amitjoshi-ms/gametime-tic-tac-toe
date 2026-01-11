@@ -135,6 +135,13 @@ More instructions.
 {{input}}
 ```
 
+**Frontmatter Format:**
+- Uses standard YAML syntax with key-value pairs
+- `description` and `mode` are standard GitHub Copilot fields
+- `instructions` is a project-specific convention listing instruction files to reference
+- The `instructions` list uses YAML array syntax (indented with `  -` prefix)
+- GitHub Copilot allows custom fields; our AI agents use `instructions` to load relevant context
+
 **Rules:**
 - Always include frontmatter
 - Reference instructions, don't duplicate
@@ -167,6 +174,13 @@ Steps the agent follows.
 ## Constraints
 What the agent should NOT do.
 ```
+
+**Frontmatter Format:**
+- Uses standard YAML syntax
+- `description` provides a brief purpose statement
+- `instructions` is a project-specific field listing relevant instruction files
+- The `instructions` list uses YAML array syntax (indented with `  -` prefix)
+- Custom frontmatter fields are supported by GitHub Copilot's extensible format
 
 **Rules:**
 - One role per agent
