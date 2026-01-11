@@ -133,7 +133,7 @@ export default defineConfig({
 
 **Rules:**
 - Use `node` environment (game logic is pure)
-- Exclude `src/main.ts` from coverage (orchestration code)
+- For coverage, exclude orchestration-only entrypoints (for example, `src/main.ts`), not core game logic
 - Keep path alias in sync with tsconfig
 
 ## playwright.config.ts
