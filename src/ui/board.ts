@@ -96,6 +96,8 @@ export function renderBoard(
     container.appendChild(cell);
   });
 
+  // Remove old event listener to prevent memory leak
+  container.removeEventListener('click', handleBoardClick);
   // Set up event delegation (single listener on container)
   container.addEventListener('click', handleBoardClick);
 }
