@@ -18,7 +18,7 @@ This is a client-side only SPA with no backend. Security focus areas:
 ### Never Use `innerHTML` with User Data
 
 ```typescript
-// ❌ Dangerous: XSS vulnerability
+// ❌ Dangerous: XSS vulnerability if userInput contains HTML/script tags
 container.innerHTML = `<span>${userInput}</span>`;
 
 // ✅ Safe: Use textContent for user data
