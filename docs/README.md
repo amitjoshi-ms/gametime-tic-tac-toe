@@ -17,7 +17,7 @@ Welcome to the documentation for Gametime Tic-Tac-Toe, a Progressive Web App bui
 
 - **Play Now**: [gametime-tic-tac-toe.pages.dev](https://gametime-tic-tac-toe.pages.dev)
 - **Beta/Preview**: [main.gametime-tic-tac-toe.pages.dev](https://main.gametime-tic-tac-toe.pages.dev)
-- **Source Code**: [GitHub Repository](https://github.com)
+- **Source Code**: [GitHub Repository](https://github.com/amitjoshi-ms/gametime-tic-tac-toe)
 
 ## ✨ Key Features
 
