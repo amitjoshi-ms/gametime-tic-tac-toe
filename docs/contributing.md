@@ -13,8 +13,8 @@ Thank you for your interest in contributing to Gametime Tic-Tac-Toe! This guide 
 ### 1. Fork and Clone
 
 ```bash
-# Fork via GitHub UI, then:
-git clone https://github.com/amitjoshi-ms/gametime-tic-tac-toe.git
+# Fork via GitHub UI, then clone your fork (replace with your GitHub username):
+git clone https://github.com/YOUR_GITHUB_USERNAME/gametime-tic-tac-toe.git
 cd gametime-tic-tac-toe
 ```
 
