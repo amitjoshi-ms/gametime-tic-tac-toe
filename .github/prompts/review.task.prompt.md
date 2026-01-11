@@ -110,6 +110,20 @@ Perform a comprehensive review of current code changes covering code quality, se
 
 ---
 
+## Part 4: Branch & Deployment Review
+
+### Branch Strategy Compliance
+- [ ] PR targets correct branch (`main` for features, `release` for production)
+- [ ] Feature branches are created from `main`
+- [ ] No direct commits to `release` branch
+
+### Deployment Considerations
+- [ ] Changes are backward compatible (for production releases)
+- [ ] No breaking changes without version bump
+- [ ] Build passes (`npm run build`)
+
+---
+
 ## Instructions
 
 1. Get the current git diff (staged or unstaged changes)
@@ -129,12 +143,13 @@ Perform a comprehensive review of current code changes covering code quality, se
 | Best Practices | ✅/⚠️/❌ | Count |
 | Security | ✅/⚠️/❌ | Count |
 | Pre-Commit Gates | ✅/⚠️/❌ | Count |
+| Branch Compliance | ✅/⚠️/❌ | Count |
 
 ### Findings
 
 For each finding:
 - **Severity**: 🔴 Critical | 🟠 High | 🟡 Medium | 🔵 Low | ℹ️ Info
-- **Category**: Best Practice | Security | Gate
+- **Category**: Best Practice | Security | Gate | Branch
 - **Location**: File and line reference
 - **Description**: Clear explanation
 - **Recommendation**: Specific fix with code example if applicable
