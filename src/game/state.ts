@@ -5,19 +5,22 @@
  * @module game/state
  */
 
-import type { GameState, Player } from './types';
+import type { GameState, Player, PlayerNames } from './types';
 import { isValidMove, determineStatus } from './logic';
+import { loadPlayerNames } from './playerNames';
 
 /**
  * Creates a fresh game state with empty board, X to play.
  *
+ * @param playerNames - Optional player names (defaults to stored or default names)
  * @returns Initial game state
  */
-export function createInitialState(): GameState {
+export function createInitialState(playerNames?: PlayerNames): GameState {
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
+    playerNames: playerNames ?? loadPlayerNames(),
   };
 }
 
@@ -49,6 +52,7 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     board: newBoard,
     currentPlayer: nextPlayer,
     status: newStatus,
+    playerNames: state.playerNames,
   };
 }
 

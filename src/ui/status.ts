@@ -16,14 +16,14 @@ import type { GameState } from '../game/types';
 export function getStatusMessage(state: GameState): string {
   switch (state.status) {
     case 'x-wins':
-      return '🎉 Player X Wins!';
+      return `🎉 ${state.playerNames.X} Wins!`;
     case 'o-wins':
-      return '🎉 Player O Wins!';
+      return `🎉 ${state.playerNames.O} Wins!`;
     case 'draw':
       return "It's a Draw!";
     case 'playing':
     default:
-      return `Player ${state.currentPlayer}'s Turn`;
+      return `${state.playerNames[state.currentPlayer]}'s Turn`;
   }
 }
 

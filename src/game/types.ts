@@ -14,6 +14,12 @@ export type Player = 'X' | 'O';
 /** Possible game outcomes */
 export type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
 
+/** Player names for both X and O */
+export interface PlayerNames {
+  X: string;
+  O: string;
+}
+
 /**
  * Complete game state at any point in time.
  *
@@ -29,6 +35,8 @@ export interface GameState {
   currentPlayer: Player;
   /** Current game status */
   status: GameStatus;
+  /** Custom names for both players */
+  playerNames: PlayerNames;
 }
 
 /**
