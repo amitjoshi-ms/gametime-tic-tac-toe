@@ -211,14 +211,17 @@ npx prettier --check .
 
 #### Prettier Configuration
 
-Default Prettier settings with these overrides (in `package.json` or `.prettierrc`):
+Default Prettier settings with these project overrides (in `package.json` or `.prettierrc`):
 
 ```json
 {
   "semi": true,
   "singleQuote": true,
   "tabWidth": 2,
-  "trailingComma": "es5"
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "bracketSpacing": true,
+  "arrowParens": "always"
 }
 ```
 
