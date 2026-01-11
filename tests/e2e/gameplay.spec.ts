@@ -23,7 +23,7 @@ test.describe('Tic-Tac-Toe Game', () => {
 
     test('should show X turn initially', async ({ page }) => {
       const status = page.locator('.status');
-      await expect(status).toContainText("Player X's turn");
+      await expect(status).toContainText("Player X's Turn");
     });
 
     test('should have a New Game button', async ({ page }) => {
@@ -60,13 +60,13 @@ test.describe('Tic-Tac-Toe Game', () => {
       const status = page.locator('.status');
       const cells = page.locator('.cell');
 
-      await expect(status).toContainText("Player X's turn");
+      await expect(status).toContainText("Player X's Turn");
 
       await cells.nth(0).click();
-      await expect(status).toContainText("Player O's turn");
+      await expect(status).toContainText("Player O's Turn");
 
       await cells.nth(1).click();
-      await expect(status).toContainText("Player X's turn");
+      await expect(status).toContainText("Player X's Turn");
     });
 
     test('should not allow clicking occupied cells', async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe('Tic-Tac-Toe Game', () => {
 
       // Turn should still be O's
       const status = page.locator('.status');
-      await expect(status).toContainText("Player O's turn");
+      await expect(status).toContainText("Player O's Turn");
     });
   });
 
@@ -98,7 +98,7 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(4).click(); // O
       await cells.nth(2).click(); // X wins
 
-      await expect(status).toContainText('X wins!');
+      await expect(status).toContainText('🎉 Player X Wins!');
     });
 
     test('should detect O win (middle row)', async ({ page }) => {
@@ -113,7 +113,7 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(8).click(); // X
       await cells.nth(5).click(); // O wins
 
-      await expect(status).toContainText('O wins!');
+      await expect(status).toContainText('🎉 Player O Wins!');
     });
 
     test('should detect diagonal win', async ({ page }) => {
@@ -127,7 +127,7 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(2).click(); // O
       await cells.nth(8).click(); // X wins
 
-      await expect(status).toContainText('X wins!');
+      await expect(status).toContainText('🎉 Player X Wins!');
     });
 
     test('should disable cells after win', async ({ page }) => {
@@ -162,7 +162,7 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(6).click(); // O
       await cells.nth(8).click(); // X - Draw
 
-      await expect(status).toContainText("It's a draw!");
+      await expect(status).toContainText("It's a Draw!");
     });
   });
 
@@ -192,13 +192,13 @@ test.describe('Tic-Tac-Toe Game', () => {
 
       // Play until O's turn
       await cells.nth(0).click(); // X
-      await expect(status).toContainText("Player O's turn");
+      await expect(status).toContainText("Player O's Turn");
 
       // Click New Game
       await newGameButton.click();
 
       // Should be X's turn
-      await expect(status).toContainText("Player X's turn");
+      await expect(status).toContainText("Player X's Turn");
     });
 
     test('should allow starting new game after win', async ({ page }) => {
@@ -213,12 +213,12 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(4).click(); // O
       await cells.nth(2).click(); // X wins
 
-      await expect(status).toContainText('X wins!');
+      await expect(status).toContainText('🎉 Player X Wins!');
 
       // Start new game
       await newGameButton.click();
 
-      await expect(status).toContainText("Player X's turn");
+      await expect(status).toContainText("Player X's Turn");
       await expect(cells.nth(0)).toHaveText('');
     });
   });
