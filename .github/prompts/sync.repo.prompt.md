@@ -48,12 +48,12 @@ Run the following commands in sequence. Use PowerShell commands when available, 
    
    **PowerShell:**
    ```powershell
-   git gc --prune=now --aggressive
+   git gc --prune=now
    ```
    
    **sh/bash:**
    ```bash
-   git gc --prune=now --aggressive
+   git gc --prune=now
    ```
 
 4. **Display remaining branches:**
@@ -72,12 +72,12 @@ Run the following commands in sequence. Use PowerShell commands when available, 
 
 **PowerShell:**
 ```powershell
-git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }; git gc --prune=now --aggressive; git branch -a
+git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*: gone\]' } | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }; git gc --prune=now; git branch -a
 ```
 
 **sh/bash:**
 ```bash
-git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D && git gc --prune=now --aggressive && git branch -a
+git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D && git gc --prune=now && git branch -a
 ```
 
 ## Aggressive Cleanup
@@ -154,7 +154,8 @@ git fetch --all --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | 
 | `fetch --all --prune` | Downloads latest from all remotes, removes stale remote-tracking refs |
 | Delete gone branches | Removes local branches that no longer exist on remote |
 | `clean -fdx` | **(Aggressive)** Removes untracked files (`-f`), directories (`-d`), and ignored files (`-x`) |
-| `gc --prune=now --aggressive` | Cleans up unnecessary files and optimizes the local repository |
+| `gc --prune=now` | Cleans up unnecessary files and optimizes the local repository |
+| `gc --prune=now --aggressive` | **(Aggressive)** More thorough optimization (slower, used only in aggressive cleanup mode) |
 | `branch -a` | Shows all remaining local and remote branches |
 
 ````
