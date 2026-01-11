@@ -106,14 +106,17 @@ export function renderBoard(
   state: GameState,
   onCellClick: (cellIndex: number) => void
 ): void {
-  // Single listener on container
-  container.addEventListener('click', (e) => {
-    const cell = (e.target as HTMLElement).closest('.cell');
-    if (cell) {
-      const index = Number(cell.dataset.index);
-      onCellClick(index);
-    }
-  });
+  // Single delegated listener on container; guard so it is only attached once
+  if (!container.dataset.boardClickBound) {
+    container.addEventListener('click', (e) => {
+      const cell = (e.target as HTMLElement).closest('.cell');
+      if (cell) {
+        const index = Number(cell.dataset.index);
+        onCellClick(index);
+      }
+    });
+    container.dataset.boardClickBound = 'true';
+  }
 }
 ```
 
