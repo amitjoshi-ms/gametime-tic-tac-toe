@@ -53,13 +53,21 @@ Update existing DOM (more efficient than re-rendering):
 
 ```typescript
 /**
+ * Determines if a given cell is part of the current winning line.
+ * Implementation should be adapted to the actual GameState shape.
+ */
+function isWinningCell(state: GameState, index: number): boolean {
+  // Example placeholder: update this to match your game's win-detection logic
+  return false;
+}
+
+/**
  * Updates an existing board with new state.
  * @param container - Element containing the board
  * @param state - Updated game state
  */
 export function updateBoard(container: HTMLElement, state: GameState): void {
   const cells = container.querySelectorAll('.cell');
-  
   cells.forEach((cell, index) => {
     cell.textContent = state.board[index] ?? '';
     cell.classList.toggle('winning', isWinningCell(state, index));
