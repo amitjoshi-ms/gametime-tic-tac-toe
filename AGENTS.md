@@ -58,8 +58,8 @@ tests/
 
 | Location | Responsibility | Side Effects |
 |----------|----------------|--------------|
-| `src/game/logic.ts` | Game rules | NONE - pure functions |
-| `src/game/state.ts` | State transitions | NONE - returns new objects |
+| `src/game/logic.ts` | Game rules | None - pure functions |
+| `src/game/state.ts` | State transitions | None - returns new objects |
 | `src/ui/*.ts` | DOM rendering | DOM writes only |
 | `src/main.ts` | Orchestration | Events, DOM, storage |
 
