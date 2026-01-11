@@ -56,8 +56,8 @@ tests/
 
 ### Separation of Concerns
 
-| Location | Responsibility | Side Effects |
-|----------|----------------|--------------|
+| Layer | Responsibility | Side Effects |
+|-------|----------------|--------------|
 | `src/game/logic.ts` | Game rules | NONE - pure functions |
 | `src/game/state.ts` | State transitions | NONE - returns new objects |
 | `src/ui/*.ts` | DOM rendering | DOM writes only |
