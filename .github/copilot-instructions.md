@@ -65,7 +65,7 @@ specs/                  # Feature specifications (spec-kit)
 
 ### Naming Conventions
 
-- **Files:** kebab-case (`player-names.ts`, `game-state.ts`)
+- **Files:** camelCase (`playerNames.ts`, `board.ts`)
 - **Types/Interfaces:** PascalCase (`GameState`, `PlayerNames`)
 - **Functions/Variables:** camelCase (`handleCellClick`, `gameState`)
 - **Constants:** UPPER_SNAKE_CASE (`WINNING_LINES`)
