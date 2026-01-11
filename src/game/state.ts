@@ -60,6 +60,14 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
 }
 
 /**
+ * Resets the alternating starting player state to its initial value.
+ * Primarily intended for test setups to ensure deterministic behavior.
+ */
+export function resetStartingPlayerState(): void {
+  nextStartingPlayer = 'X';
+}
+
+/**
  * Resets the game to initial state with alternating starting player.
  * Each new game starts with the opposite player from the previous game.
  *
