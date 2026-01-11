@@ -57,12 +57,12 @@ it('should prevent moves on occupied cells', () => { /* ... */ });
 
 // ✅ Also good: Template literals with "should" prefix (useful for table-driven tests)
 const scenarios = [
-  { name: 'X wins in top row' },
-  { name: 'O wins diagonally' },
+  { name: 'detect X wins in top row' },
+  { name: 'detect O wins diagonally' },
 ];
 
 scenarios.forEach(({ name }) => {
-  it(`should detect ${name}`, () => { /* ... */ });
+  it(`should ${name}`, () => { /* ... */ });
 });
 
 const edgeCases = [
