@@ -97,6 +97,12 @@ Perform a comprehensive review of current code changes covering code quality, se
 - [ ] No commented-out code blocks
 - [ ] No TODO/FIXME without issue reference
 
+### Testing Gates
+- [ ] New functionality has corresponding unit tests
+- [ ] Edge cases and error conditions are tested
+- [ ] Test assertions are meaningful (not just checking for no errors)
+- [ ] Tests are independent and don't rely on execution order
+
 ### Security Gates
 - [ ] No hardcoded credentials or secrets
 - [ ] No sensitive data in logs
