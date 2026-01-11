@@ -28,18 +28,34 @@ span.textContent = userInput;
 container.appendChild(span);
 ```
 
-### Sanitize Any HTML Rendering
+### If HTML Rendering Is Required
 
-If HTML rendering is absolutely required (conceptual example only for this zero-runtime-dependency project):
+**This project should NOT require HTML rendering** - use DOM APIs (`createElement`, `textContent`) for all UI.
+
+If you find yourself needing to render HTML:
+
+**Option 1: Reconsider the approach** - Can you achieve the same result with DOM APIs?
+
+**Option 2: Manual sanitization** (zero-dependency approach):
 
 ```typescript
-// ✅ Conceptual example: using a sanitizer library (e.g., DOMPurify)
-// Note: No sanitizer library is currently a dependency of this project.
-// If you later add one, always sanitize untrusted HTML *before* assigning to innerHTML.
-// Pseudo-code only:
-// const safeHtml = SomeSanitizer.sanitize(htmlContent);
-// container.innerHTML = safeHtml;
+// ✅ Manual approach: escape HTML entities
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Use escaped text in innerHTML
+container.innerHTML = `<span>${escapeHtml(userInput)}</span>`;
+
+// Better: Just use textContent or createElement instead
 ```
+
+**Option 3: Add a sanitizer library** - This would violate the zero-dependency principle and require architectural discussion. Consider DOMPurify only if absolutely necessary.
 
 ### Avoid `eval` and `Function` Constructor
 
