@@ -108,7 +108,7 @@ npm run build      # Must succeed
 
 ## Code Style
 
-- **Files:** kebab-case (`player-names.ts`)
+- **Files:** camelCase (`playerNames.ts`)
 - **Types:** PascalCase (`GameState`)
 - **Functions:** camelCase (`handleCellClick`)
 - **Constants:** UPPER_SNAKE_CASE (`WINNING_LINES`)
