@@ -87,7 +87,8 @@ What to avoid with examples.
 - One concern per file
 - Keep under 200 lines
 - Include code examples (✅ good, ❌ bad)
-- No duplication with copilot-instructions.md
+- Complement `copilot-instructions.md` by adding detailed, topic-specific guidance that builds on its high-level overview
+- Avoid unnecessary verbatim duplication of content from `copilot-instructions.md`
 - Use in prompts via `instructions:` frontmatter
 
 **Current files:**
