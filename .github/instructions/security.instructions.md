@@ -41,6 +41,8 @@ If you find yourself needing to render HTML:
 ```typescript
 // Manual approach: escape HTML entities before displaying
 function escapeHtml(unsafe: string): string {
+  // Note: Replace & first to avoid double-encoding.
+  // This is a basic implementation - does not handle already-encoded entities.
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -50,7 +52,9 @@ function escapeHtml(unsafe: string): string {
 }
 
 // ⚠️ Avoid innerHTML even with escaping - use DOM APIs instead:
-// container.innerHTML = `<span>${escapeHtml(userInput)}</span>`; // NOT recommended
+// const escaped = escapeHtml(userInput);
+// container.innerHTML = `<span>${escaped}</span>`; // NOT recommended
+// Note: escapeHtml provides protection, not template literals themselves
 
 // ✅ Better: Use DOM APIs with textContent
 const span = document.createElement('span');
