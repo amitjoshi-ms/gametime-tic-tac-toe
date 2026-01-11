@@ -110,7 +110,7 @@ describe('makeMove', () => {
 
     const result = makeMove(wonState, 5);
     
-    expect(result).toBe(wonState); // Same reference = no change
+    expect(result).toBe(wonState); // Exact same object reference returned (no new state object created)
   });
 
   it('should return unchanged state for occupied cell', () => {
