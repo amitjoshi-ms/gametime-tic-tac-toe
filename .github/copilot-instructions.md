@@ -1,7 +1,7 @@
 # gametime-tic-tac-toe Development Guidelines
 
 > Guidelines for GitHub Copilot and AI assistants working on this codebase.  
-> Maintained by spec-kit tool and manual updates. Last updated: 2026-01-10.
+> Maintained by spec-kit tool and manual updates. Last updated: January 2026.
 
 ## Project Overview
 
