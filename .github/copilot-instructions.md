@@ -66,6 +66,16 @@ This project uses **Cloudflare Pages** with Git integration for automatic deploy
 - Only merge `main` to `release` for production releases
 - Feature branches are **automatically deleted** after squash merge via GitHub
 
+### Releasing to Production
+
+To deploy changes from `main` to production, use the GitHub CLI:
+
+```bash
+gh workflow run release-to-production.yml -f confirm=release
+```
+
+Or use GitHub web UI: **Actions** → **Release to Production** → **Run workflow** → type `release`
+
 ### Git Hooks (Local Enforcement)
 
 This repo uses a pre-commit hook to prevent direct commits to `main` and `release`.

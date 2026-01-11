@@ -133,9 +133,20 @@ feature branch → main (beta) → release (production)
 
 1. **Development**: Create feature branches from `main`, push for dev preview URLs
 2. **Beta Testing**: Merge to `main` for beta users to test
-3. **Production Release**: Merge `main` to `release` for production deployment
+3. **Production Release**: Run the release workflow to merge `main` to `release`
 
 > **Note**: Feature branches are automatically deleted after squash merge into `main`.
+
+### Releasing to Production
+
+To deploy changes from `main` to production, trigger the release workflow:
+
+```bash
+# Using GitHub CLI
+gh workflow run release-to-production.yml -f confirm=release
+```
+
+Alternatively, use the GitHub web UI: **Actions** → **Release to Production** → **Run workflow** → type `release` → **Run**
 
 ### Cloudflare Pages Configuration
 

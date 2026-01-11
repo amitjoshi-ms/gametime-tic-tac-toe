@@ -1,0 +1,75 @@
+name: Release to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "release" to confirm deployment to production'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  validate-confirmation:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm != 'release'
+
+    steps:
+      - name: Invalid confirmation
+        run: |
+          echo "## ❌ Release Cancelled" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** Confirmation input was incorrect." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "You entered: \`${{ github.event.inputs.confirm }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Expected:** \`release\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Please re-run the workflow and type **release** (lowercase) to confirm the deployment." >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+  release:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'release'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into release
+        run: |
+          set -e
+          git checkout release
+          if ! git merge origin/main --ff-only; then
+            echo "## ❌ Production Release Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Reason:** Fast-forward merge from \`main\` to \`release\` failed." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The \`release\` branch has likely diverged from \`main\` (e.g., additional commits on \`release\` or non-fast-forward history)." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Inspect the commit history of \`main\` and \`release\`." >> $GITHUB_STEP_SUMMARY
+            echo "- Resolve any divergence (e.g., via a manual merge or rebase) in a dedicated branch." >> $GITHUB_STEP_SUMMARY
+            echo "- Once history is corrected, re-run this workflow." >> $GITHUB_STEP_SUMMARY
+            echo "Fast-forward merge failed. The release branch has diverged from main. Manual intervention required." >&2
+            exit 1
+          fi
+          git push origin release
+      - name: Summary
+        if: success()
+        run: |
+          echo "## ✅ Production Release Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Changes from \`main\` have been merged to \`release\`." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Cloudflare Pages will automatically deploy to production." >> $GITHUB_STEP_SUMMARY
