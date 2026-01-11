@@ -1,3 +1,4 @@
+````prompt
 # Release to Production
 
 Deploy the latest changes from `main` branch to production by triggering the release workflow.
@@ -18,3 +19,4 @@ Deploy the latest changes from `main` branch to production by triggering the rel
 - All changes in `main` should already be reviewed and tested
 - The workflow requires typing "release" as confirmation (handled by `-f confirm=release`)
 - Production URL: `gametime-tic-tac-toe.pages.dev`
+````
