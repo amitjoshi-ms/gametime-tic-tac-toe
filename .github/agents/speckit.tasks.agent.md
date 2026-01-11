@@ -21,6 +21,17 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
+0. **Branch Setup (REQUIRED before generating tasks for new work)**:
+   - Verify git hooks are configured: `git config core.hooksPath` should return `.githooks`
+     - If not configured, run: `git config core.hooksPath .githooks`
+   - Check current branch: `git branch --show-current`
+   - If on `main` or `release`:
+     1. Sync main to latest: `git checkout main && git fetch origin && git pull origin main`
+     2. Create feature branch: `git checkout -b feature-<feature-name>` (derive name from spec/plan)
+     3. Confirm branch: `git branch --show-current`
+   - If already on a feature branch: Proceed (optionally remind user to ensure branch is up to date)
+   - **Note**: Tasks should be generated on a feature branch, not directly on `main` or `release`
+
 1. **Setup**: Run `.specify/scripts/powershell/check-prerequisites.ps1 -Json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Load design documents**: Read from FEATURE_DIR:

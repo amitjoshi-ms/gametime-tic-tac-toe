@@ -34,9 +34,45 @@ This project uses **Cloudflare Pages** with Git integration for automatic deploy
 
 **Workflow**: `feature branch` → `main` (beta testing) → `release` (production)
 
+### Starting New Work (REQUIRED)
+
+**Before starting any new feature or task, ALWAYS:**
+
+1. **Sync main to latest remote state**:
+   ```bash
+   git checkout main
+   git fetch origin
+   git pull origin main
+   ```
+
+2. **Create a feature branch from updated main**:
+   ```bash
+   git checkout -b feature-<name>
+   ```
+   - Use descriptive branch names: `feature-add-score-tracking`, `fix-win-detection`, `docs-api-reference`
+
+3. **Verify you're on the feature branch** before making changes:
+   ```bash
+   git branch --show-current
+   ```
+
+### Branch Rules
+
 - Always create feature branches from `main`
+- Never commit directly to `main` or `release`
 - Merge to `main` for beta user testing
 - Only merge `main` to `release` for production releases
+
+### Git Hooks (Local Enforcement)
+
+This repo uses a pre-commit hook to prevent direct commits to `main` and `release`.
+
+**Setup (required after cloning):**
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook will block commits with a helpful error message if you accidentally try to commit on a protected branch.
 
 ## Recent Changes
 
