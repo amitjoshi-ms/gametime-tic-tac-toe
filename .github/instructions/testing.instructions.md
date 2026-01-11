@@ -47,11 +47,17 @@ describe('checkWin', () => {
 
 ### Descriptive Test Names
 
+**Pattern:** Always use "should" prefix to describe expected behavior.
+
 ```typescript
-// ✅ Good: Describes expected behavior
+// ✅ Good: Describes expected behavior with "should" prefix
 it('should detect X wins in top row', () => { /* ... */ });
 it('should alternate turns between X and O', () => { /* ... */ });
 it('should prevent moves on occupied cells', () => { /* ... */ });
+
+// ✅ Also good: Template literals with "should" prefix (useful for table-driven tests)
+it(`should detect ${scenarioName}`, () => { /* ... */ });
+it(`should handle ${edgeCase} correctly`, () => { /* ... */ });
 
 // ❌ Bad: Vague or implementation-focused
 it('test checkWin', () => { /* ... */ });
