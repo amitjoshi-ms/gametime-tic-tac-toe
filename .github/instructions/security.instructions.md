@@ -39,7 +39,7 @@ If you find yourself needing to render HTML:
 **Option 2: Manual sanitization** (zero-dependency approach):
 
 ```typescript
-// ✅ Manual approach: escape HTML entities
+// Manual approach: escape HTML entities before displaying
 function escapeHtml(unsafe: string): string {
   return unsafe
     .replace(/&/g, '&amp;')
@@ -49,10 +49,13 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
-// Use escaped text in innerHTML
-container.innerHTML = `<span>${escapeHtml(userInput)}</span>`;
+// ⚠️ Avoid innerHTML even with escaping - use DOM APIs instead:
+// container.innerHTML = `<span>${escapeHtml(userInput)}</span>`; // NOT recommended
 
-// Better: Just use textContent or createElement instead
+// ✅ Better: Use DOM APIs with textContent
+const span = document.createElement('span');
+span.textContent = userInput; // No escaping needed - textContent is safe
+container.appendChild(span);
 ```
 
 **Option 3: Add a sanitizer library** - This would violate the zero-dependency principle and require architectural discussion. Consider DOMPurify only if absolutely necessary.
