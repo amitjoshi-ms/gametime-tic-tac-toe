@@ -59,7 +59,7 @@ Explicit prohibitions.
 - Keep under 500 lines
 - Use tables for structured data
 - Include concrete examples
-- Update when project structure changes
+- Update `.github/copilot-instructions.md` when project structure changes
 
 ## Instruction Files (.instructions.md)
 
