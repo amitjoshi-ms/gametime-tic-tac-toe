@@ -15,9 +15,10 @@ import { isValidMove, determineStatus } from './logic';
 let nextStartingPlayer: Player = 'X';
 
 /**
- * Creates a fresh game state with empty board, X to play.
+ * Creates a fresh game state with empty board, always with X to play.
+ * Note: For alternating starting players, use resetGame() instead.
  *
- * @returns Initial game state
+ * @returns Initial game state with X as the starting player
  */
 export function createInitialState(): GameState {
   return {
@@ -68,7 +69,7 @@ export function resetGame(): GameState {
   const startingPlayer = nextStartingPlayer;
   // Toggle for next reset
   nextStartingPlayer = nextStartingPlayer === 'X' ? 'O' : 'X';
-  
+
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: startingPlayer,
