@@ -48,10 +48,12 @@ jobs:
 
       - name: Merge main into release
         run: |
+          set -e
           git checkout release
           git merge origin/main --ff-only
           git push origin release
       - name: Summary
+        if: success()
         run: |
           echo "## ✅ Production Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
