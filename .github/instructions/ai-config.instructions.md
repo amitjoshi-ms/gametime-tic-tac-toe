@@ -99,7 +99,7 @@ What to avoid with examples.
 | ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
 | performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
-| tooling.instructions.md | Build configs | `*.config.*, *.json` |
+| tooling.instructions.md | Build configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
 | ai-config.instructions.md | AI configuration standards | `.github/instructions/ai-config.instructions.md` |
 
 ## Prompt Files (.prompt.md)
