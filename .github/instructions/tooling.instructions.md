@@ -198,29 +198,3 @@ export default tseslint.config(
 
 ## Common Mistakes
 
-❌ **Adding runtime dependencies**
-```json
-{ "dependencies": { "some-lib": "1.0.0" } }
-```
-
-❌ **Disabling strict mode**
-```jsonc
-{ "compilerOptions": { "strict": false } }
-```
-
-❌ **Mismatched path aliases**
-```typescript
-// tsconfig.json has "@/*" but vite.config.ts is missing alias
-```
-
-❌ **Changing ports inconsistently**
-```typescript
-// vite uses 5173 but playwright config says 3000
-```
-
-## When Editing Config Files
-
-1. **Understand the impact** - Config changes affect all code
-2. **Check related files** - Path aliases must sync across configs
-3. **Test thoroughly** - Run full test suite after changes
-4. **Document why** - Add comments for non-obvious settings
