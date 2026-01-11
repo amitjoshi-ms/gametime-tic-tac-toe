@@ -30,10 +30,12 @@ container.appendChild(span);
 
 ### Sanitize Any HTML Rendering
 
-If HTML rendering is absolutely required:
+If HTML rendering is absolutely required (conceptual example only for this zero-runtime-dependency project):
 
 ```typescript
-// ✅ Use DOMPurify or similar
+// ✅ Example: using DOMPurify or a similar sanitizer
+// Note: DOMPurify is NOT a current dependency of this project.
+// See the "Currently: No External Resources" section below; this is guidance only.
 import DOMPurify from 'dompurify';
 container.innerHTML = DOMPurify.sanitize(htmlContent);
 ```
