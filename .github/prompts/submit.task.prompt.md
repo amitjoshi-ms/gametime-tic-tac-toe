@@ -35,7 +35,7 @@ Create a pull request and squash merge via GitHub (remote only - never merge loc
     - Uses the PR title as the commit title
     - Includes PR number reference (e.g., `(#123)`)
     - Summarizes all changes in the commit body
-12. **Delete feature branch** (optional) - Clean up after merge: `git branch -d <branch-name>`
+12. **Clean up local branch** - Remote branch is auto-deleted; remove local copy: `git branch -d <branch-name>`
 
 ## Branch Strategy
 
