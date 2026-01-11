@@ -97,6 +97,12 @@ Perform a comprehensive review of current code changes covering code quality, se
 - [ ] No commented-out code blocks
 - [ ] No TODO/FIXME without issue reference
 
+### Testing Gates
+- [ ] New functionality has corresponding unit tests
+- [ ] Edge cases and error conditions are tested
+- [ ] Test assertions are meaningful (not just checking for no errors)
+- [ ] Tests are independent and don't rely on execution order
+
 ### Security Gates
 - [ ] No hardcoded credentials or secrets
 - [ ] No sensitive data in logs
@@ -107,6 +113,12 @@ Perform a comprehensive review of current code changes covering code quality, se
 - [ ] Public APIs have JSDoc comments
 - [ ] Complex logic has explanatory comments
 - [ ] README updated if needed
+
+### AI Tooling & Instructions
+- [ ] `copilot-instructions.md` updated if project structure, commands, or conventions changed
+- [ ] Relevant prompts in `.github/prompts/` updated if workflows or processes changed
+- [ ] Relevant agents in `.github/agents/` updated if agent behaviors need adjustment
+- [ ] Documentation in `docs/` updated if user-facing features or APIs changed
 
 ---
 
