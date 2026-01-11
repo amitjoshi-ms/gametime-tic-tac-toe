@@ -1,4 +1,4 @@
-# Gametime Tic-Tac-Toe Development Guidelines
+# gametime-tic-tac-toe Development Guidelines
 
 > Guidelines for GitHub Copilot and AI assistants working on this codebase.
 
