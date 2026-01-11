@@ -38,7 +38,7 @@ describe('WINNING_LINES', () => {
 
 describe('checkWin', () => {
   it('should return false for empty board', () => {
-    const board: CellValue[] = Array(9).fill(null);
+    const board: CellValue[] = Array<CellValue>(9).fill(null);
     expect(checkWin(board, 'X')).toBe(false);
     expect(checkWin(board, 'O')).toBe(false);
   });
@@ -79,7 +79,7 @@ describe('checkWin', () => {
 
 describe('isBoardFull', () => {
   it('should return false for empty board', () => {
-    const board: CellValue[] = Array(9).fill(null);
+    const board: CellValue[] = Array<CellValue>(9).fill(null);
     expect(isBoardFull(board)).toBe(false);
   });
 
@@ -129,7 +129,7 @@ describe('determineStatus', () => {
 });
 
 describe('isValidMove', () => {
-  const emptyBoard: CellValue[] = Array(9).fill(null);
+  const emptyBoard: CellValue[] = Array<CellValue>(9).fill(null);
   const partialBoard: CellValue[] = ['X', 'O', null, null, null, null, null, null, null];
 
   it('should return true for empty cell when game is playing', () => {

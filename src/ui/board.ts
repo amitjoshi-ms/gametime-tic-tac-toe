@@ -33,15 +33,15 @@ function createCellElement(
 ): HTMLButtonElement {
   const cell = document.createElement('button');
   cell.className = 'cell';
-  cell.dataset['index'] = String(index);
+  cell.dataset.index = String(index);
   cell.type = 'button';
-  cell.setAttribute('aria-label', `Cell ${index + 1}`);
+  cell.setAttribute('aria-label', `Cell ${String(index + 1)}`);
 
   if (value) {
     cell.textContent = value;
     cell.classList.add(`cell--${value.toLowerCase()}`);
     cell.classList.add('cell--occupied');
-    cell.setAttribute('aria-label', `Cell ${index + 1}: ${value}`);
+    cell.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
   }
 
   if (isGameOver) {
@@ -63,7 +63,7 @@ function handleBoardClick(event: Event): void {
   const target = event.target as HTMLElement;
   if (!target.classList.contains('cell')) return;
 
-  const index = target.dataset['index'];
+  const index = target.dataset.index;
   if (index === undefined) return;
 
   currentClickHandler(parseInt(index, 10));
@@ -124,9 +124,9 @@ export function updateBoard(state: GameState): void {
     if (value) {
       button.classList.add(`cell--${value.toLowerCase()}`);
       button.classList.add('cell--occupied');
-      button.setAttribute('aria-label', `Cell ${index + 1}: ${value}`);
+      button.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
     } else {
-      button.setAttribute('aria-label', `Cell ${index + 1}`);
+      button.setAttribute('aria-label', `Cell ${String(index + 1)}`);
     }
 
     // Handle game over state

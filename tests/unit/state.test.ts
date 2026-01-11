@@ -146,9 +146,9 @@ describe('resetGame', () => {
   });
 
   it('should create a new state after a played game', () => {
-    let state = createInitialState();
-    state = makeMove(state, 0);
-    state = makeMove(state, 1);
+    const initialState = createInitialState();
+    const afterMove1 = makeMove(initialState, 0);
+    makeMove(afterMove1, 1);
 
     const freshState = resetGame();
     expect(freshState.board[0]).toBe(null);
