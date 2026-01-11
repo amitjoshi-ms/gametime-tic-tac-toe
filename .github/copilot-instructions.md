@@ -230,14 +230,14 @@ Focused rules auto-applied to specific file patterns via `applyTo`:
 
 | File | Purpose | Applies To |
 |------|---------|------------|
-| `typescript.instructions.md` | Type system, naming, patterns | `**/*.ts` |
+| `typescript.instructions.md` | Type system, naming, patterns | `**/*.ts, **/*.tsx` |
 | `testing.instructions.md` | Unit/E2E test structure | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
 | `game-logic.instructions.md` | Pure functions, state | `src/game/**/*.ts` |
 | `ui.instructions.md` | DOM, accessibility, CSS | `src/ui/**/*.ts, src/styles/**/*.css` |
 | `security.instructions.md` | XSS, validation, storage | `**/*.ts, **/*.html` |
 | `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css, **/*.html` |
 | `tooling.instructions.md` | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
-| `ai-config.instructions.md` | Maintaining these files | `**/*.md` |
+| `ai-config.instructions.md` | Maintaining these files | `**/*.md, .github/**/*.md, AGENTS.md, README.md` |
 
 ### Prompts (`.github/prompts/`)
 
