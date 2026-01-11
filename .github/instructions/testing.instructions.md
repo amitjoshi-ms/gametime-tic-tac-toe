@@ -108,18 +108,25 @@ describe('makeMove', () => {
 ### Table-Driven Tests
 
 ```typescript
+type DetermineStatusTestCase = {
+  name: string;
+  board: CellValue[];
+  lastPlayer: 'X' | 'O';
+  expected: 'x-wins' | 'o-wins';
+};
+
 describe('determineStatus', () => {
-  const testCases = [
+  const testCases: DetermineStatusTestCase[] = [
     {
       name: 'X horizontal win',
       board: ['X', 'X', 'X', 'O', 'O', null, null, null, null],
-      lastPlayer: 'X' as const,
+      lastPlayer: 'X',
       expected: 'x-wins',
     },
     {
       name: 'O vertical win',
       board: ['O', 'X', 'X', 'O', null, null, 'O', null, null],
-      lastPlayer: 'O' as const,
+      lastPlayer: 'O',
       expected: 'o-wins',
     },
   ];
