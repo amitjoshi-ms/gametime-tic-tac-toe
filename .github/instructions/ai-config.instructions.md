@@ -94,7 +94,7 @@ What to avoid with examples.
 | File | Purpose | Applies To |
 |------|---------|------------|
 | typescript.instructions.md | Type system, naming | `**/*.ts` |
-| testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts` |
+| testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
 | ui.instructions.md | DOM manipulation | `src/ui/**/*.ts` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
