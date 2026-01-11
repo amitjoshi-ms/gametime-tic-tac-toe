@@ -3,8 +3,13 @@
  * Tests state creation, move making, and game reset.
  */
 
-import { describe, it, expect } from 'vitest';
-import { createInitialState, makeMove, resetGame } from '../../src/game/state';
+import { describe, it, expect, beforeEach } from 'vitest';
+import {
+  createInitialState,
+  makeMove,
+  resetGame,
+  resetStartingPlayerState,
+} from '../../src/game/state';
 
 describe('createInitialState', () => {
   it('should create an empty board with 9 cells', () => {
@@ -149,19 +154,34 @@ describe('makeMove', () => {
 });
 
 describe('resetGame', () => {
-  it('should return a fresh initial state', () => {
+  beforeEach(() => {
+    // Reset the module-level state before each test for deterministic behavior
+    resetStartingPlayerState();
+  });
+
+  it('should return a fresh state with empty board', () => {
     const state = resetGame();
     expect(state.board).toHaveLength(9);
     expect(state.board.every((cell) => cell === null)).toBe(true);
-    expect(state.currentPlayer).toBe('X');
     expect(state.status).toBe('playing');
   });
 
-  it('should be equivalent to createInitialState', () => {
+  it('should alternate starting player between resets', () => {
+    // First reset - should start with X (deterministic due to beforeEach)
     const state1 = resetGame();
-    const state2 = createInitialState();
+    expect(state1.currentPlayer).toBe('X');
 
-    expect(state1).toEqual(state2);
+    // Second reset - should start with O
+    const state2 = resetGame();
+    expect(state2.currentPlayer).toBe('O');
+
+    // Third reset - should start with X again
+    const state3 = resetGame();
+    expect(state3.currentPlayer).toBe('X');
+
+    // Fourth reset - should start with O again
+    const state4 = resetGame();
+    expect(state4.currentPlayer).toBe('O');
   });
 
   it('should create a new state after a played game', () => {
@@ -172,7 +192,8 @@ describe('resetGame', () => {
     const freshState = resetGame();
     expect(freshState.board[0]).toBe(null);
     expect(freshState.board[1]).toBe(null);
-    expect(freshState.currentPlayer).toBe('X');
+    // Starting player will alternate
+    expect(['X', 'O']).toContain(freshState.currentPlayer);
   });
 });
 
