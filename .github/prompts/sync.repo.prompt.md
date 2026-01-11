@@ -89,7 +89,16 @@ When requested, also remove all untracked and ignored files to restore the repos
 ### Step-by-Step Process
 
 1. **Show uncommitted changes that will be lost:**
+   
+   **PowerShell:**
    ```powershell
+   git status
+   git diff
+   git diff --staged
+   ```
+   
+   **sh/bash:**
+   ```bash
    git status
    git diff
    git diff --staged
