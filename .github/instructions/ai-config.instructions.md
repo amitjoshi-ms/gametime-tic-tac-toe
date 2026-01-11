@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.md, .github/**/*.md, AGENTS.md, README.md"
+applyTo: '**/*.md, .github/**/*.md, AGENTS.md, README.md'
 ---
 
 # AI Configuration Files
