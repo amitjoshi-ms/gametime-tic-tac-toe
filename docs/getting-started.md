@@ -169,7 +169,7 @@ chmod +x .githooks/*
 
 ### Getting Help
 
-- Check the [GitHub Issues](https://github.com) for known problems
+- Check the [GitHub Issues](https://github.com/amitjoshi-ms/gametime-tic-tac-toe/issues) for known problems
 - Open a new issue with detailed reproduction steps
 - Include your environment info: `node --version`, `npm --version`, OS
 
