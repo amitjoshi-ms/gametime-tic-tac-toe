@@ -140,6 +140,7 @@ export default defineConfig({
 ```typescript
 export default defineConfig({
   test: {
+    globals: true,
     environment: 'node',
     include: ['tests/unit/**/*.test.ts'],
     coverage: {
@@ -149,13 +150,16 @@ export default defineConfig({
       exclude: ['src/main.ts', 'src/**/*.d.ts'],  // Exclude orchestration-only entrypoints
     },
   },
+  resolve: {
+    alias: { '@': resolve(__dirname, 'src') }    // Must match tsconfig.json
+  },
 });
 ```
 
 **Rules:**
 - You may exclude orchestration-only entrypoints (for example, `src/main.ts`)
 - Do not exclude core game logic files (e.g., `src/game/**/*.ts`)
-- Always include type definition files (`*.d.ts`) in exclusions
+- Always exclude type definition files (`*.d.ts`) from coverage
 
 ## playwright.config.ts
 
