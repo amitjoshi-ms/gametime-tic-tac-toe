@@ -2,7 +2,7 @@
 applyTo: '**/*.md, .github/**/*.md, AGENTS.md, README.md'
 ---
 
-# AI Configuration Files
+# AI Configuration Files Standards
 
 Standards for maintaining copilot-instructions, instruction files, prompts, and agents.
 
