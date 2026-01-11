@@ -102,18 +102,22 @@ export function renderBoard(
   container: HTMLElement,
   state: GameState,
   onCellClick: (cellIndex: number) => void
-): void {
-  // Single delegated listener on container; guard so it is only attached once
-  if (!container.dataset.boardClickBound) {
-    container.addEventListener('click', (e) => {
-      const cell = (e.target as HTMLElement).closest('.cell');
-      if (cell) {
-        const index = Number(cell.dataset.index);
-        onCellClick(index);
-      }
-    });
-    container.dataset.boardClickBound = 'true';
-  }
+): () => void {
+  // Attach a single delegated listener and return a cleanup function
+  const handleClick = (e: MouseEvent) => {
+    const cell = (e.target as HTMLElement | null)?.closest('.cell');
+    if (cell) {
+      const index = Number((cell as HTMLElement).dataset.index);
+      onCellClick(index);
+    }
+  };
+
+  container.addEventListener('click', handleClick);
+
+  // Caller is responsible for removing the listener when the board is torn down
+  return () => {
+    container.removeEventListener('click', handleClick);
+  };
 }
 ```
 
