@@ -19,7 +19,7 @@ A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with *
 
 ```bash
 # Clone and install
-git clone <repository-url>
+git clone https://github.com/amitjoshi-ms/gametime-tic-tac-toe.git
 cd gametime-tic-tac-toe
 npm install
 
