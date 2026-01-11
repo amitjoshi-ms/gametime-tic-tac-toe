@@ -127,6 +127,25 @@ describe('makeMove', () => {
 
     expect(state.status).toBe('draw');
   });
+
+  it('should detect early draw before board is full', () => {
+    // Play a game that results in early draw: X X O / O O X / X O _
+    let state = createInitialState();
+    state = makeMove(state, 0); // X at 0
+    state = makeMove(state, 3); // O at 3
+    state = makeMove(state, 1); // X at 1
+    state = makeMove(state, 4); // O at 4
+    state = makeMove(state, 5); // X at 5
+    state = makeMove(state, 2); // O at 2
+    state = makeMove(state, 6); // X at 6
+    state = makeMove(state, 7); // O at 7 - Early draw detected!
+
+    expect(state.status).toBe('draw');
+    expect(state.board[8]).toBe(null); // Cell 8 is still empty
+    // Verify board has one empty cell
+    const emptyCells = state.board.filter((cell) => cell === null).length;
+    expect(emptyCells).toBe(1);
+  });
 });
 
 describe('resetGame', () => {
