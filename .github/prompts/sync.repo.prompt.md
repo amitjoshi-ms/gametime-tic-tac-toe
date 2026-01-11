@@ -10,7 +10,7 @@ Sync the local Git repository with the remote, clean up stale branches, and opti
 ## Modes
 
 - **Standard sync** (default): Fetch, prune remote-deleted branches, garbage collect
-- **Aggressive cleanup**: Only when user explicitly asks for "aggressive" cleanup - also removes all untracked and ignored files
+- **Aggressive cleanup**: Only when the user explicitly asks for "aggressive" cleanup - also removes all untracked and ignored files
 
 > **Important:** Only run aggressive cleanup commands (`git clean -fdx`) when the user explicitly requests "aggressive cleanup". The standard sync should never delete untracked files.
 
