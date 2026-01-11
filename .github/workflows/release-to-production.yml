@@ -51,7 +51,6 @@ jobs:
           git checkout release
           git merge origin/main --ff-only
           git push origin release
-          
       - name: Summary
         run: |
           echo "## ✅ Production Release Complete" >> $GITHUB_STEP_SUMMARY
