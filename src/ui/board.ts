@@ -12,9 +12,6 @@ import type { GameState, CellValue } from '../game/types';
  */
 export type CellClickHandler = (cellIndex: number) => void;
 
-/** Reference to the board container element */
-let boardContainer: HTMLElement | null = null;
-
 /** Reference to the current click handler */
 let currentClickHandler: CellClickHandler | null = null;
 
@@ -82,7 +79,6 @@ export function renderBoard(
   state: GameState,
   onCellClick: CellClickHandler
 ): void {
-  boardContainer = container;
   currentClickHandler = onCellClick;
 
   const isGameOver = state.status !== 'playing';
@@ -106,12 +102,11 @@ export function renderBoard(
  * Updates the board display without full re-render.
  * More efficient for incremental updates.
  *
+ * @param container - DOM element containing the board
  * @param state - Current game state
  */
-export function updateBoard(state: GameState): void {
-  if (!boardContainer) return;
-
-  const cells = boardContainer.querySelectorAll('.cell');
+export function updateBoard(container: HTMLElement, state: GameState): void {
+  const cells = container.querySelectorAll('.cell');
   const isGameOver = state.status !== 'playing';
 
   cells.forEach((cell, index) => {
