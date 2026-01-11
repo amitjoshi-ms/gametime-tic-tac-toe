@@ -1,3 +1,4 @@
+````prompt
 ---
 description: Sync local Git repository with remote, cleanup stale branches, and optimize storage
 ---
@@ -74,3 +75,5 @@ git fetch --all --prune; git branch -vv | Where-Object { $_ -match '\[origin/.*:
 | `clean -fdx` | **(Aggressive)** Removes untracked files (`-f`), directories (`-d`), and ignored files (`-x`) |
 | `gc --prune=now --aggressive` | Cleans up unnecessary files and optimizes the local repository |
 | `branch -a` | Shows all remaining local and remote branches |
+
+````
