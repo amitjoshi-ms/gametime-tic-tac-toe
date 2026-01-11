@@ -235,7 +235,7 @@ Focused rules auto-applied to specific file patterns via `applyTo`:
 | `game-logic.instructions.md` | Pure functions, state | `src/game/**/*.ts` |
 | `ui.instructions.md` | DOM, accessibility, CSS | `src/ui/**/*.ts` |
 | `security.instructions.md` | XSS, validation, storage | `**/*.ts, **/*.html` |
-| `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css` |
+| `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css, **/*.html` |
 | `tooling.instructions.md` | Build tools, linters, configs | `*.config.*, *.json` |
 | `ai-config.instructions.md` | Maintaining these files | `**/*.md` |
 
