@@ -1,6 +1,6 @@
-````prompt
 ---
 description: Sync local Git repository with remote, cleanup stale branches, and optimize storage
+mode: agent
 ---
 
 # Sync and Clean Local Repository

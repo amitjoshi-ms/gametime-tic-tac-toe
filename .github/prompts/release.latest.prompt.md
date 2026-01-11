@@ -1,4 +1,8 @@
-````prompt
+---
+description: Deploy latest changes from main to production via release workflow
+mode: agent
+---
+
 # Release to Production
 
 Deploy the latest changes from `main` branch to production by triggering the release workflow.
