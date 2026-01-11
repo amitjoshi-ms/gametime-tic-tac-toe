@@ -30,7 +30,7 @@ Run the following commands in sequence. Use PowerShell commands when available, 
    git fetch --all --prune
    ```
 
-2. **Delete local branches whose remote tracking branch has been deleted:**
+2. **Delete local branches whose remote-tracking branch has been deleted:**
    
    **PowerShell:**
    ```powershell
