@@ -100,7 +100,6 @@ What to avoid with examples.
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
 | performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
 | tooling.instructions.md | Build configs | `*.config.*, *.json` |
-| performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
 
 ## Prompt Files (.prompt.md)
 
