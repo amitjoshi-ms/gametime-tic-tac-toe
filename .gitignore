@@ -5,6 +5,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# Vite cache
+.vite/
+
 # IDE and editors
 .vscode/*
 !.vscode/extensions.json
