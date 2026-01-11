@@ -9,9 +9,11 @@ Auto-generated from all feature plans. Last updated: 2026-01-10
 ## Project Structure
 
 ```text
-src/
-public/
-tests/
+src/           # Application source code
+public/        # Static assets
+tests/         # Unit and E2E tests
+docs/          # User-facing documentation
+specs/         # Spec-kit feature specifications (auto-generated)
 ```
 
 ## Commands

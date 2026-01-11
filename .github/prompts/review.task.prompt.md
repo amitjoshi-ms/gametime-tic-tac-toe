@@ -108,6 +108,12 @@ Perform a comprehensive review of current code changes covering code quality, se
 - [ ] Complex logic has explanatory comments
 - [ ] README updated if needed
 
+### AI Tooling & Instructions
+- [ ] `copilot-instructions.md` updated if project structure, commands, or conventions changed
+- [ ] Relevant prompts in `.github/prompts/` updated if workflows or processes changed
+- [ ] Relevant agents in `.github/agents/` updated if agent behaviors need adjustment
+- [ ] Documentation in `docs/` updated if user-facing features or APIs changed
+
 ---
 
 ## Part 4: Branch & Deployment Review
