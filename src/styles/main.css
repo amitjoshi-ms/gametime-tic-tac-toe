@@ -180,11 +180,6 @@ body {
   opacity: 0.7;
 }
 
-.cell--winning {
-  background-color: var(--color-win);
-  color: var(--color-bg);
-}
-
 /* ============================================
    Controls (New Game Button)
    ============================================ */
