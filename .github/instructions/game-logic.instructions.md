@@ -208,6 +208,7 @@ describe('makeMove', () => {
     expect(afterMove.board[0]).toBe('X');
     expect(afterMove.currentPlayer).toBe('O');
     expect(afterMove).not.toBe(initial); // New object
+    expect(initial.board[0]).toBe(null); // Original not mutated
   });
 
   it('should detect win after winning move', () => {
