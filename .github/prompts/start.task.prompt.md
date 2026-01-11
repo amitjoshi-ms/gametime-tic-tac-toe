@@ -1,98 +1,86 @@
-````prompt
+---
+description: Start new work with proper branch setup and task understanding
+mode: agent
+instructions:
+  - typescript.instructions.md
+  - game-logic.instructions.md
+  - testing.instructions.md
+  - ui.instructions.md
+---
+
 # Start New Work
 
-Sync main branch with remote and create a feature branch before starting any new work.
+Set up a feature branch and understand the task before making changes.
 
-## Instructions
+## Step 1: Branch Setup
 
-### Step 0: Verify Git Hooks
-
-1. **Check git hooks are configured**:
-   ```bash
-   git config core.hooksPath
-   ```
-   - Should return `.githooks`
-   - If empty or different, run: `git config core.hooksPath .githooks`
-
-### Step 1: Sync Main Branch
-
-1. **Stash any uncommitted changes** (if needed):
-   ```bash
-   git stash
-   ```
-
-2. **Switch to main branch**:
-   ```bash
-   git checkout main
-   ```
-
-3. **Fetch latest from remote**:
-   ```bash
-   git fetch origin
-   ```
-
-4. **Pull latest changes**:
-   ```bash
-   git pull origin main
-   ```
-
-5. **Verify main is up to date**:
-   ```bash
-   git log --oneline -3
-   ```
-
-### Step 2: Create Feature Branch
-
-6. **Create and switch to feature branch**:
-   ```bash
-   git checkout -b feature-<name>
-   ```
-   - Replace `<name>` with a descriptive name (e.g., `feature-add-score-tracking`)
-   - Use kebab-case for branch names
-   - Prefix with: `feature-`, `fix-`, `docs-`, `refactor-`, or `chore-`
-
-7. **Verify you're on the new branch**:
-   ```bash
-   git branch --show-current
-   ```
-
-8. **Restore stashed changes** (if applicable):
-   ```bash
-   git stash pop
-   ```
-
-### Step 3: Ready to Work
-
-9. **Confirm setup** - Display:
-   - Current branch name
-   - Latest commit on main (to confirm sync)
-   - Working directory status
-
-## Branch Naming Conventions
-
-| Prefix | Purpose | Example |
-|--------|---------|---------|
-| `feature-` | New features | `feature-multiplayer-mode` |
-| `fix-` | Bug fixes | `fix-win-detection-edge-case` |
-| `docs-` | Documentation | `docs-api-reference` |
-| `refactor-` | Code refactoring | `refactor-game-state` |
-| `chore-` | Maintenance tasks | `chore-update-dependencies` |
-
-## Variables
-
-- `$BRANCH_NAME` - The name for the new feature branch (optional, will prompt if not provided)
-
-## Example Usage
-
+### Verify Git Hooks
+```bash
+git config core.hooksPath
 ```
-# Start work on a new feature
-Start new work on feature-add-undo-move
+- Should return `.githooks`
+- If not: `git config core.hooksPath .githooks`
 
-# Just sync main without creating a branch
-Sync main branch to latest
-
-# Start work (will prompt for branch name)
-Start new work
+### Sync and Create Branch
+```bash
+git stash                              # If uncommitted changes
+git checkout main
+git fetch origin && git pull origin main
+git checkout -b <prefix>-<name>        # e.g., feature-add-score
+git stash pop                          # If stashed
 ```
 
-````
+### Branch Prefixes
+
+| Prefix | Purpose |
+|--------|---------|
+| `feature-` | New features |
+| `fix-` | Bug fixes |
+| `refactor-` | Code restructuring |
+| `docs-` | Documentation |
+| `chore-` | Maintenance |
+
+## Step 2: Understand the Task
+
+### For Features
+1. What types need defining? → `src/game/types.ts`
+2. What logic is needed? → `src/game/logic.ts` (pure functions)
+3. What state changes? → `src/game/state.ts` (immutable)
+4. What UI changes? → `src/ui/*.ts` (callback-based)
+5. What tests are needed? → `tests/unit/` and `tests/e2e/`
+
+### For Bug Fixes
+| Symptom | Check Location |
+|---------|----------------|
+| Wrong win/draw | `src/game/logic.ts` |
+| State issues | `src/game/state.ts` |
+| UI not updating | `src/ui/*.ts` |
+| Click not working | `src/main.ts` |
+
+### For Refactoring
+- Verify tests exist before changing code
+- Make small incremental changes
+- Run `npm test` after each change
+
+## Step 3: Verify Setup
+
+```bash
+git branch --show-current   # Confirm on feature branch
+npm run typecheck           # Types OK
+npm run lint               # Linting OK
+npm test                   # Tests pass
+```
+
+## Architecture Quick Reference
+
+```
+src/game/     → Pure functions (no DOM, no side effects)
+src/ui/       → DOM manipulation (uses callbacks)
+src/main.ts   → Orchestration (wires everything together)
+tests/unit/   → Vitest unit tests
+tests/e2e/    → Playwright E2E tests
+```
+
+## User Request
+
+{{input}}

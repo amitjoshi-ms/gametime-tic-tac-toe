@@ -1,175 +1,87 @@
-```prompt
 ---
-description: Comprehensive code review for best practices, security, and SDLC compliance
+description: Code review and pre-commit validation for this project
+mode: agent
+instructions:
+  - typescript.instructions.md
+  - testing.instructions.md
+  - security.instructions.md
+  - performance.instructions.md
+  - game-logic.instructions.md
+  - ui.instructions.md
+  - tooling.instructions.md
 ---
 
-## Code Review
+# Code Review
 
-Perform a comprehensive review of current code changes covering code quality, security, and pre-commit readiness.
+Review current changes for quality, security, and commit readiness.
 
----
+## Step 1: Get Changes
 
-## Part 1: Best Practices Review
+```bash
+git diff --stat                # Overview of changed files
+git diff                       # Unstaged changes
+git diff --cached              # Staged changes
+```
+
+## Step 2: Run Quality Gates
+
+```bash
+npm run typecheck              # TypeScript compilation
+npm run lint                   # ESLint
+npm test                       # Unit tests
+npm run test:e2e               # E2E tests (if UI changed)
+npm run build                  # Build succeeds
+```
+
+## Step 3: Review Checklist
 
 ### Code Quality
-- Clean code principles (readability, simplicity, DRY)
-- Proper naming conventions
-- Appropriate comments and documentation
-- Code organization and structure
-
-### Maintainability
-- Single responsibility principle
-- Loose coupling and high cohesion
-- Testability of the code
-- Error handling patterns
-
-### Performance
-- Obvious performance anti-patterns
-- Unnecessary computations or memory allocations
-- Efficient data structures usage
-
-### TypeScript/JavaScript Best Practices
-- Proper type annotations
-- Avoiding `any` types where possible
-- Null/undefined handling
-- Async/await patterns
+- [ ] No `any` types (use `unknown` + narrowing)
+- [ ] Pure functions in `src/game/` (no DOM, no side effects)
+- [ ] Immutable state transitions (new objects, no mutation)
+- [ ] JSDoc on exported functions
+- [ ] No `console.log` in production code
 
 ### Testing
-- Test coverage for new functionality
-- Test quality and assertions
-- Edge cases consideration
+- [ ] New logic has unit tests in `tests/unit/`
+- [ ] UI changes have E2E tests in `tests/e2e/`
+- [ ] Tests use descriptive names
+- [ ] Edge cases covered
 
----
+### Security
+- [ ] No hardcoded secrets
+- [ ] User input validated/sanitized
+- [ ] DOM manipulation uses safe patterns (no innerHTML with user data)
+- [ ] localStorage only for non-sensitive data
 
-## Part 2: Security Review (Secure SDLC)
+### Performance
+- [ ] DOM updates batched where possible
+- [ ] No unnecessary re-renders
+- [ ] Event listeners properly managed
 
-### Input Validation & Sanitization
-- User input validation
-- Data sanitization before processing
-- Injection prevention (XSS, SQL, command injection)
+### Branch Compliance
+- [ ] On feature branch (not `main` or `release`)
+- [ ] Branch name follows convention (`feature-`, `fix-`, etc.)
 
-### Authentication & Authorization
-- Proper authentication checks
-- Authorization boundary enforcement
-- Session and credential handling
+## Step 4: Output Format
 
-### Data Protection
-- Sensitive data exposure
-- Proper encryption usage
-- PII handling compliance
+### Summary
 
-### Secure Coding Practices
-- No hardcoded secrets or credentials
-- Secure random number generation
-- Safe deserialization
-- No sensitive data in error messages or logs
-
-### Dependency Security
-- Known vulnerable dependencies
-- Supply chain considerations
-
-### Client-Side Security
-- DOM-based vulnerabilities
-- Content Security Policy considerations
-- Secure cookie handling and CORS configuration
-
-### OWASP Top 10 Alignment
-1. Broken Access Control
-2. Cryptographic Failures
-3. Injection
-4. Insecure Design
-5. Security Misconfiguration
-6. Vulnerable Components
-7. Authentication Failures
-8. Data Integrity Failures
-9. Security Logging Failures
-10. Server-Side Request Forgery
-
----
-
-## Part 3: Pre-Commit Checklist
-
-### Code Quality Gates
-- [ ] No linting errors
-- [ ] No TypeScript compilation errors
-- [ ] All tests pass
-- [ ] No console.log or debug statements
-- [ ] No commented-out code blocks
-- [ ] No TODO/FIXME without issue reference
-
-### Testing Gates
-- [ ] New functionality has corresponding unit tests
-- [ ] Edge cases and error conditions are tested
-- [ ] Test assertions are meaningful (not just checking for no errors)
-- [ ] Tests are independent and don't rely on execution order
-
-### Security Gates
-- [ ] No hardcoded credentials or secrets
-- [ ] No sensitive data in logs
-- [ ] Input validation present for user data
-- [ ] No obvious injection vulnerabilities
-
-### Documentation
-- [ ] Public APIs have JSDoc comments
-- [ ] Complex logic has explanatory comments
-- [ ] README updated if needed
-
-### AI Tooling & Instructions
-- [ ] `copilot-instructions.md` updated if project structure, commands, or conventions changed
-- [ ] Relevant prompts in `.github/prompts/` updated if workflows or processes changed
-- [ ] Relevant agents in `.github/agents/` updated if agent behaviors need adjustment
-- [ ] Documentation in `docs/` updated if user-facing features or APIs changed
-
----
-
-## Part 4: Branch & Deployment Review
-
-### Branch Strategy Compliance
-- [ ] PR targets correct branch (`main` for features, `release` for production)
-- [ ] Feature branches are created from `main`
-- [ ] No direct commits to `release` branch
-
-### Deployment Considerations
-- [ ] Changes are backward compatible (for production releases)
-- [ ] No breaking changes without version bump
-- [ ] Build passes (`npm run build`)
-
----
-
-## Instructions
-
-1. Get the current git diff (staged or unstaged changes)
-2. Analyze each file against all criteria above
-3. Categorize findings by severity and type
-4. Provide specific, actionable feedback with line references
-5. Include code examples for recommended fixes
-
----
-
-## Output Format
-
-### Summary Table
-
-| Category | Status | Findings |
-|----------|--------|----------|
-| Best Practices | ✅/⚠️/❌ | Count |
-| Security | ✅/⚠️/❌ | Count |
-| Pre-Commit Gates | ✅/⚠️/❌ | Count |
-| Branch Compliance | ✅/⚠️/❌ | Count |
+| Category | Status | Issues |
+|----------|--------|--------|
+| TypeScript | ✅/❌ | - |
+| Testing | ✅/❌ | - |
+| Security | ✅/❌ | - |
+| Performance | ✅/❌ | - |
 
 ### Findings
 
-For each finding:
-- **Severity**: 🔴 Critical | 🟠 High | 🟡 Medium | 🔵 Low | ℹ️ Info
-- **Category**: Best Practice | Security | Gate | Branch
-- **Location**: File and line reference
-- **Description**: Clear explanation
-- **Recommendation**: Specific fix with code example if applicable
+For each issue:
+- **Severity**: 🔴 Critical | 🟠 High | 🟡 Medium | 🔵 Low
+- **File**: `path/to/file.ts:line`
+- **Issue**: Description
+- **Fix**: Recommended solution
 
 ### Verdict
 
-**✅ READY TO COMMIT** | **⚠️ MINOR ISSUES** | **❌ NEEDS ATTENTION**
-
-Priority items to address (if any).
-
-```
+**✅ READY TO COMMIT** | **⚠️ MINOR ISSUES** | **❌ NEEDS FIXES**
