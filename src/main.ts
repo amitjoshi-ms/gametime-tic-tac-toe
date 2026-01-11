@@ -9,7 +9,9 @@ import { resetGame, makeMove } from './game/state';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
 import { renderControls } from './ui/controls';
-import type { GameState } from './game/types';
+import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
+import { savePlayerNames } from './game/playerNames';
+import type { GameState, PlayerNames } from './game/types';
 
 /** Current game state - module-level for simplicity */
 let gameState: GameState = resetGame();
@@ -37,11 +39,34 @@ function handleNewGame(): void {
 }
 
 /**
+ * Handles player name changes.
+ * @param names - New player names
+ */
+function handleNameChange(names: PlayerNames): void {
+  // Save to localStorage
+  savePlayerNames(names);
+
+  // Update game state with new names
+  gameState = {
+    ...gameState,
+    playerNames: names,
+  };
+
+  // Update UI to reflect new names
+  updateUI();
+}
+
+/**
  * Updates all UI components to reflect current game state.
  */
 function updateUI(): void {
+  const playerNamesContainer = document.getElementById('player-names');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
+
+  if (playerNamesContainer) {
+    updatePlayerNames(playerNamesContainer, gameState.playerNames);
+  }
 
   if (boardContainer) {
     updateBoard(boardContainer, gameState);
@@ -66,22 +91,25 @@ function initApp(): void {
   // Create DOM structure
   app.innerHTML = `
     <h1 class="game-title">Tic-Tac-Toe</h1>
+    <div id="player-names" class="player-names-container"></div>
     <div id="status" class="status"></div>
     <div id="board" class="board"></div>
     <div id="controls" class="controls"></div>
   `;
 
   // Get container references
+  const playerNamesContainer = document.getElementById('player-names');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
   const controlsContainer = document.getElementById('controls');
 
-  if (!boardContainer || !statusContainer || !controlsContainer) {
+  if (!playerNamesContainer || !boardContainer || !statusContainer || !controlsContainer) {
     console.error('Required containers not found');
     return;
   }
 
   // Initialize UI components
+  renderPlayerNames(playerNamesContainer, gameState.playerNames, handleNameChange);
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);
   renderControls(controlsContainer, handleNewGame);

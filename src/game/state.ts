@@ -5,8 +5,9 @@
  * @module game/state
  */
 
-import type { GameState, Player } from './types';
+import type { GameState, Player, PlayerNames } from './types';
 import { isValidMove, determineStatus } from './logic';
+import { loadPlayerNames } from './playerNames';
 
 /**
  * Tracks which player should start the next game.
@@ -20,11 +21,13 @@ let nextStartingPlayer: Player = 'X';
  *
  * @returns Initial game state with X as the starting player
  */
-export function createInitialState(): GameState {
+export function createInitialState(playerNames?: PlayerNames): GameState {
+  const names = playerNames ?? loadPlayerNames();
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
+    playerNames: { ...names },
   };
 }
 
@@ -56,6 +59,7 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     board: newBoard,
     currentPlayer: nextPlayer,
     status: newStatus,
+    playerNames: state.playerNames,
   };
 }
 
@@ -82,5 +86,6 @@ export function resetGame(): GameState {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: startingPlayer,
     status: 'playing',
+    playerNames: loadPlayerNames(),
   };
 }

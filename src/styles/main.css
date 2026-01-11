@@ -90,6 +90,76 @@ body {
 }
 
 /* ============================================
+   Player Names Editor
+   ============================================ */
+.player-names-container {
+  width: 100%;
+}
+
+.player-names {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.player-name-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 180px;
+}
+
+.player-name-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.player-name-label--x {
+  background-color: var(--color-x);
+  color: var(--color-text);
+}
+
+.player-name-label--o {
+  background-color: var(--color-o);
+  color: var(--color-text);
+}
+
+.player-mark {
+  display: block;
+}
+
+.player-name-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  transition: border-color var(--transition-fast);
+}
+
+.player-name-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.player-name-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
    Status Display (Turn Indicator / Result)
    ============================================ */
 .status {

@@ -34,6 +34,28 @@ describe('createInitialState', () => {
     expect(state1).not.toBe(state2);
     expect(state1.board).not.toBe(state2.board);
   });
+
+  it('should include playerNames from localStorage by default', () => {
+    const state = createInitialState();
+    expect(state.playerNames).toBeDefined();
+    expect(state.playerNames.X).toBeDefined();
+    expect(state.playerNames.O).toBeDefined();
+  });
+
+  it('should use provided playerNames when parameter is given', () => {
+    const customNames = { X: 'Alice', O: 'Bob' };
+    const state = createInitialState(customNames);
+    expect(state.playerNames).toEqual(customNames);
+    expect(state.playerNames.X).toBe('Alice');
+    expect(state.playerNames.O).toBe('Bob');
+  });
+
+  it('should not modify the original playerNames object', () => {
+    const customNames = { X: 'Alice', O: 'Bob' };
+    const state = createInitialState(customNames);
+    customNames.X = 'Changed';
+    expect(state.playerNames.X).toBe('Alice');
+  });
 });
 
 describe('makeMove', () => {
