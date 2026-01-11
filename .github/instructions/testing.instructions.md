@@ -56,9 +56,23 @@ it('should alternate turns between X and O', () => { /* ... */ });
 it('should prevent moves on occupied cells', () => { /* ... */ });
 
 // ✅ Also good: Template literals with "should" prefix (useful for table-driven tests)
-it(`should detect ${scenarioName}`, () => { /* ... */ });
-it(`should handle ${edgeCase} correctly`, () => { /* ... */ });
+const scenarios = [
+  { name: 'X wins in top row' },
+  { name: 'O wins diagonally' },
+];
 
+scenarios.forEach(({ name }) => {
+  it(`should detect ${name}`, () => { /* ... */ });
+});
+
+const edgeCases = [
+  'full board with no winner',
+  'move after game over',
+];
+
+edgeCases.forEach((edgeCase) => {
+  it(`should handle ${edgeCase} correctly`, () => { /* ... */ });
+});
 // ❌ Bad: Vague or implementation-focused
 it('test checkWin', () => { /* ... */ });
 it('returns true', () => { /* ... */ });

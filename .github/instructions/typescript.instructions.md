@@ -1,6 +1,6 @@
 ---
 description: 'TypeScript development standards for this project'
-applyTo: '**/*.ts, **/*.tsx'
+applyTo: '**/*.ts'
 ---
 
 # TypeScript Development Standards

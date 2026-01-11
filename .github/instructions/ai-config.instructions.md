@@ -87,8 +87,7 @@ What to avoid with examples.
 - One concern per file
 - Keep under 200 lines
 - Include code examples (✅ good, ❌ bad)
-- Complement `copilot-instructions.md` by adding detailed, topic-specific guidance that builds on its high-level overview
-- Avoid unnecessary verbatim duplication of content from `copilot-instructions.md`
+- Build on the high-level overview in `copilot-instructions.md` with detailed topic-specific guidance; avoid verbatim duplication of its content
 - Use in prompts via `instructions:` frontmatter
 
 **Current files:**
@@ -101,6 +100,7 @@ What to avoid with examples.
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
 | performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
 | tooling.instructions.md | Build configs | `*.config.*, *.json` |
+| ai-config.instructions.md | AI configuration standards | `.github/instructions/ai-config.instructions.md` |
 
 ## Prompt Files (.prompt.md)
 

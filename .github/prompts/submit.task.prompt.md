@@ -1,3 +1,11 @@
+---
+description: Create and merge pull requests via GitHub with squash merge
+mode: agent
+instructions:
+  - typescript.instructions.md
+  - testing.instructions.md
+---
+
 # Submit PR for Review
 
 Create a pull request and squash merge via GitHub (remote only - never merge locally).

@@ -33,11 +33,12 @@ container.appendChild(span);
 If HTML rendering is absolutely required (conceptual example only for this zero-runtime-dependency project):
 
 ```typescript
-// ✅ Example: using DOMPurify or a similar sanitizer
-// Note: DOMPurify is NOT a current dependency of this project.
-// See the "Currently: No External Resources" section below; this is guidance only.
-import DOMPurify from 'dompurify';
-container.innerHTML = DOMPurify.sanitize(htmlContent);
+// ✅ Conceptual example: using a sanitizer library (e.g., DOMPurify)
+// Note: No sanitizer library is currently a dependency of this project.
+// If you later add one, always sanitize untrusted HTML *before* assigning to innerHTML.
+// Pseudo-code only:
+// const safeHtml = SomeSanitizer.sanitize(htmlContent);
+// container.innerHTML = safeHtml;
 ```
 
 ### Avoid `eval` and `Function` Constructor

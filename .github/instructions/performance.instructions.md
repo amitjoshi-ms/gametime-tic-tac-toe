@@ -81,10 +81,10 @@ function debounce<T extends (...args: unknown[]) => void>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout>;
+  let timeoutId: number | undefined;
   return (...args) => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
+    timeoutId = window.setTimeout(() => fn(...args), delay);
   };
 }
 
