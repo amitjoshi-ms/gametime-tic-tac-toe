@@ -172,6 +172,7 @@ test.describe('Tic-Tac-Toe Game', () => {
   test.describe('New Game', () => {
     test('should reset board when New Game is clicked', async ({ page }) => {
       const cells = page.locator('.cell');
+      const status = page.locator('.status');
       const newGameButton = page.getByRole('button', { name: /new game/i });
 
       // Make some moves
@@ -186,9 +187,13 @@ test.describe('Tic-Tac-Toe Game', () => {
       for (let i = 0; i < 9; i++) {
         await expect(cells.nth(i)).toHaveText('');
       }
+
+      // Status should show a player's turn (either X or O)
+      const statusText = await status.textContent();
+      expect(statusText).toMatch(/Player (X|O)'s Turn/);
     });
 
-    test('should reset turn to X after New Game', async ({ page }) => {
+    test('should reset turn after New Game', async ({ page }) => {
       const cells = page.locator('.cell');
       const status = page.locator('.status');
       const newGameButton = page.getByRole('button', { name: /new game/i });
@@ -200,8 +205,9 @@ test.describe('Tic-Tac-Toe Game', () => {
       // Click New Game
       await newGameButton.click();
 
-      // Should be X's turn
-      await expect(status).toContainText("Player X's Turn");
+      // Status should show a player's turn (starting player alternates)
+      const statusText = await status.textContent();
+      expect(statusText).toMatch(/Player (X|O)'s Turn/);
     });
 
     test('should allow starting new game after win', async ({ page }) => {
@@ -221,8 +227,33 @@ test.describe('Tic-Tac-Toe Game', () => {
       // Start new game
       await newGameButton.click();
 
-      await expect(status).toContainText("Player X's Turn");
+      // Board should be empty
       await expect(cells.nth(0)).toHaveText('');
+      // Starting player alternates, so check for either X or O
+      const statusText = await status.textContent();
+      expect(statusText).toMatch(/Player (X|O)'s Turn/);
+    });
+
+    test('should alternate starting player between games', async ({ page }) => {
+      const status = page.locator('.status');
+      const newGameButton = page.getByRole('button', { name: /new game/i });
+
+      // Check initial player
+      const initialPlayer = (await status.textContent())?.includes('X') ? 'X' : 'O';
+
+      // Start new game
+      await newGameButton.click();
+
+      // Check that the starting player alternated
+      const nextPlayer = (await status.textContent())?.includes('X') ? 'X' : 'O';
+      expect(nextPlayer).not.toBe(initialPlayer);
+
+      // Start another game
+      await newGameButton.click();
+
+      // Should go back to the first player
+      const thirdPlayer = (await status.textContent())?.includes('X') ? 'X' : 'O';
+      expect(thirdPlayer).toBe(initialPlayer);
     });
   });
 

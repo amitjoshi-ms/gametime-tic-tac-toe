@@ -9,6 +9,12 @@ import type { GameState, Player } from './types';
 import { isValidMove, determineStatus } from './logic';
 
 /**
+ * Tracks which player should start the next game.
+ * Alternates between games to ensure fairness.
+ */
+let nextStartingPlayer: Player = 'X';
+
+/**
  * Creates a fresh game state with empty board, X to play.
  *
  * @returns Initial game state
@@ -53,10 +59,19 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
 }
 
 /**
- * Resets the game to initial state.
+ * Resets the game to initial state with alternating starting player.
+ * Each new game starts with the opposite player from the previous game.
  *
- * @returns Fresh initial game state
+ * @returns Fresh game state with alternating starting player
  */
 export function resetGame(): GameState {
-  return createInitialState();
+  const startingPlayer = nextStartingPlayer;
+  // Toggle for next reset
+  nextStartingPlayer = nextStartingPlayer === 'X' ? 'O' : 'X';
+  
+  return {
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: startingPlayer,
+    status: 'playing',
+  };
 }

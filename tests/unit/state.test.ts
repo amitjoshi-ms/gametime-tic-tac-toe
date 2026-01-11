@@ -130,19 +130,30 @@ describe('makeMove', () => {
 });
 
 describe('resetGame', () => {
-  it('should return a fresh initial state', () => {
+  it('should return a fresh state with empty board', () => {
     const state = resetGame();
     expect(state.board).toHaveLength(9);
     expect(state.board.every((cell) => cell === null)).toBe(true);
-    expect(state.currentPlayer).toBe('X');
     expect(state.status).toBe('playing');
   });
 
-  it('should be equivalent to createInitialState', () => {
+  it('should alternate starting player between resets', () => {
+    // Get the first player from the first reset
     const state1 = resetGame();
-    const state2 = createInitialState();
+    const firstPlayer = state1.currentPlayer;
 
-    expect(state1).toEqual(state2);
+    // Second reset - should start with the opposite player
+    const state2 = resetGame();
+    const secondPlayer = state2.currentPlayer;
+    expect(secondPlayer).not.toBe(firstPlayer);
+
+    // Third reset - should start with the first player again
+    const state3 = resetGame();
+    expect(state3.currentPlayer).toBe(firstPlayer);
+
+    // Fourth reset - should start with the second player again
+    const state4 = resetGame();
+    expect(state4.currentPlayer).toBe(secondPlayer);
   });
 
   it('should create a new state after a played game', () => {
@@ -153,7 +164,8 @@ describe('resetGame', () => {
     const freshState = resetGame();
     expect(freshState.board[0]).toBe(null);
     expect(freshState.board[1]).toBe(null);
-    expect(freshState.currentPlayer).toBe('X');
+    // Starting player will alternate
+    expect(['X', 'O']).toContain(freshState.currentPlayer);
   });
 });
 
