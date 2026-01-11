@@ -96,7 +96,7 @@ What to avoid with examples.
 | typescript.instructions.md | Type system, naming | `**/*.ts` |
 | testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
-| ui.instructions.md | DOM manipulation | `src/ui/**/*.ts` |
+| ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
 | performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
 | tooling.instructions.md | Build configs | `*.config.*, *.json` |
