@@ -16,9 +16,10 @@ export type PlayerNameChangeHandler = (names: PlayerNames) => void;
 let currentChangeHandler: PlayerNameChangeHandler | null = null;
 
 /**
- * Handles input events on player name fields.
+ * Handles input blur events on player name fields.
+ * Only saves when user leaves the field, allowing empty intermediate states.
  */
-function handleNameInput(event: Event): void {
+function handleNameBlur(event: Event): void {
   if (!currentChangeHandler) return;
 
   const target = event.target as HTMLInputElement;
@@ -99,11 +100,10 @@ export function renderPlayerNames(
     </div>
   `;
 
-  // Set up event listeners
+  // Set up event listeners - only save on blur to allow clearing the field
   const inputs = container.querySelectorAll('.player-name-input');
   inputs.forEach((input) => {
-    input.addEventListener('input', handleNameInput);
-    input.addEventListener('blur', handleNameInput);
+    input.addEventListener('blur', handleNameBlur);
   });
 }
 
