@@ -140,9 +140,12 @@ test.describe('Tic-Tac-Toe Game', () => {
       await cells.nth(4).click(); // O
       await cells.nth(2).click(); // X wins
 
-      // Try clicking an empty cell - should not work
-      await cells.nth(5).click();
-      await expect(cells.nth(5)).toHaveText('');
+      // Verify all empty cells are disabled after win
+      // Cells 5, 6, 7, 8 should be empty and disabled
+      await expect(cells.nth(5)).toBeDisabled();
+      await expect(cells.nth(6)).toBeDisabled();
+      await expect(cells.nth(7)).toBeDisabled();
+      await expect(cells.nth(8)).toBeDisabled();
     });
   });
 
