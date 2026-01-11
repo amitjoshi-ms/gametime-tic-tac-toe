@@ -44,7 +44,7 @@ function updateUI(): void {
   const statusContainer = document.getElementById('status');
 
   if (boardContainer) {
-    updateBoard(gameState);
+    updateBoard(boardContainer, gameState);
   }
 
   if (statusContainer) {
