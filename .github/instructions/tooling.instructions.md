@@ -50,7 +50,7 @@ This project uses several configuration files for tooling. Changes to these file
 - Use exact versions or `^` for minor updates
 - Run `npm audit` after adding dependencies
 
-```json
+```jsonc
 // ❌ Wrong - runtime dependency
 {
   "dependencies": {
@@ -181,7 +181,7 @@ export default tseslint.config(
 ## manifest.json (PWA)
 
 ### Required Fields
-```json
+```jsonc
 {
   "name": "Tic-Tac-Toe",
   "short_name": "TicTacToe",
