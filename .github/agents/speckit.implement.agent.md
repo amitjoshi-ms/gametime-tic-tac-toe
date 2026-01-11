@@ -12,6 +12,19 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
+0. **Branch Setup (REQUIRED before any implementation)**:
+   - Verify git hooks are configured: `git config core.hooksPath` should return `.githooks`
+     - If not configured, run: `git config core.hooksPath .githooks`
+   - Check current branch: `git branch --show-current`
+   - If on `main` or `release`:
+     1. Sync main to latest: `git checkout main && git fetch origin && git pull origin main`
+     2. Create feature branch: `git checkout -b feature-<feature-name>` (derive name from spec/plan)
+     3. Confirm branch: `git branch --show-current`
+   - If already on a feature branch:
+     1. Check for uncommitted changes: `git status`
+     2. If clean, optionally rebase on main: `git fetch origin && git rebase origin/main`
+   - **STOP** and confirm with user if branch setup encounters conflicts or errors
+
 1. Run `.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Check checklists status** (if FEATURE_DIR/checklists/ exists):

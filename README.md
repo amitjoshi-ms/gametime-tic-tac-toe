@@ -37,6 +37,9 @@ cd gametime-tic-tac-toe
 
 # Install dependencies
 npm install
+
+# Configure git hooks (prevents commits to main/release)
+git config core.hooksPath .githooks
 ```
 
 ### Development
