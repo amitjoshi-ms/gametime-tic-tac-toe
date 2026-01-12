@@ -345,10 +345,10 @@ function updateUI(): void {
   if (modeSelectorContainer) {
     if (isDemoActive) {
       // Hide mode selector entirely during demo to avoid inconsistent state.
-      modeSelectorContainer.style.display = 'none';
+      modeSelectorContainer.classList.add('mode-selector-container--hidden');
     } else {
       // Ensure mode selector is visible and reflects the current (non-demo) mode.
-      modeSelectorContainer.style.removeProperty('display');
+      modeSelectorContainer.classList.remove('mode-selector-container--hidden');
       updateModeSelector(modeSelectorContainer, gameState.gameMode, false);
     }
   }
