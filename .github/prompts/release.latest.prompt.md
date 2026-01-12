@@ -122,7 +122,7 @@ You can inspect the run manually with:
 gh run list --workflow=release-to-production.yml --limit 5
 
 # Then inspect a specific run (replace RUN_ID with the actual run ID from the list above)
-gh run view RUN_ID --log-failed  # replace RUN_ID with the actual run ID from the list above
+gh run view RUN_ID --log-failed  # inspect a specific run
 ```
 
 ### 6. Verify deployment
