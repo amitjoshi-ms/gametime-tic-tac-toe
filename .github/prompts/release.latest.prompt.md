@@ -59,13 +59,34 @@ gh workflow run release-to-production.yml -f confirm=release
 Automatically wait for the workflow to complete:
 
 ```bash
-gh run watch $(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+# Get the latest run ID
+RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# Check if a run ID was found before attempting to watch
+if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+  echo "Error: No workflow run found. The workflow may not have been triggered yet."
+  echo "Wait a few seconds and try checking manually with: gh run list --workflow=release-to-production.yml"
+  exit 1
+fi
+
+# Watch the workflow run
+gh run watch "$RUN_ID"
 ```
 
 If the workflow fails, check logs:
 
 ```bash
-gh run view $(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId') --log-failed
+# Get the latest run ID
+RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# Check if a run ID was found
+if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+  echo "Error: No workflow run found."
+  exit 1
+fi
+
+# View the failed logs
+gh run view "$RUN_ID" --log-failed
 ```
 
 ### 5. Verify deployment
