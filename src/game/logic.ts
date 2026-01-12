@@ -88,6 +88,12 @@ function hasLiveWinningLine(board: CellValue[], player: 'X' | 'O'): boolean {
  * contains only their marks and empty cells (no opponent marks). If neither
  * player has such a line, the game is mathematically a draw.
  *
+ * Note: This implementation detects the most obvious early draw cases where
+ * all winning lines are "blocked" (contain both X and O). However, it does not
+ * detect more complex scenarios where both players have live lines but neither
+ * can actually win due to turn order and shared critical cells. Detecting those
+ * cases would require a more sophisticated algorithm like minimax game tree search.
+ *
  * @param board - Current board state
  * @returns true if neither player can win (early draw detected)
  */
