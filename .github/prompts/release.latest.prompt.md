@@ -158,6 +158,8 @@ if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
   echo "Error: No workflow run found after waiting $((max_attempts * sleep_seconds)) seconds."
   echo "The workflow may not have been triggered yet or may be delayed."
   echo "Try checking manually with: gh run list --workflow=release-to-production.yml"
+  echo "If you are using Option B (explicit cleanup), the branch will NOT be re-locked automatically in this error case."
+  echo "Manually re-lock the branch before retrying the deployment."
   exit 1
 fi
 
