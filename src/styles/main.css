@@ -320,6 +320,14 @@ body {
   outline-offset: 2px;
 }
 
+.btn-demo {
+  background-color: var(--color-primary);
+}
+
+.btn-demo:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 85%, white);
+}
+
 /* ============================================
    Mode Selector
    ============================================ */

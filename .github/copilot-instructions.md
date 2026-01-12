@@ -9,14 +9,14 @@ A browser-based Tic-Tac-Toe game built as a static Single Page Application (SPA)
 
 ## Tech Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| TypeScript | 5.x | Language (strict mode enabled) |
-| Vite | 7.x | Build tooling & dev server |
-| Vitest | 4.x | Unit testing |
-| Playwright | 1.57+ | E2E testing |
-| ESLint | 9.x | Linting |
-| Prettier | 3.x | Formatting |
+| Technology | Version | Purpose                        |
+| ---------- | ------- | ------------------------------ |
+| TypeScript | 5.x     | Language (strict mode enabled) |
+| Vite       | 7.x     | Build tooling & dev server     |
+| Vitest     | 4.x     | Unit testing                   |
+| Playwright | 1.57+   | E2E testing                    |
+| ESLint     | 9.x     | Linting                        |
+| Prettier   | 3.x     | Formatting                     |
 
 **Target:** ES2022 output, pure ES modules, no CommonJS
 
@@ -96,10 +96,24 @@ npm run build      # TypeScript compile + Vite build
 npm run preview    # Preview production build
 npm test           # Run Vitest unit tests
 npm run test:watch # Run Vitest in watch mode
-npm run test:e2e   # Run Playwright E2E tests
+npm run test:e2e   # Run Playwright E2E tests (interactive mode)
 npm run lint       # Run ESLint
 npm run format     # Format code with Prettier
 npm run typecheck  # TypeScript type checking
+```
+
+### Running E2E Tests in CI Mode
+
+When running E2E tests from scripts or automated contexts, use CI mode to prevent Playwright from waiting for user input on failures:
+
+```powershell
+# PowerShell
+$env:CI='true'; npx playwright test
+```
+
+```bash
+# Bash/Linux/macOS
+CI=true npx playwright test
 ```
 
 ## Testing Standards
@@ -145,23 +159,23 @@ function makeMove(state: GameState, cellIndex: number): GameState {
 
 ### Separation of Concerns
 
-| Layer | Responsibility | Side Effects |
-|-------|----------------|--------------|
-| `game/logic.ts` | Pure game rules | None |
+| Layer              | Responsibility          | Side Effects            |
+| ------------------ | ----------------------- | ----------------------- |
+| `game/logic.ts`    | Pure game rules         | None                    |
 | `game/computer.ts` | Computer opponent logic | None (uses Math.random) |
-| `game/state.ts` | State transitions | None |
-| `ui/*.ts` | DOM rendering | DOM writes |
-| `main.ts` | App orchestration | Events, DOM |
+| `game/state.ts`    | State transitions       | None                    |
+| `ui/*.ts`          | DOM rendering           | DOM writes              |
+| `main.ts`          | App orchestration       | Events, DOM             |
 
 ## Branch Strategy & Deployment
 
 This project uses **Cloudflare Pages** with Git integration for automatic deployments.
 
-| Branch | Purpose | URL Pattern |
-|--------|---------|-------------|
-| `release` | Production | `gametime-tic-tac-toe.pages.dev` |
-| `main` | Preview/Beta | `main.gametime-tic-tac-toe.pages.dev` |
-| `feature-*` | Development | `<branch>.gametime-tic-tac-toe.pages.dev` |
+| Branch      | Purpose      | URL Pattern                               |
+| ----------- | ------------ | ----------------------------------------- |
+| `release`   | Production   | `gametime-tic-tac-toe.pages.dev`          |
+| `main`      | Preview/Beta | `main.gametime-tic-tac-toe.pages.dev`     |
+| `feature-*` | Development  | `<branch>.gametime-tic-tac-toe.pages.dev` |
 
 **Workflow:** `feature branch` → `main` (beta testing) → `release` (production)
 
@@ -170,11 +184,13 @@ This project uses **Cloudflare Pages** with Git integration for automatic deploy
 **Before ANY feature or task, ALWAYS:**
 
 1. **Sync main to latest:**
+
    ```bash
    git checkout main && git fetch origin && git pull origin main
    ```
 
 2. **Create feature branch:**
+
    ```bash
    git checkout -b feature-<descriptive-name>
    ```
@@ -235,35 +251,37 @@ This project uses structured AI configuration to provide consistent guidance.
 
 Focused rules auto-applied to specific file patterns via `applyTo`:
 
-| File | Purpose | ApplyTo |
-|------|---------|------------|
-| `typescript.instructions.md` | Type system, naming, patterns | `**/*.ts` |
-| `testing.instructions.md` | Unit/E2E test structure | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
-| `game-logic.instructions.md` | Pure functions, state | `src/game/**/*.ts` |
-| `ui.instructions.md` | DOM, accessibility, CSS | `src/ui/**/*.ts, src/styles/**/*.css` |
-| `security.instructions.md` | XSS, validation, storage | `**/*.ts, **/*.html` |
-| `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css, **/*.html` |
-| `tooling.instructions.md` | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
-| `ai-config.instructions.md` | Maintaining these files | `.github/**/*.md, AGENTS.md` |
+| File                          | Purpose                       | ApplyTo                                                         |
+| ----------------------------- | ----------------------------- | --------------------------------------------------------------- |
+| `typescript.instructions.md`  | Type system, naming, patterns | `**/*.ts`                                                       |
+| `testing.instructions.md`     | Unit/E2E test structure       | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts`                     |
+| `game-logic.instructions.md`  | Pure functions, state         | `src/game/**/*.ts`                                              |
+| `ui.instructions.md`          | DOM, accessibility, CSS       | `src/ui/**/*.ts, src/styles/**/*.css`                           |
+| `security.instructions.md`    | XSS, validation, storage      | `**/*.ts, **/*.html`                                            |
+| `performance.instructions.md` | Optimization patterns         | `**/*.ts, **/*.css, **/*.html`                                  |
+| `tooling.instructions.md`     | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
+| `ai-config.instructions.md`   | Maintaining these files       | `.github/**/*.md, AGENTS.md`                                    |
 
 ### Prompts (`.github/prompts/`)
 
 Reusable task templates invoked via Copilot Chat (`/` command):
 
-| Prompt | Mode | Use When |
-|--------|------|----------|
-| `start.task.prompt.md` | Agent | Starting new work (creates branch, understands task) |
-| `review.task.prompt.md` | Agent | Pre-commit review (quality, security, tests) |
-| `sync.repo.prompt.md` | Agent | Syncing local work with `main`/remote and updating branches |
-| `submit.task.prompt.md` | Agent | Preparing changes for PR/merge (summaries, checklists, metadata) |
-| `release.latest.prompt.md` | Agent | Working on the latest release (notes, checks, deployment steps) |
+| Prompt                     | Mode  | Use When                                                         |
+| -------------------------- | ----- | ---------------------------------------------------------------- |
+| `start.task.prompt.md`     | Agent | Starting new work (creates branch, understands task)             |
+| `review.task.prompt.md`    | Agent | Pre-commit review (quality, security, tests)                     |
+| `sync.repo.prompt.md`      | Agent | Syncing local work with `main`/remote and updating branches      |
+| `submit.task.prompt.md`    | Agent | Preparing changes for PR/merge (summaries, checklists, metadata) |
+| `release.latest.prompt.md` | Agent | Working on the latest release (notes, checks, deployment steps)  |
 
 **Usage:** Common commands: `/start`, `/review`, `/sync`, `/submit`, `/release` in Copilot Chat, or reference via `@workspace /start` (and analogous names).
 
 For additional workflow and spec-related prompts (including `speckit.*.prompt.md`), see the full set in `.github/prompts/`.
+
 ### AGENTS.md (repo root)
 
 Quick reference for AI coding agents. Contains:
+
 - Essential commands
 - Architecture rules
 - Common task workflows
@@ -271,12 +289,12 @@ Quick reference for AI coding agents. Contains:
 
 ### When to Update
 
-| Change | Update |
-|--------|--------|
-| New directory or npm script | This file + `AGENTS.md` |
-| New code pattern | Relevant instruction file |
-| New workflow | Create/update prompt |
-| New AI role needed | Create agent file |
+| Change                      | Update                    |
+| --------------------------- | ------------------------- |
+| New directory or npm script | This file + `AGENTS.md`   |
+| New code pattern            | Relevant instruction file |
+| New workflow                | Create/update prompt      |
+| New AI role needed          | Create agent file         |
 
 See `ai-config.instructions.md` for detailed standards on maintaining these files.
 

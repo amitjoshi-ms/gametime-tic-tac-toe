@@ -173,6 +173,43 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
       const board: CellValue[] = ['X', 'X', 'X', 'O', 'O', null, null, null, null];
       expect(isEarlyDraw(board)).toBe(false); // Not all lines blocked
     });
+
+    it('should return false when X has two marks on diagonal', () => {
+      // X has a live line on anti-diagonal [2,4,6] with center (4) still empty
+      // Board: _ _ X / _ _ _ / X _ _
+      const board: CellValue[] = [null, null, 'X', null, null, null, 'X', null, null];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when O has potential winning line', () => {
+      // O has middle column [1,4,7] with only O marks
+      // Board: _ O _ / _ O _ / _ O _
+      const board: CellValue[] = [null, 'O', null, null, 'O', null, null, 'O', null];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when center is empty and playable by either', () => {
+      // Center (position 4) is part of 4 winning lines
+      // Board: X O _ / O _ X / _ X O
+      const board: CellValue[] = ['X', 'O', null, 'O', null, 'X', null, 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+  });
+
+  describe('Live Line Logic Verification', () => {
+    it('should return false when X has one live line with 2 empty cells', () => {
+      // Top row [0,1,2] has only X marks and empties (no O)
+      // Board: X _ _ / O O X / O X O
+      const board: CellValue[] = ['X', null, null, 'O', 'O', 'X', 'O', 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when O has one live line with 2 empty cells', () => {
+      // Left column [0,3,6] has only O marks and empties (no X)
+      // Board: O X X / _ X O / _ X O
+      const board: CellValue[] = ['O', 'X', 'X', null, 'X', 'O', null, 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
   });
 });
 
@@ -222,6 +259,31 @@ describe('determineStatus - Early Draw Integration', () => {
     it('should return playing for mid-game positions', () => {
       const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, null];
       expect(determineStatus(board, 'X', defaultConfigs)).toBe('playing');
+    });
+
+    it('should return playing when one player has live line', () => {
+      // Board: O _ X / X X O / O X O
+      // X has live line [1,4,7], can win by playing position 1
+      const board: CellValue[] = ['O', null, 'X', 'X', 'X', 'O', 'O', 'X', 'O'];
+      expect(determineStatus(board, 'O')).toBe('playing');
+    });
+  });
+
+  describe('Turn-Aware Early Draw Detection', () => {
+    it('should detect draw when next player will block only winning line (1 empty cell)', () => {
+      // Board: X _ O / O O X / X O X
+      // O has live line [1,4,7] but it's X's turn (O just played)
+      // X will play at 1, blocking O → draw
+      const board: CellValue[] = ['X', null, 'O', 'O', 'O', 'X', 'X', 'O', 'X'];
+      expect(determineStatus(board, 'O')).toBe('draw');
+    });
+
+    it('should detect draw when both players have live lines with 2 empty cells', () => {
+      // Board: X O X / O _ X / X _ O (from original issue)
+      // X has live line [2,4,6], O has live line [1,4,7]
+      // Both need position 4, O goes first and blocks → draw
+      const board: CellValue[] = ['X', 'O', 'X', 'O', null, 'X', 'X', null, 'O'];
+      expect(determineStatus(board, 'X')).toBe('playing'); // With 2 empty cells, game continues
     });
   });
 

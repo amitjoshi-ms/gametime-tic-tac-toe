@@ -51,9 +51,15 @@ describe('checkWin', () => {
 
 ```typescript
 // ✅ Good: Describes expected behavior with "should" prefix
-it('should detect X wins in top row', () => { /* ... */ });
-it('should alternate turns between X and O', () => { /* ... */ });
-it('should prevent moves on occupied cells', () => { /* ... */ });
+it('should detect X wins in top row', () => {
+  /* ... */
+});
+it('should alternate turns between X and O', () => {
+  /* ... */
+});
+it('should prevent moves on occupied cells', () => {
+  /* ... */
+});
 
 // ✅ Also good: Template literals with "should" prefix (useful for table-driven tests)
 const scenarios = [
@@ -62,7 +68,9 @@ const scenarios = [
 ];
 
 scenarios.forEach(({ name }) => {
-  it(`should ${name}`, () => { /* ... */ });
+  it(`should ${name}`, () => {
+    /* ... */
+  });
 });
 
 const edgeCases = [
@@ -71,12 +79,20 @@ const edgeCases = [
 ];
 
 edgeCases.forEach((edgeCase) => {
-  it(`should handle ${edgeCase}`, () => { /* ... */ });
+  it(`should handle ${edgeCase}`, () => {
+    /* ... */
+  });
 });
 // ❌ Bad: Vague or implementation-focused
-it('test checkWin', () => { /* ... */ });
-it('returns true', () => { /* ... */ });
-it('works correctly', () => { /* ... */ });
+it('test checkWin', () => {
+  /* ... */
+});
+it('returns true', () => {
+  /* ... */
+});
+it('works correctly', () => {
+  /* ... */
+});
 ```
 
 ## Unit Test Patterns
@@ -109,7 +125,7 @@ describe('makeMove', () => {
     };
 
     const result = makeMove(wonState, 5);
-    
+
     expect(result).toBe(wonState); // Exact same object reference returned (no new state object created)
   });
 
@@ -222,3 +238,22 @@ test('should handle complete game flow', async ({ page }) => {
 - ❌ Use `any` types in test code
 - ❌ Write flaky tests that depend on timing
 - ❌ Skip writing tests for edge cases
+
+## Running Tests in CI Mode
+
+When running E2E tests from scripts or terminal sessions, use CI mode to prevent Playwright from waiting for user input on failures:
+
+```powershell
+# PowerShell - Set CI environment variable
+$env:CI='true'; npx playwright test
+
+# Or run specific test file
+$env:CI='true'; npx playwright test demo.spec.ts
+```
+
+```bash
+# Bash/Linux/macOS
+CI=true npx playwright test
+```
+
+**Why CI mode?** By default, Playwright may pause on test failure to show the error and wait for Ctrl+C. Setting `CI=true` ensures tests run non-interactively and exit automatically.

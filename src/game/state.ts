@@ -17,7 +17,7 @@ let nextStartingPlayer: Player = 'X';
 
 /**
  * Creates a fresh game state with empty board, always with X to play.
- * Note: For alternating starting players, use resetGame() instead.
+ * Unlike resetGame(), this function does NOT alternate starting players.
  *
  * @param playerConfigs - Optional custom player configs
  * @param gameMode - Optional game mode (defaults to 'human')
@@ -88,8 +88,9 @@ export function resetStartingPlayerState(): void {
 
 /**
  * Resets the game to initial state with alternating starting player.
- * Each new game starts with the opposite player from the previous game.
- * Preserves the current game mode.
+ * Each new game starts with the opposite player from the previous game
+ * to ensure fairness. This alternating behavior applies to all game modes,
+ * including demo mode where games auto-restart.
  *
  * @param currentMode - Current game mode to preserve (defaults to 'human')
  * @returns Fresh game state with alternating starting player

@@ -9,15 +9,22 @@ import type { GameState } from '../game/types';
 
 /**
  * Gets the display message for current game state.
- * Extended to handle computer thinking state.
+ * Extended to handle computer thinking state and demo mode.
  *
  * @param state - Current game state
  * @returns Human-readable status message
  */
 export function getStatusMessage(state: GameState): string {
-  // Handle computer thinking state
+  const isDemo = state.gameMode === 'demo';
+  const prefix = isDemo ? '🎬 ' : '';
+
+  // Handle computer thinking state.
+  // Note: currentPlayer always represents whose turn it is. When isComputerThinking
+  // is true, the active turn is being taken by a computer. In demo mode, BOTH X and O
+  // are computers, so isComputerThinking can be true for either player depending on
+  // whose turn it is (currentPlayer identifies which computer is currently thinking).
   if (state.isComputerThinking) {
-    return `${state.playerConfigs.O.name} is thinking`;
+    return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
   }
 
   const currentPlayerConfig = state.playerConfigs[state.currentPlayer];
@@ -38,7 +45,7 @@ export function getStatusMessage(state: GameState): string {
         : `🎉 ${oConfig.name} Wins!`;
     }
     case 'draw':
-      return "It's a Draw!";
+      return `${prefix}It's a Draw!`;
     case 'playing':
     default: {
       const showSymbol = currentPlayerConfig.symbol !== state.currentPlayer;
