@@ -116,6 +116,7 @@ function updateUI(prevState: GameState | null, newState: GameState) {
   // If only status changes (not the board), only renderStatus() is called, avoiding unnecessary work.
   if (!prevState || prevState.board !== newState.board) {
     updateBoard(container, newState);
+  }
   if (!prevState || prevState.status !== newState.status) {
     renderStatus(statusEl, newState);
   }
