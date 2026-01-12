@@ -223,3 +223,8 @@ export default tseslint.config(
 
 ## Common Mistakes
 
+- Editing generated or vendor files instead of the primary config (e.g., changing `node_modules` contents instead of `package.json` or tool configs).
+- Introducing invalid JSON syntax in `package.json` or `manifest.json` (trailing commas, comments, or single quotes). Remember: only JSONC examples in this doc support comments, not actual config files.
+- Letting `tsconfig.json` and tooling configs (ESLint, Vite, Vitest, Playwright) drift out of sync—for example, adding a new `src/` subfolder in `tsconfig.json` but forgetting to update related tool config if it uses explicit paths.
+- Renaming or removing npm scripts in `package.json` without updating CI, documentation, or local dev instructions that depend on those script names.
+- Ignoring config-specific `ignores`/`include` patterns (e.g., failing to exclude `dist/` or `node_modules/`), which can slow down tooling or cause spurious lint/test results.
