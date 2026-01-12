@@ -81,7 +81,8 @@ tests/unit/
 ├── logic.test.ts       # Win detection, draw detection, validation
 ├── state.test.ts       # State management, move execution
 ├── status.test.ts      # Status message generation
-└── playerNames.test.ts # Name loading/saving
+├── playerNames.test.ts # Name loading/saving
+└── computer.test.ts    # Computer opponent logic
 ```
 
 #### Writing Unit Tests
@@ -136,7 +137,7 @@ npx playwright show-report
 
 ```
 tests/e2e/
-└── gameplay.spec.ts    # Complete game flows
+└── gameplay.spec.ts    # Complete game flows (human vs human)
 ```
 
 #### Writing E2E Tests
@@ -155,6 +156,32 @@ test('can play a complete game', async ({ page }) => {
   await expect(page.locator('[data-index="0"]')).toHaveText('X');
   
   // Continue game...
+});
+```
+
+**Example test for computer opponent** (recommended future test coverage):
+
+```typescript
+test('can play against computer', async ({ page }) => {
+  await page.goto('/');
+  
+  // Select computer mode
+  await page.click('input[value="computer"]');
+  
+  // Make first move as human (X)
+  await page.click('[data-index="4"]');
+  
+  // Wait for computer to think and move
+  await expect(page.locator('.status')).toContainText('Computer is thinking');
+  await page.waitForTimeout(2500); // Wait for 2s delay + buffer
+  
+  // Verify computer made a move
+  const cells = await page.locator('.cell').all();
+  const filledCells = await Promise.all(
+    cells.map(cell => cell.textContent())
+  );
+  const computerMoves = filledCells.filter(text => text === 'O');
+  expect(computerMoves.length).toBe(1);
 });
 ```
 
@@ -372,7 +399,7 @@ console.table(gameState.board); // Nice array formatting
 ### Modifying Game Logic
 
 1. Update types in `src/game/types.ts` (if needed)
-2. Update logic in `src/game/logic.ts`
+2. Update logic in `src/game/logic.ts` or `src/game/computer.ts`
 3. Update state management in `src/game/state.ts`
 4. Add/update tests in `tests/unit/`
 5. Update UI components if needed
