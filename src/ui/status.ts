@@ -18,7 +18,10 @@ export function getStatusMessage(state: GameState): string {
   const isDemo = state.gameMode === 'demo';
   const prefix = isDemo ? '🎬 ' : '';
 
-  // Handle computer thinking state
+  // Handle computer thinking state.
+  // Note: currentPlayer always represents whose turn it is. When isComputerThinking
+  // is true, the active turn is being taken by a computer. In demo mode both X and O
+  // are computers, but currentPlayer still identifies which computer is currently thinking.
   if (state.isComputerThinking) {
     return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
   }
