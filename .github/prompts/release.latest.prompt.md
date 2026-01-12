@@ -22,7 +22,7 @@ REPO="amitjoshi-ms/gametime-tic-tac-toe"
 # Function to lock the branch (safe to call even if already locked)
 lock_branch() {
   echo "Re-locking release branch..."
-  gh api repos/$REPO/branches/release/protection -X PUT \
+  gh api "repos/$REPO/branches/release/protection" -X PUT \
     -H "Accept: application/vnd.github+json" \
     -f "required_status_checks=null" \
     -F "enforce_admins=true" \
@@ -44,14 +44,14 @@ trap lock_branch EXIT
 Before unlocking, you can verify the current branch protection state:
 
 ```bash
-gh api repos/$REPO/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+gh api "repos/$REPO/branches/release/protection" --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
 
 ### 3. Unlock the release branch
 
 ```bash
 # Temporarily disable admin enforcement to allow release workflow / admin push
-gh api repos/$REPO/branches/release/protection -X PUT \
+gh api "repos/$REPO/branches/release/protection" -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
   -F "enforce_admins=false" \
