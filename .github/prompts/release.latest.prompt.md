@@ -109,7 +109,7 @@ gh api "repos/$REPO/branches/release/protection" --jq '{lock_branch: .lock_branc
 ### 4. Unlock the release branch
 
 ```bash
-# Temporarily disable admin enforcement to allow release workflow / admin push
+# Temporarily disable admin enforcement to allow release workflow or admin push
 gh api "repos/$REPO/branches/release/protection" -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
