@@ -103,8 +103,9 @@ if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
 fi
 
 # Watch the workflow run, and handle failures explicitly
-if ! gh run watch "$run_id"; then
-  status=$?
+gh run watch "$run_id"
+status=$?
+if [ "$status" -ne 0 ]; then
   echo "Error: Failed to watch workflow run $run_id (exit status: $status)."
   echo "The workflow may have failed or encountered an error."
   echo "You can inspect the run manually with: gh run view \"$run_id\" --log-failed"
