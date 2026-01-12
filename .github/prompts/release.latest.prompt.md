@@ -201,8 +201,7 @@ Perform at least the following checks:
 - The UI renders correctly with no obvious visual or JavaScript errors in the console.
 - The changes you just released are visible (e.g., updated text, features, or bug fixes from this release).
 - Basic gameplay still works: start a game, make a few moves, and confirm the game status updates as expected.
-**Note:** 
-- If using **Option A** (subshell with trap), the branch will automatically re-lock when the subshell exits.
+- **Note:** If using **Option A** (subshell with trap), the branch will automatically re-lock when the subshell exits.
 - If using **Option B** (explicit cleanup), ensure you called `lock_branch` after step 6.
 
 ### 8. Manual re-lock (if needed)
