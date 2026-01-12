@@ -53,9 +53,10 @@ function startDemo(): void {
   // 1. Save current mode
   preDemoMode = gameState.gameMode;
   
-  // 2. Reset game with demo mode
+  // 2. Reset game with demo mode, keeping current player names
   gameState = resetGame('demo');
-  gameState = { ...gameState, playerNames: getDemoPlayerNames() };
+  const currentNames = gameState.playerNames;
+  gameState = { ...gameState, playerNames: currentNames };
   
   // 3. Update UI
   updateUI();
