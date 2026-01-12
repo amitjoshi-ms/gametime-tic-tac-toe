@@ -107,18 +107,14 @@ fi
 
 If the workflow fails, check logs:
 
+You can inspect the run manually with:
+
 ```bash
-# Get the latest run ID
-RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+# List recent runs for the release workflow
+gh run list --workflow=release-to-production.yml --limit 5
 
-# Check if a run ID was found
-if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-  echo "Error: No workflow run found."
-  exit 1
-fi
-
-# View the failed logs
-gh run view "$RUN_ID" --log-failed
+# Then inspect a specific run (replace RUN_ID with the desired ID)
+gh run view RUN_ID --log-failed
 ```
 
 ### 6. Verify deployment
