@@ -19,7 +19,7 @@ Before starting, set up a trap to ensure the branch is always re-locked, even if
 # Function to lock the branch
 lock_branch() {
   echo "Re-locking release branch..."
-  gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
+  gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
     -H "Accept: application/vnd.github+json" \
     -f "required_status_checks=null" \
     -F "enforce_admins=true" \
@@ -37,7 +37,7 @@ trap lock_branch EXIT
 ### 2. Unlock the release branch
 
 ```bash
-gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
   -F "enforce_admins=false" \
