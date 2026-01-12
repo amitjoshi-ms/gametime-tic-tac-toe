@@ -514,6 +514,9 @@ body {
   background-color: var(--color-surface);
   color: var(--color-text);
   padding: 0.5rem;
+  font-family: system-ui, -apple-system, "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
 }
 
 .symbol-selector option:disabled {
