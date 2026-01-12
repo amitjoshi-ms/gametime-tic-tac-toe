@@ -115,8 +115,8 @@ export function checkWin(board: CellValue[], player: Player): boolean {
 // ✅ Good import structure
 import { describe, it, expect } from 'vitest';
 
-import { checkWin, isBoardFull } from '../../src/game/logic';
-import type { CellValue, GameState } from '../../src/game/types';
+import { checkWin, isBoardFull } from './logic';
+import type { CellValue, GameState } from './types';
 ```
 
 ## Error Handling
