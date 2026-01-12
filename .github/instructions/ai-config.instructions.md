@@ -99,7 +99,7 @@ What to avoid with examples.
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
 | ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
-| performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
+| performance.instructions.md | Optimization | `**/*.ts, **/*.css, **/*.html` |
 | tooling.instructions.md | Build configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
 | ai-config.instructions.md | AI configuration standards | `.github/**/*.md, AGENTS.md` |
 
