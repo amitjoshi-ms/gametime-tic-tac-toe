@@ -122,17 +122,10 @@ test.describe('Early Draw Detection', () => {
       await cells.nth(7).click(); // X at 7
       await cells.nth(6).click(); // O at 6
       
-      // At this point, either early draw is detected or game continues
-      // Check if draw was detected
-      const statusText = await status.textContent();
-      if (statusText?.includes('Draw!')) {
-        // Early draw was detected - verify cell 8 is disabled
-        await expect(cells.nth(8)).toBeDisabled();
-      } else {
-        // Game continues - can make final move
-        const cell8Disabled = await cells.nth(8).isDisabled();
-        expect(cell8Disabled).toBe(false);
-      }
+      // At this point, early draw should be detected
+      await expect(status).toContainText("It's a Draw!");
+      // Final cell should be disabled because the game is over
+      await expect(cells.nth(8)).toBeDisabled();
     });
 
     test('should allow new game after early draw', async ({ page }) => {
