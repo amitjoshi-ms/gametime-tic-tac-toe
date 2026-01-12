@@ -108,8 +108,7 @@ test.describe('Early Draw Detection', () => {
       const cells = page.locator('.cell');
       const status = page.locator('.status');
 
-      // This test just verifies that draw status is shown when appropriate
-      // We don't need to test a specific sequence - other tests cover early draw scenarios
+      // This test verifies that draw status is shown when appropriate
       
       // Play a simple game that leads to a draw
       // X at 0, O at 1, X at 2, O at 4, X at 3, O at 5, X at 7, O at 6
