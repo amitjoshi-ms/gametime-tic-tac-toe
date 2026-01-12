@@ -239,9 +239,12 @@ function handleDemoGameComplete(): void {
 
   // Schedule auto-restart after DEMO_RESTART_DELAY
   cancelRestartTimer = scheduleDemoRestart(() => {
+    // Clear timer reference before executing callback to prevent race condition
+    // with stopDemo() being called while this callback is executing
+    cancelRestartTimer = null;
+
     // Only restart if still in demo mode
     if (gameState.gameMode === 'demo') {
-      cancelRestartTimer = null;
       // Reset game and start new demo with same names
       gameState = resetGame('demo');
       gameState = {
@@ -249,7 +252,11 @@ function handleDemoGameComplete(): void {
         playerNames: currentNames,
       };
       updateUI();
-      triggerDemoMove();
+      
+      // Double-check demo mode wasn't cancelled during the above operations
+      if (gameState.gameMode === 'demo') {
+        triggerDemoMove();
+      }
     }
   });
 }
