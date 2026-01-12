@@ -16,6 +16,9 @@ Execute these steps in order:
 Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail:
 
 ```bash
+# Exit immediately if any command fails
+set -e
+
 # Repository identifier
 REPO="amitjoshi-ms/gametime-tic-tac-toe"
 
