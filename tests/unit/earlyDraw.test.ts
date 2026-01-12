@@ -175,7 +175,7 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
     });
 
     it('should return false when X has two marks on diagonal', () => {
-      // X has 2 marks on anti-diagonal [2,4,6] and could win with position 4
+      // X has a live line on anti-diagonal [2,4,6] with center (4) still empty
       // Board: _ _ X / _ _ _ / X _ _
       const board: CellValue[] = [null, null, 'X', null, null, null, 'X', null, null];
       expect(isEarlyDraw(board)).toBe(false);
