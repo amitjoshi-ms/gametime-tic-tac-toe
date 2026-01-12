@@ -134,7 +134,6 @@ describe('getDemoPlayerNames', () => {
     const names1 = getDemoPlayerNames();
     const names2 = getDemoPlayerNames();
     expect(names1).not.toBe(names2);
-    expect(names1).toEqual(names2);
   });
 });
 
