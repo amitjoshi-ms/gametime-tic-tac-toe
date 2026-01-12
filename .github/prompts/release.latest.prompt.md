@@ -34,7 +34,17 @@ lock_branch() {
 trap lock_branch EXIT
 ```
 
-### 2. Unlock the release branch
+**Important:** If the trap handler fails (e.g., due to network issues or API failures), the branch may remain unlocked. In such cases, manually verify and re-lock the branch using the command in step 7.
+
+### 2. Check current branch protection status (optional)
+
+Before unlocking, you can verify the current branch protection state:
+
+```bash
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+```
+
+### 3. Unlock the release branch
 
 ```bash
 gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
@@ -49,13 +59,13 @@ gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PU
   -F "allow_deletions=false"
 ```
 
-### 3. Trigger the release workflow
+### 4. Trigger the release workflow
 
 ```bash
 gh workflow run release-to-production.yml -f confirm=release
 ```
 
-### 4. Wait for workflow completion
+### 5. Wait for workflow completion
 
 Automatically wait for the workflow to complete:
 
@@ -111,11 +121,35 @@ fi
 gh run view "$RUN_ID" --log-failed
 ```
 
-### 5. Verify deployment
+### 6. Verify deployment
 
 After successful workflow completion, check production at: https://gametime-tic-tac-toe.pages.dev
 
 **Note:** The branch will automatically re-lock when the shell session exits, thanks to the trap handler set up in step 1.
+
+### 7. Manual re-lock (if needed)
+
+If you encounter errors or the trap handler fails to re-lock the branch automatically, manually re-lock it:
+
+```bash
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -f "required_status_checks=null" \
+  -F "enforce_admins=true" \
+  -f "required_pull_request_reviews=null" \
+  -f "restrictions=null" \
+  -F "lock_branch=true" \
+  -F "allow_force_pushes=false" \
+  -F "allow_deletions=false"
+```
+
+Then verify the branch is locked:
+
+```bash
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+```
+
+Expected output: `{"lock_branch": true, "enforce_admins": true}`
 
 ## Notes
 
@@ -123,3 +157,9 @@ After successful workflow completion, check production at: https://gametime-tic-
 - The release branch is locked by default to prevent direct changes
 - Only this workflow (via the prompt) can update the release branch
 - Production URL: `gametime-tic-tac-toe.pages.dev`
+
+### Error Handling
+
+- **Trap handler failures:** If the trap handler fails to re-lock the branch (e.g., due to network issues or GitHub API failures), you must manually verify the branch protection status using step 2 and manually re-lock using step 7
+- **Network issues:** If you lose network connectivity during the process, the trap may not execute. Always verify branch protection status after errors
+- **API rate limits:** GitHub API calls may fail due to rate limiting. Wait a few minutes and retry the manual re-lock command
