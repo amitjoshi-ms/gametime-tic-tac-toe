@@ -242,7 +242,9 @@ function handleDemoGameComplete(): void {
     // Only restart if still in demo mode
     if (gameState.gameMode === 'demo') {
       cancelRestartTimer = null;
-      // Reset game and start new demo with same names
+      // Reset game and start new demo with same names.
+      // Note: resetGame() alternates the starting player for fairness,
+      // so consecutive demo games will alternate between X and O starting.
       gameState = resetGame('demo');
       gameState = {
         ...gameState,
