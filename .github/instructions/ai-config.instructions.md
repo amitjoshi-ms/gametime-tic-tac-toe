@@ -295,4 +295,7 @@ Use discriminated unions for state:
 type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
 ```
 
+❌ **Huge, catch-all instruction files**
+
+✅ **Short, focused instruction files**
 Prefer short, focused instruction files; if a file starts to grow large, split it into smaller topic-specific files instead of letting it exceed the documented line-count guideline.
