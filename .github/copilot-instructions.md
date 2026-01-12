@@ -69,7 +69,7 @@ specs/                  # Feature specifications (spec-kit)
 - **Types/Interfaces:** PascalCase (`GameState`, `PlayerNames`)
 - **Functions/Variables:** camelCase (`handleCellClick`, `gameState`)
 - **Constants:** UPPER_SNAKE_CASE (`WINNING_LINES`)
-- Skip interface prefixes like `I`—use descriptive names
+- Avoid Hungarian notation prefixes like `I` for interfaces (e.g., use `GameState` instead of `IGameState`)
 
 ### Code Organization
 
