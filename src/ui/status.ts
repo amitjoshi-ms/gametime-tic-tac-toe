@@ -9,27 +9,30 @@ import type { GameState } from '../game/types';
 
 /**
  * Gets the display message for current game state.
- * Extended to handle computer thinking state.
+ * Extended to handle computer thinking state and demo mode.
  *
  * @param state - Current game state
  * @returns Human-readable status message
  */
 export function getStatusMessage(state: GameState): string {
+  const isDemo = state.gameMode === 'demo';
+  const prefix = isDemo ? '🎬 ' : '';
+
   // Handle computer thinking state
   if (state.isComputerThinking) {
-    return `${state.playerNames.O} is thinking`;
+    return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
   }
 
   switch (state.status) {
     case 'x-wins':
-      return `🎉 ${state.playerNames.X} Wins!`;
+      return `${prefix}🎉 ${state.playerNames.X} Wins!`;
     case 'o-wins':
-      return `🎉 ${state.playerNames.O} Wins!`;
+      return `${prefix}🎉 ${state.playerNames.O} Wins!`;
     case 'draw':
-      return "It's a Draw!";
+      return `${prefix}It's a Draw!`;
     case 'playing':
     default:
-      return `${state.playerNames[state.currentPlayer]}'s Turn`;
+      return `${prefix}${state.playerNames[state.currentPlayer]}'s Turn`;
   }
 }
 

@@ -14,8 +14,14 @@ npm run dev
 # Run tests
 npm test
 
-# Run E2E tests
+# Run E2E tests (interactive mode - may wait on failure)
 npm run test:e2e
+
+# Run E2E tests (CI mode - no interactive prompts)
+# PowerShell:
+$env:CI='true'; npx playwright test
+# Bash:
+CI=true npx playwright test
 
 # Type check
 npm run typecheck

@@ -222,3 +222,22 @@ test('should handle complete game flow', async ({ page }) => {
 - ❌ Use `any` types in test code
 - ❌ Write flaky tests that depend on timing
 - ❌ Skip writing tests for edge cases
+
+## Running Tests in CI Mode
+
+When running E2E tests from scripts or terminal sessions, use CI mode to prevent Playwright from waiting for user input on failures:
+
+```powershell
+# PowerShell - Set CI environment variable
+$env:CI='true'; npx playwright test
+
+# Or run specific test file
+$env:CI='true'; npx playwright test demo.spec.ts
+```
+
+```bash
+# Bash/Linux/macOS
+CI=true npx playwright test
+```
+
+**Why CI mode?** By default, Playwright may pause on test failure to show the error and wait for Ctrl+C. Setting `CI=true` ensures tests run non-interactively and exit automatically.

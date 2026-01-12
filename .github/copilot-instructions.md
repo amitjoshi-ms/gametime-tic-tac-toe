@@ -96,10 +96,24 @@ npm run build      # TypeScript compile + Vite build
 npm run preview    # Preview production build
 npm test           # Run Vitest unit tests
 npm run test:watch # Run Vitest in watch mode
-npm run test:e2e   # Run Playwright E2E tests
+npm run test:e2e   # Run Playwright E2E tests (interactive mode)
 npm run lint       # Run ESLint
 npm run format     # Format code with Prettier
 npm run typecheck  # TypeScript type checking
+```
+
+### Running E2E Tests in CI Mode
+
+When running E2E tests from scripts or automated contexts, use CI mode to prevent Playwright from waiting for user input on failures:
+
+```powershell
+# PowerShell
+$env:CI='true'; npx playwright test
+```
+
+```bash
+# Bash/Linux/macOS
+CI=true npx playwright test
 ```
 
 ## Testing Standards
