@@ -75,7 +75,16 @@ npm test                   # Tests pass
 
 ```
 src/game/     → Pure functions (no DOM, no side effects)
+  ├── logic.ts     → Game rules (checkWin, isValidMove)
+  ├── computer.ts  → Computer opponent (selectComputerMove)
+  ├── state.ts     → State transitions (makeMove, resetGame)
+  └── types.ts     → Domain types (GameState, GameMode, etc.)
 src/ui/       → DOM manipulation (uses callbacks)
+  ├── board.ts        → Board rendering
+  ├── status.ts       → Status display
+  ├── controls.ts     → Buttons
+  ├── modeSelector.ts → Game mode toggle
+  └── playerNames.ts  → Name inputs
 src/main.ts   → Orchestration (wires everything together)
 tests/unit/   → Vitest unit tests
 tests/e2e/    → Playwright E2E tests

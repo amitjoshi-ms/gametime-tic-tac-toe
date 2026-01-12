@@ -5,7 +5,7 @@
 
 ## Project Overview
 
-A browser-based Tic-Tac-Toe game built as a static Single Page Application (SPA) with PWA capabilities. Zero runtime dependencies—pure TypeScript compiled to ES2022 modules.
+A browser-based Tic-Tac-Toe game built as a static Single Page Application (SPA) with PWA capabilities. Features human vs human and human vs computer game modes. Zero runtime dependencies—pure TypeScript compiled to ES2022 modules.
 
 ## Tech Stack
 
@@ -29,14 +29,17 @@ src/                    # Application source code
 │   ├── logic.ts        # Win detection, move validation
 │   ├── state.ts        # State transitions
 │   ├── types.ts        # Type definitions (domain model)
+│   ├── computer.ts     # Computer opponent logic
 │   └── playerNames.ts  # Player name persistence
 ├── ui/                 # UI rendering (DOM manipulation)
 │   ├── board.ts        # Board rendering
 │   ├── status.ts       # Game status display
 │   ├── controls.ts     # Buttons and controls
+│   ├── modeSelector.ts # Game mode toggle (human vs computer)
 │   └── playerNames.ts  # Player name inputs
 ├── styles/             # CSS styles
 └── utils/              # Shared utilities
+    └── storage.ts      # localStorage helpers
 
 tests/                  # Test suites
 ├── unit/               # Vitest unit tests
@@ -90,9 +93,12 @@ specs/                  # Feature specifications (spec-kit)
 ```bash
 npm run dev        # Start Vite dev server
 npm run build      # TypeScript compile + Vite build
+npm run preview    # Preview production build
 npm test           # Run Vitest unit tests
+npm run test:watch # Run Vitest in watch mode
 npm run test:e2e   # Run Playwright E2E tests
 npm run lint       # Run ESLint
+npm run format     # Format code with Prettier
 npm run typecheck  # TypeScript type checking
 ```
 
@@ -142,6 +148,7 @@ function makeMove(state: GameState, cellIndex: number): GameState {
 | Layer | Responsibility | Side Effects |
 |-------|----------------|--------------|
 | `game/logic.ts` | Pure game rules | None |
+| `game/computer.ts` | Computer opponent logic | None (uses Math.random) |
 | `game/state.ts` | State transitions | None |
 | `ui/*.ts` | DOM rendering | DOM writes |
 | `main.ts` | App orchestration | Events, DOM |
@@ -237,7 +244,7 @@ Focused rules auto-applied to specific file patterns via `applyTo`:
 | `security.instructions.md` | XSS, validation, storage | `**/*.ts, **/*.html` |
 | `performance.instructions.md` | Optimization patterns | `**/*.ts, **/*.css, **/*.html` |
 | `tooling.instructions.md` | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
-| `ai-config.instructions.md` | Maintaining these files | `**/*.md, .github/**/*.md, AGENTS.md, README.md` |
+| `ai-config.instructions.md` | Maintaining these files | `.github/**/*.md, AGENTS.md` |
 
 ### Prompts (`.github/prompts/`)
 
