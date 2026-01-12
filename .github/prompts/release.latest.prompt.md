@@ -153,7 +153,13 @@ Then verify the branch is locked:
 gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
 
-Expected output: `{"lock_branch": true, "enforce_admins": true}`
+Expected output:
+```json
+{
+  "lock_branch": true,
+  "enforce_admins": true
+}
+```
 
 ## Notes
 
