@@ -99,6 +99,9 @@ export interface GameState {
 ### Export Constants for Magic Numbers
 
 ```typescript
+// Define the type for a winning line
+type WinningLine = [number, number, number];
+
 // ✅ Named constant with documentation
 /**
  * All 8 possible winning combinations.
