@@ -99,7 +99,7 @@ fi
 if ! gh run watch "$RUN_ID"; then
   STATUS=$?
   echo "Error: Failed to watch workflow run $RUN_ID (exit status: $STATUS)."
-  echo "The workflow may have failed, completed too quickly, or encountered an error."
+  echo "The workflow may have failed or encountered an error."
   echo "You can inspect the run manually with: gh run view \"$RUN_ID\" --log-failed"
   exit "$STATUS"
 fi
