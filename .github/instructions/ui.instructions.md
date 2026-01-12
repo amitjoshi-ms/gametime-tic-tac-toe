@@ -88,7 +88,7 @@ export function renderControls(container: HTMLElement): void {
   const button = document.createElement('button');
   button.textContent = 'New Game';
   button.addEventListener('click', () => {
-    internalGameState = resetGame(); // Directly mutating module state
+    internalGameState = resetGame(); // Hidden module-level state update via internalGameState
     // Now main.ts won't know about this change!
   });
   container.appendChild(button);
