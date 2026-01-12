@@ -64,7 +64,7 @@ The trap handler below runs on shell EXIT. If you run these commands in an inter
   # Set up trap to always re-lock on exit (success, failure, or interruption)
   trap lock_branch EXIT
 
-  # ... rest of the steps go here in the subshell ...
+  # Execute the remaining release steps (e.g., steps 3–7) within this subshell context
 )
 ```
 
