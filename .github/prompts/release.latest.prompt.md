@@ -54,7 +54,7 @@ gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
 gh workflow run release-to-production.yml -f confirm=release
 ```
 
-### 3. Wait for workflow completion
+### 4. Wait for workflow completion
 
 Automatically wait for the workflow to complete:
 
