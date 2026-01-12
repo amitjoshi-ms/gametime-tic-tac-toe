@@ -72,7 +72,7 @@ export function renderModeSelector(
     }
 
     input.addEventListener('change', () => {
-      if (input.checked && !disabled) {
+      if (input.checked) {
         onChange(option.value);
       }
     });
