@@ -30,7 +30,7 @@ test.describe('Accessibility', () => {
       for (let i = 0; i < 9; i++) {
         const cell = cells.nth(i);
         const ariaLabel = await cell.getAttribute('aria-label');
-        expect(ariaLabel).toContain(`Cell ${i + 1}`);
+        expect(ariaLabel).toContain(`Cell ${String(i + 1)}`);
       }
     });
 
@@ -68,8 +68,6 @@ test.describe('Accessibility', () => {
 
   test.describe('Keyboard Navigation', () => {
     test('should navigate cells with Tab key', async ({ page }) => {
-      const cells = page.locator('.cell');
-      
       // Tab to first cell
       await page.keyboard.press('Tab');
       
@@ -120,8 +118,6 @@ test.describe('Accessibility', () => {
     });
 
     test('should focus new game button with Tab', async ({ page }) => {
-      const newGameButton = page.getByRole('button', { name: /new game/i });
-      
       // Tab multiple times to reach button
       for (let i = 0; i < 15; i++) {
         await page.keyboard.press('Tab');
@@ -140,7 +136,6 @@ test.describe('Accessibility', () => {
     });
 
     test('should allow keyboard interaction with mode selector', async ({ page }) => {
-      const humanRadio = page.locator('input[type="radio"][value="human"]');
       const computerRadio = page.locator('input[type="radio"][value="computer"]');
       
       // Focus computer radio with Tab
@@ -195,11 +190,8 @@ test.describe('Accessibility', () => {
       // Try to focus a disabled cell
       await cells.nth(5).focus();
       
-      // Cell should be focused even if disabled
-      const isFocused = await cells.nth(5).evaluate((el) => 
-        el === document.activeElement
-      );
       // Note: disabled buttons typically can't be focused, which is correct
+      // Just verify test doesn't throw
     });
   });
 

@@ -184,7 +184,6 @@ test.describe('Game Mode Selection and Gameplay', () => {
     test('should show thinking indicator when computer is thinking', async ({ page }) => {
       const cells = page.locator('.cell');
       const status = page.locator('.status');
-      const board = page.locator('.board');
 
       // Check starting player
       const initialStatus = await status.textContent();
@@ -192,12 +191,6 @@ test.describe('Game Mode Selection and Gameplay', () => {
       if (initialStatus?.includes("Player X's Turn")) {
         // Player goes first
         await cells.nth(4).click();
-        
-        // Should briefly show thinking state (check within a small window)
-        // Note: This might be flaky due to timing, but we can check the class was added
-        const hasThinkingClass = await board.evaluate((el) => 
-          el.classList.contains('board--thinking')
-        );
         
         // Wait for computer to finish
         await expect(status).toContainText("Player X's Turn", { timeout: 5000 });
@@ -304,7 +297,6 @@ test.describe('Game Mode Selection and Gameplay', () => {
   test.describe('Mode Switching', () => {
     test('should reset game when switching from Human to Computer', async ({ page }) => {
       const cells = page.locator('.cell');
-      const status = page.locator('.status');
 
       // Make some moves in Human mode
       await cells.nth(0).click(); // X
@@ -385,7 +377,6 @@ test.describe('Game Mode Selection and Gameplay', () => {
       const computerOption = page.locator('.mode-selector__option').filter({ hasText: 'Computer' });
       await computerOption.click();
 
-      const status = page.locator('.status');
       const newGameButton = page.getByRole('button', { name: /new game/i });
 
       // Play a bit (let the game progress)

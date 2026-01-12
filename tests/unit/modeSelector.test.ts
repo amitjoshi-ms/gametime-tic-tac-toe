@@ -5,7 +5,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderModeSelector, updateModeSelector } from '../../src/ui/modeSelector';
-import type { GameMode } from '../../src/game/types';
 
 describe('modeSelector rendering', () => {
   let container: HTMLElement;

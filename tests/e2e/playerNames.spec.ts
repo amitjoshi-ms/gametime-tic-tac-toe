@@ -222,7 +222,6 @@ test.describe('Player Names', () => {
 
     test('should handle names with special characters', async ({ page }) => {
       const playerXInput = page.locator('input[placeholder*="Player X" i], input[value="Player X"]').first();
-      const status = page.locator('.status');
 
       const inputCount = await playerXInput.count();
       if (inputCount > 0) {
@@ -295,9 +294,8 @@ test.describe('Player Names', () => {
           await cells.nth(4).click();
           await page.waitForTimeout(3000);
           
-          // Check if custom computer name appears anywhere
-          const pageText = await page.textContent('body');
-          // This is optional - depends on implementation
+          // Just verify the test completes without error
+          // Custom name display is implementation-specific
         }
       }
     });
