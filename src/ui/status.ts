@@ -17,19 +17,21 @@ import type { GameState } from '../game/types';
 export function getStatusMessage(state: GameState): string {
   // Handle computer thinking state
   if (state.isComputerThinking) {
-    return `${state.playerNames.O} is thinking`;
+    return `${state.playerConfigs.O.name} is thinking`;
   }
+
+  const currentPlayerConfig = state.playerConfigs[state.currentPlayer];
 
   switch (state.status) {
     case 'x-wins':
-      return `🎉 ${state.playerNames.X} Wins!`;
+      return `🎉 ${state.playerConfigs.X.name} (${state.playerConfigs.X.symbol}) Wins!`;
     case 'o-wins':
-      return `🎉 ${state.playerNames.O} Wins!`;
+      return `🎉 ${state.playerConfigs.O.name} (${state.playerConfigs.O.symbol}) Wins!`;
     case 'draw':
       return "It's a Draw!";
     case 'playing':
     default:
-      return `${state.playerNames[state.currentPlayer]}'s Turn`;
+      return `${currentPlayerConfig.name} (${currentPlayerConfig.symbol})'s Turn`;
   }
 }
 

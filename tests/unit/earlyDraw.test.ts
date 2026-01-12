@@ -178,15 +178,20 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
 
 describe('determineStatus - Early Draw Integration', () => {
   describe('Should Return Draw Status', () => {
+    const defaultConfigs = {
+      X: { symbol: 'X' as const },
+      O: { symbol: 'O' as const },
+    };
+
     it('should return draw when early draw detected at 8 moves', () => {
       const board: CellValue[] = ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'O', null];
-      expect(determineStatus(board, 'O')).toBe('draw');
-      expect(determineStatus(board, 'X')).toBe('draw');
+      expect(determineStatus(board, 'O', defaultConfigs)).toBe('draw');
+      expect(determineStatus(board, 'X', defaultConfigs)).toBe('draw');
     });
 
     it('should return draw for full board with no winner', () => {
       const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'];
-      expect(determineStatus(board, 'X')).toBe('draw');
+      expect(determineStatus(board, 'X', defaultConfigs)).toBe('draw');
     });
 
     it('should return draw for multiple early draw scenarios', () => {
@@ -197,35 +202,45 @@ describe('determineStatus - Early Draw Integration', () => {
       ];
 
       scenarios.forEach((board) => {
-        expect(determineStatus(board, 'X')).toBe('draw');
-        expect(determineStatus(board, 'O')).toBe('draw');
+        expect(determineStatus(board, 'X', defaultConfigs)).toBe('draw');
+        expect(determineStatus(board, 'O', defaultConfigs)).toBe('draw');
       });
     });
   });
 
   describe('Should Return Playing Status (Not Early Draw)', () => {
+    const defaultConfigs = {
+      X: { symbol: 'X' as const },
+      O: { symbol: 'O' as const },
+    };
+
     it('should return playing when at least one line is unblocked', () => {
       const board: CellValue[] = ['X', 'X', null, 'O', 'O', null, null, null, null];
-      expect(determineStatus(board, 'O')).toBe('playing');
+      expect(determineStatus(board, 'O', defaultConfigs)).toBe('playing');
     });
 
     it('should return playing for mid-game positions', () => {
       const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, null];
-      expect(determineStatus(board, 'X')).toBe('playing');
+      expect(determineStatus(board, 'X', defaultConfigs)).toBe('playing');
     });
   });
 
   describe('Should Prioritize Win Over Draw', () => {
+    const defaultConfigs = {
+      X: { symbol: 'X' as const },
+      O: { symbol: 'O' as const },
+    };
+
     it('should return x-wins even if other lines are blocked', () => {
       // X wins top row
       const board: CellValue[] = ['X', 'X', 'X', 'O', 'O', null, null, null, null];
-      expect(determineStatus(board, 'X')).toBe('x-wins');
+      expect(determineStatus(board, 'X', defaultConfigs)).toBe('x-wins');
     });
 
     it('should return o-wins when O wins diagonal', () => {
       // O wins anti-diagonal
       const board: CellValue[] = ['X', 'X', 'O', 'X', 'O', 'X', 'O', null, null];
-      expect(determineStatus(board, 'O')).toBe('o-wins');
+      expect(determineStatus(board, 'O', defaultConfigs)).toBe('o-wins');
     });
   });
 });

@@ -148,43 +148,48 @@ describe('isEarlyDraw', () => {
 });
 
 describe('determineStatus', () => {
+  const defaultConfigs = {
+    X: { symbol: 'X' as const },
+    O: { symbol: 'O' as const },
+  };
+
   it('should return x-wins when X has won', () => {
     const board: CellValue[] = ['X', 'X', 'X', null, 'O', 'O', null, null, null];
-    expect(determineStatus(board, 'X')).toBe('x-wins');
+    expect(determineStatus(board, 'X', defaultConfigs)).toBe('x-wins');
   });
 
   it('should return o-wins when O has won', () => {
     const board: CellValue[] = ['X', null, 'X', 'O', 'O', 'O', null, 'X', null];
-    expect(determineStatus(board, 'O')).toBe('o-wins');
+    expect(determineStatus(board, 'O', defaultConfigs)).toBe('o-wins');
   });
 
   it('should return draw when board is full with no winner', () => {
     // A draw scenario: X O X / X O O / O X X
     const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'];
-    expect(determineStatus(board, 'X')).toBe('draw');
+    expect(determineStatus(board, 'X', defaultConfigs)).toBe('draw');
   });
 
   it('should return playing when game is ongoing', () => {
     const board: CellValue[] = ['X', 'O', null, null, null, null, null, null, null];
-    expect(determineStatus(board, 'O')).toBe('playing');
+    expect(determineStatus(board, 'O', defaultConfigs)).toBe('playing');
   });
 
   it('should return playing when winning path still exists', () => {
     // Board: X X _ / O O _ / _ _ _
     const board: CellValue[] = ['X', 'X', null, 'O', 'O', null, null, null, null];
-    expect(determineStatus(board, 'O')).toBe('playing');
+    expect(determineStatus(board, 'O', defaultConfigs)).toBe('playing');
   });
 
   it('should return playing when main diagonal not blocked', () => {
     // Board: X O X / O X O / O X _
     const board: CellValue[] = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', null];
-    expect(determineStatus(board, 'X')).toBe('playing');
+    expect(determineStatus(board, 'X', defaultConfigs)).toBe('playing');
   });
 
   it('should check only the last player who moved', () => {
     // X wins but we check for O - should be playing if O didn't win
     const board: CellValue[] = ['X', 'X', null, 'O', 'O', null, null, null, null];
-    expect(determineStatus(board, 'O')).toBe('playing');
+    expect(determineStatus(board, 'O', defaultConfigs)).toBe('playing');
   });
 });
 

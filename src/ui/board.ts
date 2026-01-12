@@ -36,8 +36,8 @@ function createCellElement(
 
   if (value) {
     cell.textContent = value;
-    cell.classList.add(`cell--${value.toLowerCase()}`);
     cell.classList.add('cell--occupied');
+    cell.dataset.symbol = value;
     cell.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
   }
 
@@ -131,10 +131,11 @@ export function updateBoard(container: HTMLElement, state: GameState): void {
     // Update classes
     button.className = 'cell';
     if (value) {
-      button.classList.add(`cell--${value.toLowerCase()}`);
       button.classList.add('cell--occupied');
+      button.dataset.symbol = value;
       button.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
     } else {
+      delete button.dataset.symbol;
       button.setAttribute('aria-label', `Cell ${String(index + 1)}`);
     }
 

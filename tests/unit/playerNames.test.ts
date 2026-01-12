@@ -83,10 +83,13 @@ describe('savePlayerNames', () => {
     const names = { X: 'Alice', O: 'Bob' };
     savePlayerNames(names);
 
-    const stored = localStorage.getItem('tictactoe_player_names');
+    // Deprecated savePlayerNames now saves to player_configs key with full config
+    const stored = localStorage.getItem('tictactoe_player_configs');
     expect(stored).toBeTruthy();
     if (stored) {
-      expect(JSON.parse(stored)).toEqual(names);
+      const parsed = JSON.parse(stored);
+      expect(parsed.X.name).toBe('Alice');
+      expect(parsed.O.name).toBe('Bob');
     }
   });
 

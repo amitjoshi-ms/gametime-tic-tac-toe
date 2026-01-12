@@ -19,8 +19,8 @@ import { renderStatus } from './ui/status';
 import { renderControls } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
-import { savePlayerNames } from './game/playerNames';
-import type { GameState, GameMode, PlayerNames } from './game/types';
+import { savePlayerConfigs } from './game/playerNames';
+import type { GameState, GameMode, PlayerConfigs } from './game/types';
 
 /** Current game state - module-level for simplicity */
 let gameState: GameState = resetGame(loadGameMode());
@@ -125,12 +125,15 @@ function handleModeChange(mode: GameMode): void {
   if (mode === 'computer') {
     gameState = {
       ...gameState,
-      playerNames: {
-        ...gameState.playerNames,
-        O: DEFAULT_COMPUTER_NAME,
+      playerConfigs: {
+        ...gameState.playerConfigs,
+        O: {
+          ...gameState.playerConfigs.O,
+          name: DEFAULT_COMPUTER_NAME,
+        },
       },
     };
-    savePlayerNames(gameState.playerNames);
+    savePlayerConfigs(gameState.playerConfigs);
   }
 
   updateUI();
@@ -142,20 +145,20 @@ function handleModeChange(mode: GameMode): void {
 }
 
 /**
- * Handles player name changes.
- * @param names - New player names
+ * Handles player config changes (names and symbols).
+ * @param configs - New player configurations
  */
-function handleNameChange(names: PlayerNames): void {
+function handleConfigChange(configs: PlayerConfigs): void {
   // Save to localStorage
-  savePlayerNames(names);
+  savePlayerConfigs(configs);
 
-  // Update game state with new names
+  // Update game state with new configs
   gameState = {
     ...gameState,
-    playerNames: names,
+    playerConfigs: configs,
   };
 
-  // Update UI to reflect new names
+  // Update UI to reflect new configs
   updateUI();
 }
 
@@ -173,7 +176,7 @@ function updateUI(): void {
   }
 
   if (playerNamesContainer) {
-    updatePlayerNames(playerNamesContainer, gameState.playerNames);
+    updatePlayerNames(playerNamesContainer, gameState.playerConfigs);
   }
 
   if (boardContainer) {
@@ -232,8 +235,8 @@ function initApp(): void {
   );
   renderPlayerNames(
     playerNamesContainer,
-    gameState.playerNames,
-    handleNameChange
+    gameState.playerConfigs,
+    handleConfigChange
   );
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);
