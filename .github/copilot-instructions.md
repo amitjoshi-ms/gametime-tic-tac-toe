@@ -5,7 +5,7 @@
 
 ## Project Overview
 
-A browser-based Tic-Tac-Toe game built as a static Single Page Application (SPA) with PWA capabilities. Features human vs human and human vs computer game modes. Zero runtime dependencies—pure TypeScript compiled to ES2022 modules.
+A browser-based Tic-Tac-Toe game built as a static Single Page Application (SPA). Features human vs human and human vs computer game modes. Zero runtime dependencies—pure TypeScript compiled to ES2022 modules.
 
 ## Tech Stack
 
