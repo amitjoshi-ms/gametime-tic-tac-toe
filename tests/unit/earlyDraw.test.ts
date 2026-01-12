@@ -169,7 +169,7 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
     });
 
     it('should handle board where winning move was just made', () => {
-      // X just won top row, but function should still detect blocked status
+      // X has won top row but not all lines are blocked yet
       const board: CellValue[] = ['X', 'X', 'X', 'O', 'O', null, null, null, null];
       expect(isEarlyDraw(board)).toBe(false); // Not all lines blocked
     });
