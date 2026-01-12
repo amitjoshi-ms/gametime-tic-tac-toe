@@ -11,7 +11,30 @@ Deploy the latest changes from `main` branch to production by triggering the rel
 
 Execute these steps in order:
 
-### 1. Unlock the release branch
+### 1. Set up error handling to guarantee branch re-lock
+
+Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail:
+
+```bash
+# Function to lock the branch
+lock_branch() {
+  echo "Re-locking release branch..."
+  gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
+    -H "Accept: application/vnd.github+json" \
+    -f "required_status_checks=null" \
+    -F "enforce_admins=true" \
+    -f "required_pull_request_reviews=null" \
+    -f "restrictions=null" \
+    -F "lock_branch=true" \
+    -F "allow_force_pushes=false" \
+    -F "allow_deletions=false"
+}
+
+# Set up trap to always re-lock on exit (success, failure, or interruption)
+trap lock_branch EXIT
+```
+
+### 2. Unlock the release branch
 
 ```bash
 gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
@@ -25,7 +48,7 @@ gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
   -F "allow_deletions=false"
 ```
 
-### 2. Trigger the release workflow
+### 3. Trigger the release workflow
 
 ```bash
 gh workflow run release-to-production.yml -f confirm=release
@@ -45,25 +68,11 @@ If the workflow fails, check logs:
 gh run view $(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId') --log-failed
 ```
 
-### 4. Lock the release branch
-
-Regardless of success or failure, always re-lock:
-
-```bash
-gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
-  -H "Accept: application/vnd.github+json" \
-  -f "required_status_checks=null" \
-  -F "enforce_admins=true" \
-  -f "required_pull_request_reviews=null" \
-  -f "restrictions=null" \
-  -F "lock_branch=true" \
-  -F "allow_force_pushes=false" \
-  -F "allow_deletions=false"
-```
-
 ### 5. Verify deployment
 
 After successful workflow completion, check production at: https://gametime-tic-tac-toe.pages.dev
+
+**Note:** The branch will automatically re-lock when the shell session exits, thanks to the trap handler set up in step 1.
 
 ## Notes
 
