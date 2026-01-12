@@ -96,7 +96,7 @@ done
 
 # Check if a run ID was found before attempting to watch
 if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
-  echo "Error: No workflow run found after waiting $((MAX_ATTEMPTS * SLEEP_SECONDS)) seconds."
+  echo "Error: No workflow run found after waiting $((max_attempts * sleep_seconds)) seconds."
   echo "The workflow may not have been triggered yet or may be delayed."
   echo "Try checking manually with: gh run list --workflow=release-to-production.yml"
   exit 1
