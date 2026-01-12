@@ -1,7 +1,7 @@
 {
   "name": "Tic-Tac-Toe",
   "short_name": "TicTacToe",
-  "description": "A simple, offline-capable Tic-Tac-Toe game",
+  "description": "A simple Tic-Tac-Toe game",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1a2e",
