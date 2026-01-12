@@ -250,6 +250,13 @@ describe('determineStatus - Early Draw Integration', () => {
       const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, null];
       expect(determineStatus(board, 'X')).toBe('playing');
     });
+
+    it('should return playing when one player has live line', () => {
+      // Board: O _ X / X X O / O X O
+      // X has live line [1,4,7], can win by playing position 1
+      const board: CellValue[] = ['O', null, 'X', 'X', 'X', 'O', 'O', 'X', 'O'];
+      expect(determineStatus(board, 'O')).toBe('playing');
+    });
   });
 
   describe('Should Prioritize Win Over Draw', () => {
