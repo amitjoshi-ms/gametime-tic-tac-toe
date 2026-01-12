@@ -102,8 +102,20 @@ export function renderBoard(
   container: HTMLElement,
   state: GameState,
   onCellClick: (cellIndex: number) => void
-): () => void {
-  // Attach a single delegated listener and return a cleanup function
+): void {
+  // Clear container
+  container.innerHTML = '';
+
+  // Create and append all cells
+  state.board.forEach((cell, index) => {
+    const cellElement = document.createElement('button');
+    cellElement.className = 'cell';
+    cellElement.textContent = cell ?? '';
+    cellElement.dataset.index = String(index);
+    container.appendChild(cellElement);
+  });
+
+  // Set up event delegation: single listener on parent handles all cells
   const handleClick = (e: MouseEvent) => {
     const cell = (e.target as HTMLElement | null)?.closest('.cell');
     if (cell) {
@@ -114,12 +126,9 @@ export function renderBoard(
     }
   };
 
+  // Remove any existing listener to avoid duplicates
+  container.removeEventListener('click', handleClick);
   container.addEventListener('click', handleClick);
-
-  // Caller is responsible for removing the listener when the board is torn down
-  return () => {
-    container.removeEventListener('click', handleClick);
-  };
 }
 ```
 
