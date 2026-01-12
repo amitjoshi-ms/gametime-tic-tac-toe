@@ -40,6 +40,7 @@ trap lock_branch EXIT
 gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
+  # Temporarily disable admin enforcement to allow release workflow / admin push
   -F "enforce_admins=false" \
   -f "required_pull_request_reviews=null" \
   -f "restrictions=null" \
