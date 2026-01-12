@@ -201,8 +201,9 @@ test.describe('Early Draw Detection', () => {
       await cells.nth(6).click(); // X
       await cells.nth(7).click(); // O - Early draw!
 
-      // Verify status has appropriate role for screen readers and displays draw text
+      // Verify status has appropriate role and live region for screen readers and displays draw text
       await expect(status).toHaveAttribute('role', 'status');
+      await expect(status).toHaveAttribute('aria-live', 'polite');
       await expect(status).toContainText("It's a Draw!");
     });
 
