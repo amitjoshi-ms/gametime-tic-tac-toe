@@ -492,7 +492,7 @@ User selects mode → State updated with gameMode → UI rerenders
 ### Human Turn → Computer Turn
 
 ```
-Human places mark → State updated → UI shows "Computer is thinking..."
+Human places mark → State updated → UI shows "Computer is thinking"
                                   ↓
                         2-second delay (cancellable)
                                   ↓
