@@ -53,15 +53,28 @@ function startDemo(): void {
   // 1. Save current mode
   preDemoMode = gameState.gameMode;
   
-  // 2. Reset game with demo mode, keeping current player names
-  gameState = resetGame('demo');
-  const currentNames = gameState.playerNames;
-  gameState = { ...gameState, playerNames: currentNames };
+  // 2. Cancel any pending computer move from previous mode
+  if (cancelPendingMove) {
+    cancelPendingMove();
+    cancelPendingMove = null;
+  }
   
-  // 3. Update UI
+  // 3. Get the current player names from state (which reflects form inputs)
+  const currentNames = gameState.playerNames;
+  
+  // 4. Reset game with demo mode
+  gameState = resetGame('demo');
+  
+  // 5. Use the current player names (user-entered names) for the demo
+  gameState = {
+    ...gameState,
+    playerNames: currentNames,
+  };
+  
+  // 6. Update UI
   updateUI();
   
-  // 4. Schedule first move
+  // 7. Schedule first move
   triggerDemoMove();
 }
 
