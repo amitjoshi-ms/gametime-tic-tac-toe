@@ -194,8 +194,13 @@ gh run view RUN_ID --log-failed  # inspect a specific run
 
 ### 7. Verify deployment
 
-After successful workflow completion, check production at: https://gametime-tic-tac-toe.pages.dev
+After successful workflow completion, verify the production deployment at: https://gametime-tic-tac-toe.pages.dev
 
+Perform at least the following checks:
+- The site loads successfully in the browser (no 4xx/5xx errors).
+- The UI renders correctly with no obvious visual or JavaScript errors in the console.
+- The changes you just released are visible (e.g., updated text, features, or bug fixes from this release).
+- Basic gameplay still works: start a game, make a few moves, and confirm the game status updates as expected.
 **Note:** 
 - If using **Option A** (subshell with trap), the branch will automatically re-lock when the subshell exits.
 - If using **Option B** (explicit cleanup), ensure you called `lock_branch` after step 6.
