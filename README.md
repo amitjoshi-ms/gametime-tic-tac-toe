@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with **zero runtime dependencies**.
+A modern Tic-Tac-Toe game built as a static Single Page Application with **zero runtime dependencies**.
 
 [![Play Now](https://img.shields.io/badge/Play%20Now-gametime--tic--tac--toe.pages.dev-blue)](https://gametime-tic-tac-toe.pages.dev)
 
@@ -13,7 +13,6 @@ A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with *
 - ✨ Clear turn indicator and congratulations messages
 - 🏁 Win & early draw detection
 - 👤 Custom player names with localStorage persistence
-- 📴 Works offline (PWA)
 - ♿ Full keyboard & screen reader support
 - ⚡ ~15KB total bundle size
 

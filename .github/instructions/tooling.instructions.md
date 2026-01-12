@@ -19,7 +19,8 @@ This project uses several configuration files for tooling. Changes to these file
 | `vitest.config.ts`     | Unit test runner      | TypeScript | Rare           |
 | `playwright.config.ts` | E2E test runner       | TypeScript | Rare           |
 | `eslint.config.js`     | Linting rules         | JavaScript | Rare           |
-| `public/manifest.json` | PWA manifest          | JSON       | Rare           |
+| `public/manifest.json` | Web app manifest      | JSON       | Rare           |
+| `public/_headers`      | Cloudflare cache rules| Text       | Rare           |
 
 ## package.json
 
@@ -121,9 +122,6 @@ export default defineConfig({
   resolve: {
     alias: { '@': resolve(__dirname, 'src') },
   },
-  plugins: [
-    /* PWA plugin */
-  ],
 });
 ```
 
@@ -227,7 +225,7 @@ export default tseslint.config(
 - Allow `_` prefix for intentionally unused params
 - Ignore config files to avoid circular issues
 
-## manifest.json (PWA)
+## manifest.json
 
 ### Required Fields
 
@@ -248,6 +246,37 @@ export default tseslint.config(
 - Keep `short_name` under 12 characters
 - Use SVG icons (scalable, small file size)
 - `display: standalone` for app-like experience
+
+## _headers (Cloudflare Pages)
+
+### Structure
+
+```
+# HTML - always revalidate (ensures fresh asset references)
+/
+  Cache-Control: no-cache, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+# Vite hashed assets - cache forever (hash changes on content change)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static assets - cache with revalidation
+/icons/*
+  Cache-Control: public, max-age=86400
+
+/manifest.json
+  Cache-Control: public, max-age=3600
+```
+
+**Rules:**
+
+- HTML files should use `no-cache, must-revalidate` for fresh asset references
+- Hashed assets (in `/assets/*`) can use `immutable` with long max-age
+- Static assets should have reasonable cache durations with revalidation
+- File must be placed in `public/` directory to be deployed with site
 
 ## Common Mistakes
 
