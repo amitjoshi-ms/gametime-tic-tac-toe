@@ -244,6 +244,6 @@ Expected output:
 
 ### Error Handling
 
-- **Trap handler failures:** If the trap handler fails to re-lock the branch (e.g., due to network issues or GitHub API failures), you must manually verify the branch protection status using the verification command shown in section 3 and manually re-lock using the command shown in section 8 (Manual re-lock)
+- **Trap handler failures:** If the trap handler fails to re-lock the branch (e.g., due to network issues or GitHub API failures), you must manually verify the branch protection status using the verification command shown in step 3 and manually re-lock using the command shown in step 8 (Manual re-lock)
 - **Network issues:** If you lose network connectivity during the process, the trap may not execute. Always verify branch protection status after errors
 - **API rate limits:** GitHub API calls may fail due to rate limiting. Wait a few minutes and retry the manual re-lock command
