@@ -75,7 +75,6 @@ The application follows a **unidirectional data flow** pattern with clear separa
         │ • state.ts      │     │ • controls.ts   │
         │ • computer.ts   │     │ • modeSelector.ts│
         │ • playerNames.ts│     │ • playerNames.ts│
-        │ • computer.ts   │     │ • modeSelector.ts│
         └────────┬────────┘     └────────┬────────┘
                  │                       │
                  └───────────┬───────────┘
