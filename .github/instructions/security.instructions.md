@@ -8,6 +8,7 @@ applyTo: '**/*.ts, **/*.html'
 ## Overview
 
 This is a client-side only SPA with no backend. Security focus areas:
+
 - XSS prevention
 - Safe localStorage usage
 - Input validation
@@ -97,14 +98,14 @@ function loadPlayerNames(): PlayerNames {
   try {
     const stored = localStorage.getItem('playerNames');
     if (!stored) return defaultNames;
-    
+
     const parsed = JSON.parse(stored);
-    
+
     // Validate structure
     if (typeof parsed.X !== 'string' || typeof parsed.O !== 'string') {
       return defaultNames;
     }
-    
+
     // Sanitize values (max length, no special chars if needed)
     return {
       X: parsed.X.slice(0, 20),
@@ -126,13 +127,13 @@ function handleNameChange(name: string, player: Player): void {
   if (name.length > 20) {
     name = name.slice(0, 20);
   }
-  
+
   // Validate content (optional: restrict characters)
   // Allow all Unicode letters and numbers, plus whitespace and hyphens
   if (!/^[\p{L}\p{N}\s-]+$/u.test(name)) {
     return; // Reject invalid characters
   }
-  
+
   // Process valid input
   updatePlayerName(player, name);
 }
@@ -146,7 +147,7 @@ function handleCellClick(cellIndex: number): void {
   if (!Number.isInteger(cellIndex) || cellIndex < 0 || cellIndex > 8) {
     return;
   }
-  
+
   // Process valid click
   makeMove(gameState, cellIndex);
 }
@@ -157,7 +158,7 @@ function handleCellClick(cellIndex: number): void {
 ### Recommended CSP Headers (via Cloudflare)
 
 ```
-Content-Security-Policy: 
+Content-Security-Policy:
   default-src 'self';
   script-src 'self';
   style-src 'self' 'unsafe-inline';
@@ -173,7 +174,9 @@ Content-Security-Policy:
 ```html
 <!-- ❌ Blocked by strict CSP -->
 <button onclick="handleClick()">Click</button>
-<script>const x = 1;</script>
+<script>
+  const x = 1;
+</script>
 
 <!-- ✅ Use external scripts and event listeners -->
 <button id="my-button">Click</button>
@@ -185,6 +188,7 @@ Content-Security-Policy:
 ### Zero Runtime Dependencies
 
 This project intentionally has **no runtime dependencies**:
+
 - Reduces attack surface
 - No supply chain vulnerabilities
 - Smaller bundle size
@@ -220,11 +224,11 @@ catch (error) {
 If loading external resources:
 
 ```html
-<script 
+<script
   src="https://cdn.example.com/lib.js"
   integrity="sha384-abc123..."
-  crossorigin="anonymous">
-</script>
+  crossorigin="anonymous"
+></script>
 ```
 
 ### Currently: No External Resources
