@@ -1,3 +1,11 @@
+---
+description: Submit pull request and squash merge changes via GitHub CLI
+mode: agent
+instructions:
+  - typescript.instructions.md
+  - testing.instructions.md
+---
+
 # Submit PR for Review
 
 Create a pull request and squash merge via GitHub (remote only - never merge locally).
