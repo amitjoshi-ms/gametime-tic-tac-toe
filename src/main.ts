@@ -252,11 +252,7 @@ function handleDemoGameComplete(): void {
         playerNames: currentNames,
       };
       updateUI();
-      
-      // Double-check demo mode wasn't cancelled during the above operations
-      if (gameState.gameMode === 'demo') {
-        triggerDemoMove();
-      }
+      triggerDemoMove();
     }
   });
 }
