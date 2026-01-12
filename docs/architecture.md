@@ -100,8 +100,6 @@ Pure functions with no side effects. Easily testable in isolation.
 | `state.ts` | State management: create, update, reset game state |
 | `computer.ts` | Computer opponent: random move selection, thinking delay |
 | `playerNames.ts` | Player name loading/saving with localStorage |
-| `computer.ts` | Computer opponent logic: random move selection, thinking delay |
-
 #### `src/ui/` - User Interface
 
 DOM manipulation and event handling. Depends on game logic.
