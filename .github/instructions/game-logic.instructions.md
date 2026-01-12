@@ -225,6 +225,8 @@ describe('makeMove', () => {
       currentPlayer: 'X',
       status: 'playing',
       playerNames: { X: 'X', O: 'O' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
     
     const afterWin = makeMove(almostWon, 2);

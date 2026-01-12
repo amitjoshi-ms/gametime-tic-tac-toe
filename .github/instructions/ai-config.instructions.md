@@ -1,4 +1,5 @@
 ---
+description: 'AI configuration file standards for maintaining instruction files, prompts, and agents'
 applyTo: '.github/**/*.md, AGENTS.md'
 ---
 

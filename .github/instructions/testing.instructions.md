@@ -106,6 +106,8 @@ describe('makeMove', () => {
       currentPlayer: 'O',
       status: 'x-wins',
       playerNames: { X: 'Player 1', O: 'Player 2' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const result = makeMove(wonState, 5);
