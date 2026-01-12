@@ -50,6 +50,9 @@ function createSymbolSelector(
     select.appendChild(option);
   });
 
+  // Explicitly set the value to ensure it's correct
+  select.value = currentSymbol;
+
   // Handle selection changes
   select.addEventListener('change', () => {
     const selectedSymbol = select.value as PlayerSymbol;
@@ -133,8 +136,10 @@ export function updateSymbolSelectors(
     '#symbol-selector-O'
   ) as HTMLSelectElement | null;
 
-  if (xSelector && xSelector.value !== xSymbol) {
-    xSelector.value = xSymbol;
+  if (xSelector) {
+    if (xSelector.value !== xSymbol) {
+      xSelector.value = xSymbol;
+    }
     // Update disabled options
     Array.from(xSelector.options).forEach((option) => {
       const isOtherSymbol = option.value === oSymbol;
@@ -145,8 +150,10 @@ export function updateSymbolSelectors(
     });
   }
 
-  if (oSelector && oSelector.value !== oSymbol) {
-    oSelector.value = oSymbol;
+  if (oSelector) {
+    if (oSelector.value !== oSymbol) {
+      oSelector.value = oSymbol;
+    }
     // Update disabled options
     Array.from(oSelector.options).forEach((option) => {
       const isOtherSymbol = option.value === xSymbol;
