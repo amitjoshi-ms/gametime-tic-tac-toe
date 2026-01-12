@@ -107,8 +107,10 @@ function updateUI() {
 
 // ✅ Only update what changed
 function updateUI(prevState: GameState | null, newState: GameState) {
-  // NOTE: This relies on immutable updates: a new board array is created when the board changes.
-  // If you mutate the existing array in place, use a deeper comparison instead of reference equality.
+  // NOTE: This check uses reference equality and only works reliably with immutable updates:
+  // a new board array must be created whenever the board changes (e.g., `board = [...board]`).
+  // If you instead mutate the existing array in place, `prevState.board` and `newState.board` will
+  // still reference the same array, so use a deeper comparison instead of reference equality.
   // The board is re-rendered ONLY when its reference changes (prevState.board !== newState.board).
   // If only status changes (not the board), only renderStatus() is called, avoiding unnecessary work.
   if (!prevState || prevState.board !== newState.board) {
