@@ -476,10 +476,12 @@ Focus on user flows:
 - Complete game to win
 - Complete game to draw
 - New game reset
-- **Computer opponent mode** - full game flow
-- **Mode switching** - changing between human and computer modes
 - Responsive behavior
 - Accessibility
+
+**Recommended future test coverage:**
+- Computer opponent mode - full game flow
+- Mode switching - changing between human and computer modes
 
 ## Computer Opponent Flow
 

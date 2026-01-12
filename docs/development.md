@@ -157,7 +157,11 @@ test('can play a complete game', async ({ page }) => {
   
   // Continue game...
 });
+```
 
+**Example test for computer opponent** (recommended future test coverage):
+
+```typescript
 test('can play against computer', async ({ page }) => {
   await page.goto('/');
   
