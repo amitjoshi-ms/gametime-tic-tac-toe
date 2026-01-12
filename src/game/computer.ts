@@ -107,3 +107,31 @@ export function scheduleComputerMove(
     clearTimeout(timeoutId);
   };
 }
+
+/** Delay before auto-restart after game ends in demo mode (ms) */
+export const DEMO_RESTART_DELAY = 15000;
+
+/**
+ * Schedules demo auto-restart after game completion.
+ * Returns a cleanup function to cancel the pending restart.
+ *
+ * @param onRestart - Callback invoked when restart timer fires
+ * @returns Cleanup function to cancel pending restart
+ *
+ * @example
+ * const cancel = scheduleDemoRestart(() => {
+ *   startNewDemoGame();
+ * });
+ * // Later, if demo stopped:
+ * cancel();
+ */
+export function scheduleDemoRestart(onRestart: () => void): () => void {
+  const timeoutId = setTimeout(() => {
+    onRestart();
+  }, DEMO_RESTART_DELAY);
+
+  // Return cleanup function
+  return () => {
+    clearTimeout(timeoutId);
+  };
+}

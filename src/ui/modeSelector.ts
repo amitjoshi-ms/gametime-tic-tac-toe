@@ -19,11 +19,13 @@ export type ModeChangeHandler = (mode: GameMode) => void;
  * @param container - DOM element to render into
  * @param currentMode - Currently selected mode
  * @param onChange - Handler for mode changes
+ * @param disabled - Whether selector should be disabled (e.g., during demo)
  */
 export function renderModeSelector(
   container: HTMLElement,
   currentMode: GameMode,
-  onChange: ModeChangeHandler
+  onChange: ModeChangeHandler,
+  disabled = false
 ): void {
   container.innerHTML = '';
 
@@ -31,6 +33,9 @@ export function renderModeSelector(
   fieldset.className = 'mode-selector';
   fieldset.setAttribute('role', 'radiogroup');
   fieldset.setAttribute('aria-label', 'Game mode selector');
+  if (disabled) {
+    fieldset.disabled = true;
+  }
 
   const legend = document.createElement('legend');
   legend.className = 'mode-selector__legend';
@@ -51,6 +56,9 @@ export function renderModeSelector(
     if (option.value === currentMode) {
       label.classList.add('mode-selector__option--selected');
     }
+    if (disabled) {
+      label.classList.add('mode-selector__option--disabled');
+    }
 
     const input = document.createElement('input');
     input.type = 'radio';
@@ -59,6 +67,9 @@ export function renderModeSelector(
     input.checked = option.value === currentMode;
     input.className = 'mode-selector__input';
     input.setAttribute('aria-label', `Play against ${option.label}`);
+    if (disabled) {
+      input.disabled = true;
+    }
 
     input.addEventListener('change', () => {
       if (input.checked) {
@@ -84,15 +95,20 @@ export function renderModeSelector(
  *
  * @param container - DOM element containing the mode selector
  * @param currentMode - Currently selected mode
+ * @param disabled - Whether selector should be disabled
  */
 export function updateModeSelector(
   container: HTMLElement,
-  currentMode: GameMode
+  currentMode: GameMode,
+  disabled = false
 ): void {
-  const fieldset = container.querySelector('.mode-selector');
+  const fieldset = container.querySelector<HTMLFieldSetElement>('.mode-selector');
   if (!fieldset) {
     return;
   }
+
+  // Update disabled state on fieldset
+  fieldset.disabled = disabled;
 
   // Update radio buttons and option styling
   const inputs = container.querySelectorAll<HTMLInputElement>(
@@ -103,10 +119,12 @@ export function updateModeSelector(
   inputs.forEach((input, index) => {
     const isSelected = input.value === currentMode;
     input.checked = isSelected;
+    input.disabled = disabled;
 
     const option = options[index];
     if (option) {
       option.classList.toggle('mode-selector__option--selected', isSelected);
+      option.classList.toggle('mode-selector__option--disabled', disabled);
     }
   });
 }
