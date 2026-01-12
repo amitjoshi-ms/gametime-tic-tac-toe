@@ -63,6 +63,10 @@ gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PU
 
 ```bash
 gh workflow run release-to-production.yml -f confirm=release
+
+# Give GitHub API time to register the workflow trigger
+echo "Waiting for workflow to be registered..."
+sleep 3
 ```
 
 ### 5. Wait for workflow completion
