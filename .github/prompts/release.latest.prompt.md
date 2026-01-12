@@ -50,7 +50,7 @@ The trap handler below runs on shell EXIT. If you run these commands in an inter
   # Function to lock the branch (safe to call even if already locked)
   lock_branch() {
     echo "Re-locking release branch..."
-    gh api repos/$REPO/branches/release/protection -X PUT \
+    gh api "repos/$REPO/branches/release/protection" -X PUT \
       -H "Accept: application/vnd.github+json" \
       -f "required_status_checks=null" \
       -F "enforce_admins=true" \
