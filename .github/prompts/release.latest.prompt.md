@@ -142,6 +142,7 @@ echo '{"required_status_checks":null,"enforce_admins":true,"required_pull_reques
 
 Verify the branch is locked:
 
+**PowerShell/bash:**
 ```bash
 gh api "repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection" --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
