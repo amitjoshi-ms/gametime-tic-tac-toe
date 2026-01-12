@@ -238,7 +238,7 @@ Expected output:
 - Only this workflow (via the prompt) can update the release branch
 - Production URL: `gametime-tic-tac-toe.pages.dev`
 
-### Error Handling
+## Error Handling
 
 - **Trap handler failures:** If the trap handler fails to re-lock the branch (e.g., due to network issues or GitHub API failures), you must manually verify the branch protection status using the verification command shown in step 3 and manually re-lock using the command shown in step 8 (Manual re-lock)
 - **Network issues:** If you lose network connectivity during the process, the trap may not execute. Always verify branch protection status after errors
