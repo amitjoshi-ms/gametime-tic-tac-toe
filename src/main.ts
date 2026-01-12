@@ -343,14 +343,8 @@ function updateUI(): void {
   const isDemoActive = gameState.gameMode === 'demo';
 
   if (modeSelectorContainer) {
-    if (isDemoActive) {
-      // Hide mode selector entirely during demo to avoid inconsistent state.
-      modeSelectorContainer.classList.add('mode-selector-container--hidden');
-    } else {
-      // Ensure mode selector is visible and reflects the current (non-demo) mode.
-      modeSelectorContainer.classList.remove('mode-selector-container--hidden');
-      updateModeSelector(modeSelectorContainer, gameState.gameMode, false);
-    }
+    // Keep mode selector visible but disable it during demo mode.
+    updateModeSelector(modeSelectorContainer, gameState.gameMode, isDemoActive);
   }
 
   if (playerNamesContainer) {
