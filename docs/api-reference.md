@@ -14,7 +14,6 @@ Complete API documentation for all modules in the Tic-Tac-Toe application.
 - [Controls UI (`ui/controls.ts`)](#controls-ui-uicontrolsts)
 - [Mode Selector UI (`ui/modeSelector.ts`)](#mode-selector-ui-uimodeselectorts)
 - [Player Names UI (`ui/playerNames.ts`)](#player-names-ui-uiplayernamests)
-- [Mode Selector UI (`ui/modeSelector.ts`)](#mode-selector-ui-uimodeselectorts)
 - [Storage Utilities (`utils/storage.ts`)](#storage-utilities-utilsstoragets)
 
 ---
