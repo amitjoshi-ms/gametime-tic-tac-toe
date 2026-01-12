@@ -9,7 +9,6 @@ Complete API documentation for all modules in the Tic-Tac-Toe application.
 - [State Management (`game/state.ts`)](#state-management-gamestatets)
 - [Computer Opponent (`game/computer.ts`)](#computer-opponent-gamecomputerts)
 - [Player Names (`game/playerNames.ts`)](#player-names-gameplayernamests)
-- [Computer Opponent (`game/computer.ts`)](#computer-opponent-gamecomputerts)
 - [Board UI (`ui/board.ts`)](#board-ui-uiboardts)
 - [Status UI (`ui/status.ts`)](#status-ui-uistatusts)
 - [Controls UI (`ui/controls.ts`)](#controls-ui-uicontrolsts)
