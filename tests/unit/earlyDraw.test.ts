@@ -9,11 +9,11 @@ import type { CellValue } from '../../src/game/types';
 
 describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
   describe('Early Draw at 8 Moves (1 Empty Cell)', () => {
-    type EarlyDrawTestCase = {
+    interface EarlyDrawTestCase {
       name: string;
       board: CellValue[];
       emptyPosition: number;
-    };
+    }
 
     const earlyDrawCases: EarlyDrawTestCase[] = [
       {
@@ -69,11 +69,11 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
   });
 
   describe('NOT Early Draw - Lines Still Unblocked', () => {
-    type NotEarlyDrawTestCase = {
+    interface NotEarlyDrawTestCase {
       name: string;
       board: CellValue[];
       reason: string;
-    };
+    }
 
     const notEarlyDrawCases: NotEarlyDrawTestCase[] = [
       {
