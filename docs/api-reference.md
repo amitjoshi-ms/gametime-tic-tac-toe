@@ -910,25 +910,6 @@ Renders the game mode selector with radio buttons styled as toggle buttons.
 
 ---
 
-### `updateModeSelector()`
-
-```typescript
-function updateModeSelector(
-  container: HTMLElement,
-  currentMode: GameMode
-): void
-```
-
-Updates mode selector state without full re-render.
-
-**Parameters**:
-| Name | Type | Description |
-|------|------|-------------|
-| `container` | `HTMLElement` | Container with mode selector |
-| `currentMode` | `GameMode` | Currently selected mode |
-
----
-
 ## Storage Utilities (`utils/storage.ts`)
 
 Safe localStorage access with JSON serialization.
