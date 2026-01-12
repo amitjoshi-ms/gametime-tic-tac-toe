@@ -195,3 +195,7 @@ function onCellClick(currentState: GameState, cellIndex: number) {
 ### Keep Imports Minimal
 
 - Prefer importing only the specific functions or values you need instead of entire modules to keep the bundle smaller.
+- Avoid `import * as X` or `import 'library'` style imports unless you truly need the full API or side effects.
+- Keep dev-only imports (e.g., test helpers, debug tools) out of production code paths so they can be fully tree-shaken.
+- Prefer small, focused internal utilities over pulling in external helpers for trivial functionality.
+- Regularly review imports in hot paths (core game loop, rendering, input handling) to ensure you are not accidentally pulling in large, unused dependencies.
