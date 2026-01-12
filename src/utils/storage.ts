@@ -5,7 +5,10 @@
  * @module utils/storage
  */
 
+import type { GameMode } from '../game/types';
+
 const STORAGE_PREFIX = 'tictactoe_';
+const GAME_MODE_KEY = 'game_mode';
 
 /**
  * Gets a value from localStorage.
@@ -48,4 +51,22 @@ export function removeStorageItem(key: string): void {
   } catch {
     // Fail silently if localStorage is not available
   }
+}
+
+/**
+ * Loads the saved game mode from localStorage.
+ *
+ * @returns Saved game mode or 'human' as default
+ */
+export function loadGameMode(): GameMode {
+  return getStorageItem<GameMode>(GAME_MODE_KEY, 'human');
+}
+
+/**
+ * Saves the game mode to localStorage.
+ *
+ * @param mode - Game mode to save
+ */
+export function saveGameMode(mode: GameMode): void {
+  setStorageItem(GAME_MODE_KEY, mode);
 }

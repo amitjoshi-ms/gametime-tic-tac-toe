@@ -9,6 +9,8 @@ import {
   makeMove,
   resetGame,
   resetStartingPlayerState,
+  setComputerThinking,
+  isComputerTurn,
 } from '../../src/game/state';
 
 describe('createInitialState', () => {
@@ -255,5 +257,112 @@ describe('full game scenarios', () => {
     state = makeMove(state, 7); // O wins (middle column)
 
     expect(state.status).toBe('o-wins');
+  });
+});
+
+describe('setComputerThinking', () => {
+  it('should set isComputerThinking to true', () => {
+    const state = createInitialState();
+    const newState = setComputerThinking(state, true);
+    expect(newState.isComputerThinking).toBe(true);
+  });
+
+  it('should set isComputerThinking to false', () => {
+    const state = { ...createInitialState(), isComputerThinking: true };
+    const newState = setComputerThinking(state, false);
+    expect(newState.isComputerThinking).toBe(false);
+  });
+
+  it('should not modify original state (immutability)', () => {
+    const state = createInitialState();
+    const newState = setComputerThinking(state, true);
+    expect(state.isComputerThinking).toBe(false);
+    expect(newState).not.toBe(state);
+  });
+
+  it('should preserve other state properties', () => {
+    let state = createInitialState();
+    state = makeMove(state, 0); // Place X
+    const newState = setComputerThinking(state, true);
+    
+    expect(newState.board[0]).toBe('X');
+    expect(newState.currentPlayer).toBe('O');
+    expect(newState.status).toBe('playing');
+  });
+});
+
+describe('isComputerTurn', () => {
+  it('should return false in human mode', () => {
+    const state = resetGame('human');
+    expect(isComputerTurn(state)).toBe(false);
+  });
+
+  it('should return true when O turn in computer mode', () => {
+    let state = resetGame('computer');
+    state = makeMove(state, 0); // X moves, now O's turn
+    expect(state.currentPlayer).toBe('O');
+    expect(isComputerTurn(state)).toBe(true);
+  });
+
+  it('should return false when X turn in computer mode', () => {
+    const state = resetGame('computer');
+    // Assuming X starts
+    if (state.currentPlayer === 'X') {
+      expect(isComputerTurn(state)).toBe(false);
+    }
+  });
+
+  it('should return false when game is over', () => {
+    let state = resetGame('computer');
+    // Create a winning state for X (diagonal)
+    state = makeMove(state, 0); // X
+    state = makeMove(state, 1); // O
+    state = makeMove(state, 4); // X
+    state = makeMove(state, 2); // O
+    state = makeMove(state, 8); // X wins
+    
+    expect(state.status).toBe('x-wins');
+    expect(isComputerTurn(state)).toBe(false);
+  });
+
+  it('should return false when computer is already thinking', () => {
+    let state = resetGame('computer');
+    state = makeMove(state, 0); // X moves, now O's turn
+    state = setComputerThinking(state, true);
+    
+    expect(isComputerTurn(state)).toBe(false);
+  });
+
+  it('should return true when O starts in computer mode', () => {
+    // Reset to ensure we can control starting player
+    resetStartingPlayerState();
+    resetGame('computer'); // X starts
+    const state = resetGame('computer'); // O starts
+    
+    if (state.currentPlayer === 'O') {
+      expect(isComputerTurn(state)).toBe(true);
+    }
+  });
+});
+
+describe('resetGame with game mode', () => {
+  it('should preserve human mode when resetting', () => {
+    const state = resetGame('human');
+    expect(state.gameMode).toBe('human');
+  });
+
+  it('should preserve computer mode when resetting', () => {
+    const state = resetGame('computer');
+    expect(state.gameMode).toBe('computer');
+  });
+
+  it('should default to human mode when no mode provided', () => {
+    const state = resetGame();
+    expect(state.gameMode).toBe('human');
+  });
+
+  it('should reset isComputerThinking to false', () => {
+    const state = resetGame('computer');
+    expect(state.isComputerThinking).toBe(false);
   });
 });

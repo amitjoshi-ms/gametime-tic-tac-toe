@@ -9,11 +9,17 @@ import type { GameState } from '../game/types';
 
 /**
  * Gets the display message for current game state.
+ * Extended to handle computer thinking state.
  *
  * @param state - Current game state
  * @returns Human-readable status message
  */
 export function getStatusMessage(state: GameState): string {
+  // Handle computer thinking state
+  if (state.isComputerThinking) {
+    return `${state.playerNames.O} is thinking`;
+  }
+
   switch (state.status) {
     case 'x-wins':
       return `🎉 ${state.playerNames.X} Wins!`;
@@ -34,6 +40,11 @@ export function getStatusMessage(state: GameState): string {
  * @returns CSS class name for styling
  */
 function getStatusClass(state: GameState): string {
+  // Handle computer thinking state
+  if (state.isComputerThinking) {
+    return 'status--thinking';
+  }
+
   switch (state.status) {
     case 'x-wins':
     case 'o-wins':

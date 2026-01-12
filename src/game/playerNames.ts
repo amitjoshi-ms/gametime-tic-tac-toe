@@ -16,6 +16,9 @@ export const DEFAULT_X_NAME = 'Player X';
 /** Default name for Player O */
 export const DEFAULT_O_NAME = 'Player O';
 
+/** Default name for computer opponent */
+export const DEFAULT_COMPUTER_NAME = 'Computer';
+
 /**
  * Gets the default player names.
  *

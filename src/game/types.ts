@@ -14,6 +14,13 @@ export type Player = 'X' | 'O';
 /** Possible game outcomes */
 export type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
 
+/**
+ * Game mode determines opponent behavior.
+ * - 'human': Two human players take turns
+ * - 'computer': Human vs AI opponent
+ */
+export type GameMode = 'human' | 'computer';
+
 /** Player names for both X and O */
 export interface PlayerNames {
   X: string;
@@ -27,6 +34,7 @@ export interface PlayerNames {
  * - board always has exactly 9 elements
  * - If status !== 'playing', no more moves are accepted
  * - Number of X marks >= number of O marks (X always goes first)
+ * - isComputerThinking can only be true when gameMode === 'computer' and currentPlayer === 'O'
  */
 export interface GameState {
   /** 9-element array representing the 3x3 board (indices 0-8) */
@@ -37,6 +45,10 @@ export interface GameState {
   status: GameStatus;
   /** Custom names for both players */
   playerNames: PlayerNames;
+  /** Current game mode (human vs computer) */
+  gameMode: GameMode;
+  /** True while computer is "thinking" (during delay before move) */
+  isComputerThinking: boolean;
 }
 
 /**

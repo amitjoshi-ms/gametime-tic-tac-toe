@@ -69,6 +69,7 @@ function handleBoardClick(event: Event): void {
 /**
  * Renders the game board to the DOM.
  * Sets up the initial board structure and event delegation.
+ * Extended to handle computer thinking state.
  *
  * @param container - DOM element to render into
  * @param state - Current game state
@@ -85,6 +86,9 @@ export function renderBoard(
 
   // Clear and rebuild
   container.innerHTML = '';
+
+  // Add thinking class if computer is thinking
+  container.classList.toggle('board--thinking', state.isComputerThinking);
 
   // Create cells
   state.board.forEach((value, index) => {
@@ -105,6 +109,7 @@ export function renderBoard(
 /**
  * Updates the board display without full re-render.
  * More efficient for incremental updates.
+ * Extended to handle thinking state.
  *
  * @param container - DOM element containing the board
  * @param state - Current game state
@@ -112,6 +117,9 @@ export function renderBoard(
 export function updateBoard(container: HTMLElement, state: GameState): void {
   const cells = container.querySelectorAll('.cell');
   const isGameOver = state.status !== 'playing';
+
+  // Handle thinking state class toggling
+  container.classList.toggle('board--thinking', state.isComputerThinking);
 
   cells.forEach((cell, index) => {
     const button = cell as HTMLButtonElement;
