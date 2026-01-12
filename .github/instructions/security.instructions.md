@@ -42,8 +42,9 @@ If you find yourself needing to render HTML:
 // Manual approach: escape HTML entities before displaying
 function escapeHtml(unsafe: string): string {
   // Note: Replace & first to keep the other replacements consistent.
-  // Important: This basic implementation does NOT detect already-encoded entities and will
-  // double-encode them (e.g. "&amp;" becomes "&amp;amp;"). Only use this on known-unescaped input.
+  // Important: This basic implementation does NOT detect already-escaped entities.
+  // If the input contains already-escaped entities like "&amp;", they will be double-escaped
+  // (e.g. input "&amp;" becomes "&amp;amp;"). Only use this on known-unescaped input.
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
