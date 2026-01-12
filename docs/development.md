@@ -137,8 +137,7 @@ npx playwright show-report
 
 ```
 tests/e2e/
-├── gameplay.spec.ts    # Complete game flows (human vs human)
-└── computer.spec.ts    # Computer opponent game flows
+└── gameplay.spec.ts    # Complete game flows (human vs human)
 ```
 
 #### Writing E2E Tests
