@@ -13,13 +13,13 @@ The application follows a **unidirectional data flow** pattern with clear separa
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         User Input                          │
-│                    (click/tap on cell)                      │
+│          (click/tap on cell OR mode selection)              │
 └─────────────────────────────┬───────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                     Event Handler                           │
-│                  (handleCellClick)                          │
+│              (handleCellClick / handleModeChange)           │
 └─────────────────────────────┬───────────────────────────────┘
                               │
                               ▼
@@ -29,6 +29,16 @@ The application follows a **unidirectional data flow** pattern with clear separa
 │         - Validates move                                    │
 │         - Creates new board state                           │
 │         - Determines game status                            │
+│         - Triggers computer turn if in computer mode        │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                Computer Opponent Logic                      │
+│              (scheduleComputerMove - if applicable)         │
+│         - 2-second thinking delay                           │
+│         - Random cell selection                             │
+│         - Returns to State Update step                      │
 └─────────────────────────────┬───────────────────────────────┘
                               │
                               ▼
@@ -38,6 +48,7 @@ The application follows a **unidirectional data flow** pattern with clear separa
 │         - Updates board display                             │
 │         - Updates status message                            │
 │         - Updates player names                              │
+│         - Shows computer "thinking" state                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -52,6 +63,7 @@ The application follows a **unidirectional data flow** pattern with clear separa
 │      - Initializes modules                                  │
 │      - Coordinates state and UI                             │
 │      - Handles top-level events                             │
+│      - Manages computer opponent timing                     │
 └────────────────┬───────────────────────┬────────────────────┘
                  │                       │
         ┌────────▼────────┐     ┌────────▼────────┐
@@ -62,6 +74,7 @@ The application follows a **unidirectional data flow** pattern with clear separa
         │ • logic.ts      │     │ • status.ts     │
         │ • state.ts      │     │ • controls.ts   │
         │ • playerNames.ts│     │ • playerNames.ts│
+        │ • computer.ts   │     │ • modeSelector.ts│
         └────────┬────────┘     └────────┬────────┘
                  │                       │
                  └───────────┬───────────┘
@@ -86,6 +99,7 @@ Pure functions with no side effects. Easily testable in isolation.
 | `logic.ts` | Game rules: win detection, draw detection, move validation |
 | `state.ts` | State management: create, update, reset game state |
 | `playerNames.ts` | Player name loading/saving with localStorage |
+| `computer.ts` | Computer opponent logic: random move selection, thinking delay |
 
 #### `src/ui/` - User Interface
 
@@ -97,6 +111,7 @@ DOM manipulation and event handling. Depends on game logic.
 | `status.ts` | Displays turn indicator and game results |
 | `controls.ts` | Renders "New Game" button |
 | `playerNames.ts` | Player name input fields |
+| `modeSelector.ts` | Game mode selector (Human vs Computer) |
 
 #### `src/utils/` - Utilities
 
@@ -120,6 +135,9 @@ type Player = 'X' | 'O';
 // Game outcomes
 type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
 
+// Game mode determines opponent behavior
+type GameMode = 'human' | 'computer';
+
 // Custom player names
 interface PlayerNames {
   X: string;
@@ -128,10 +146,12 @@ interface PlayerNames {
 
 // Complete game state
 interface GameState {
-  board: CellValue[];      // 9-element array (indices 0-8)
-  currentPlayer: Player;   // Whose turn it is
-  status: GameStatus;      // Current game outcome
-  playerNames: PlayerNames; // Custom names
+  board: CellValue[];          // 9-element array (indices 0-8)
+  currentPlayer: Player;       // Whose turn it is
+  status: GameStatus;          // Current game outcome
+  playerNames: PlayerNames;    // Custom names
+  gameMode: GameMode;          // Human vs Computer
+  isComputerThinking: boolean; // Computer "thinking" state
 }
 ```
 
@@ -244,8 +264,20 @@ The UI only reads from state; it never modifies it directly.
 **Rationale**:
 - Better user experience (don't force pointless moves)
 - Demonstrates understanding of game theory
+- Works seamlessly with both human and computer modes
 
-### 6. Save on Blur (Player Names)
+### 6. Computer Opponent with Thinking Delay
+
+**Decision**: Computer uses random move selection with a 2-second "thinking" delay.
+
+**Rationale**:
+- Random selection keeps games unpredictable and fair
+- 2-second delay creates natural pacing and engagement
+- Prevents robotic feel with instant responses
+- Delay is cancellable when game resets for better UX
+- Simple implementation aligns with zero-dependency philosophy
+
+### 7. Save on Blur (Player Names)
 
 **Decision**: Player names are saved when the input loses focus, not on every keystroke.
 
@@ -281,6 +313,15 @@ The UI only reads from state; it never modifies it directly.
 - Focus indicators for keyboard users
 - `aria-live` regions for dynamic content
 - Reduced motion support via `prefers-reduced-motion`
+
+### 10. Mode Persistence
+
+**Decision**: Selected game mode persists through "New Game" resets but not page refreshes.
+
+**Rationale**:
+- Players likely want to play multiple games in same mode
+- Page refresh is natural reset point for full preference change
+- Avoids localStorage complexity for session-only preference
 
 ## Styling Architecture
 
@@ -426,6 +467,7 @@ Focus on pure game logic:
 - `state.test.ts` - State creation, move execution, reset
 - `status.test.ts` - Status message generation
 - `playerNames.test.ts` - Name loading/saving
+- `computer.test.ts` - Computer move selection, thinking delay
 
 ### E2E Tests (Playwright)
 
@@ -434,8 +476,37 @@ Focus on user flows:
 - Complete game to win
 - Complete game to draw
 - New game reset
+- **Computer opponent mode** - full game flow
+- **Mode switching** - changing between human and computer modes
 - Responsive behavior
 - Accessibility
+
+## Computer Opponent Flow
+
+### Game Mode Selection
+
+```
+User selects mode → State updated with gameMode → UI rerenders
+```
+
+### Human Turn → Computer Turn
+
+```
+Human places mark → State updated → UI shows "Computer is thinking..."
+                                  ↓
+                        2-second delay (cancellable)
+                                  ↓
+                   Computer selects random cell → State updated → UI shows move
+```
+
+### Cancellation Scenarios
+
+Computer thinking is cancelled when:
+1. User clicks "New Game"
+2. User switches game mode
+3. Page is navigated away
+
+This prevents delayed moves from applying to wrong game state.
 
 ## Performance Considerations
 

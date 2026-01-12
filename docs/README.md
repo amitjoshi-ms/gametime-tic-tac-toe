@@ -23,6 +23,8 @@ Welcome to the documentation for Gametime Tic-Tac-Toe, a Progressive Web App bui
 
 ### Gameplay
 - Classic two-player Tic-Tac-Toe gameplay
+- **Computer opponent mode** with random move selection
+- **2-second thinking delay** for computer moves (natural feel)
 - Clear turn indicator showing whose turn it is
 - Win detection with congratulations message 🎉
 - Early draw detection (detects draws before board is full)
@@ -76,13 +78,15 @@ gametime-tic-tac-toe/
 
 ## 🎯 How to Play
 
-1. Player X starts first (alternates each game for fairness)
-2. Click/tap an empty cell to place your mark
-3. Players alternate turns (X → O → X → ...)
-4. First player to get 3 in a row wins!
-5. If no winning moves remain, it's a draw
-6. Click "New Game" to play again
-7. Customize player names by clicking the name fields
+1. **Choose your mode**: Select "Human" for 2-player or "Computer" to play against AI
+2. Player X starts first (alternates each game for fairness)
+3. Click/tap an empty cell to place your mark
+4. Players alternate turns (X → O → X → ...)
+   - In computer mode: Wait ~2 seconds while the computer "thinks"
+5. First player to get 3 in a row wins!
+6. If no winning moves remain, it's a draw
+7. Click "New Game" to play again (keeps current mode)
+8. Customize player names by clicking the name fields
 
 ---
 

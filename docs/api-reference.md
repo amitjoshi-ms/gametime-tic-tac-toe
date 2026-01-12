@@ -8,10 +8,12 @@ Complete API documentation for all modules in the Tic-Tac-Toe application.
 - [Game Logic (`game/logic.ts`)](#game-logic-gamelogicts)
 - [State Management (`game/state.ts`)](#state-management-gamestatets)
 - [Player Names (`game/playerNames.ts`)](#player-names-gameplayernamests)
+- [Computer Opponent (`game/computer.ts`)](#computer-opponent-gamecomputerts)
 - [Board UI (`ui/board.ts`)](#board-ui-uiboardts)
 - [Status UI (`ui/status.ts`)](#status-ui-uistatusts)
 - [Controls UI (`ui/controls.ts`)](#controls-ui-uicontrolsts)
 - [Player Names UI (`ui/playerNames.ts`)](#player-names-ui-uiplayernamests)
+- [Mode Selector UI (`ui/modeSelector.ts`)](#mode-selector-ui-uimodeselectorts)
 - [Storage Utilities (`utils/storage.ts`)](#storage-utilities-utilsstoragets)
 
 ---
@@ -63,6 +65,21 @@ Current game outcome.
 
 ---
 
+### `GameMode`
+
+```typescript
+type GameMode = 'human' | 'computer';
+```
+
+Game mode determines opponent behavior.
+
+| Value | Description |
+|-------|-------------|
+| `'human'` | Two human players take turns |
+| `'computer'` | Human vs AI opponent (Player X vs Player O) |
+
+---
+
 ### `PlayerNames`
 
 ```typescript
@@ -89,6 +106,8 @@ interface GameState {
   currentPlayer: Player;
   status: GameStatus;
   playerNames: PlayerNames;
+  gameMode: GameMode;
+  isComputerThinking: boolean;
 }
 ```
 
@@ -100,11 +119,14 @@ Complete game state at any point in time.
 | `currentPlayer` | `Player` | Which player moves next |
 | `status` | `GameStatus` | Current game outcome |
 | `playerNames` | `PlayerNames` | Custom names for both players |
+| `gameMode` | `GameMode` | Current game mode (human vs computer) |
+| `isComputerThinking` | `boolean` | True while computer is deciding its move |
 
 **Invariants**:
 - `board` always has exactly 9 elements
 - If `status !== 'playing'`, no more moves are accepted
 - Number of X marks ≥ number of O marks (X always goes first)
+- `isComputerThinking` can only be true when `gameMode === 'computer'` and `currentPlayer === 'O'`
 
 ---
 
@@ -393,6 +415,117 @@ Resets player names to defaults and saves to localStorage.
 
 ---
 
+## Computer Opponent (`game/computer.ts`)
+
+Computer opponent logic with random move selection and thinking delay.
+
+### Constants
+
+```typescript
+const COMPUTER_THINKING_DELAY = 2000;
+```
+
+Thinking delay in milliseconds (2 seconds).
+
+---
+
+### `getAvailableCells()`
+
+```typescript
+function getAvailableCells(board: CellValue[]): number[]
+```
+
+Gets indices of all empty cells on the board.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `board` | `CellValue[]` | Current board state (9 elements) |
+
+**Returns**: Array of indices (0-8) where cell is `null`.
+
+**Example**:
+```typescript
+const board = ['X', null, 'O', null, 'X', null, null, null, null];
+getAvailableCells(board); // [1, 3, 5, 6, 7, 8]
+```
+
+---
+
+### `selectRandomCell()`
+
+```typescript
+function selectRandomCell(available: number[]): number
+```
+
+Selects a random cell from available positions using uniform distribution.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `available` | `number[]` | Array of available cell indices |
+
+**Returns**: Selected cell index.
+
+**Throws**: Error if available array is empty.
+
+**Example**:
+```typescript
+selectRandomCell([1, 3, 5, 7]); // Returns one of: 1, 3, 5, or 7
+```
+
+---
+
+### `selectComputerMove()`
+
+```typescript
+function selectComputerMove(board: CellValue[]): number
+```
+
+Immediately selects a computer move without delay. Useful for testing or instant-play mode.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `board` | `CellValue[]` | Current board state |
+
+**Returns**: Selected cell index, or `-1` if no moves available.
+
+---
+
+### `scheduleComputerMove()`
+
+```typescript
+function scheduleComputerMove(
+  board: CellValue[],
+  onMove: (cellIndex: number) => void
+): () => void
+```
+
+Schedules a computer move after the thinking delay. Returns a cleanup function to cancel the pending move.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `board` | `CellValue[]` | Current board state |
+| `onMove` | `(cellIndex: number) => void` | Callback invoked with selected cell index |
+
+**Returns**: Cleanup function to cancel pending move.
+
+**Example**:
+```typescript
+const cancel = scheduleComputerMove(board, (cellIndex) => {
+  if (cellIndex !== -1) {
+    makeMove(state, cellIndex);
+  }
+});
+
+// Later, if game reset:
+cancel();
+```
+
+---
+
 ## Board UI (`ui/board.ts`)
 
 Board rendering and interaction handling.
@@ -464,13 +597,14 @@ Gets the display message for current game state.
 **Returns**: Human-readable status message.
 
 **Examples**:
-| Status | Current Player | Output |
-|--------|----------------|--------|
-| `'playing'` | `'X'` | `"Player X's Turn"` |
-| `'playing'` | `'O'` | `"Player O's Turn"` |
-| `'x-wins'` | - | `"🎉 Player X Wins!"` |
-| `'o-wins'` | - | `"🎉 Player O Wins!"` |
-| `'draw'` | - | `"It's a Draw!"` |
+| Status | Current Player | Mode | Output |
+|--------|----------------|------|--------|
+| `'playing'` | `'X'` | any | `"Player X's Turn"` |
+| `'playing'` | `'O'` | `'human'` | `"Player O's Turn"` |
+| `'playing'` | `'O'` | `'computer'` (thinking) | `"Computer is thinking..."` |
+| `'x-wins'` | - | any | `"🎉 Player X Wins!"` |
+| `'o-wins'` | - | any | `"🎉 Player O Wins!"` |
+| `'draw'` | - | any | `"It's a Draw!"` |
 
 ---
 
@@ -580,6 +714,66 @@ Updates the player name display without full re-render.
 |------|------|-------------|
 | `container` | `HTMLElement` | Container with player name inputs |
 | `playerNames` | `PlayerNames` | Current player names |
+
+---
+
+## Mode Selector UI (`ui/modeSelector.ts`)
+
+Game mode selector component for choosing between human and computer opponents.
+
+### Types
+
+```typescript
+type ModeChangeHandler = (mode: GameMode) => void;
+```
+
+Callback signature for mode changes.
+
+---
+
+### `renderModeSelector()`
+
+```typescript
+function renderModeSelector(
+  container: HTMLElement,
+  currentMode: GameMode,
+  onChange: ModeChangeHandler
+): void
+```
+
+Renders the game mode selector with radio buttons styled as toggle buttons.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `container` | `HTMLElement` | DOM element to render into |
+| `currentMode` | `GameMode` | Currently selected mode |
+| `onChange` | `ModeChangeHandler` | Handler for mode changes |
+
+**Behavior**:
+- Renders as radio button group with two options: "Human" and "Computer"
+- Uses proper ARIA attributes for accessibility
+- Currently selected mode is visually highlighted
+- Triggers onChange callback when mode is changed
+
+---
+
+### `updateModeSelector()`
+
+```typescript
+function updateModeSelector(
+  container: HTMLElement,
+  currentMode: GameMode
+): void
+```
+
+Updates mode selector state without full re-render.
+
+**Parameters**:
+| Name | Type | Description |
+|------|------|-------------|
+| `container` | `HTMLElement` | Container with mode selector |
+| `currentMode` | `GameMode` | Currently selected mode |
 
 ---
 
