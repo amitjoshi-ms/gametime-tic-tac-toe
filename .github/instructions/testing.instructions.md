@@ -51,9 +51,15 @@ describe('checkWin', () => {
 
 ```typescript
 // ✅ Good: Describes expected behavior with "should" prefix
-it('should detect X wins in top row', () => { /* ... */ });
-it('should alternate turns between X and O', () => { /* ... */ });
-it('should prevent moves on occupied cells', () => { /* ... */ });
+it('should detect X wins in top row', () => {
+  /* ... */
+});
+it('should alternate turns between X and O', () => {
+  /* ... */
+});
+it('should prevent moves on occupied cells', () => {
+  /* ... */
+});
 
 // ✅ Also good: Template literals with "should" prefix (useful for table-driven tests)
 const scenarios = [
@@ -62,7 +68,9 @@ const scenarios = [
 ];
 
 scenarios.forEach(({ name }) => {
-  it(`should ${name}`, () => { /* ... */ });
+  it(`should ${name}`, () => {
+    /* ... */
+  });
 });
 
 const edgeCases = [
@@ -71,12 +79,20 @@ const edgeCases = [
 ];
 
 edgeCases.forEach((edgeCase) => {
-  it(`should handle ${edgeCase}`, () => { /* ... */ });
+  it(`should handle ${edgeCase}`, () => {
+    /* ... */
+  });
 });
 // ❌ Bad: Vague or implementation-focused
-it('test checkWin', () => { /* ... */ });
-it('returns true', () => { /* ... */ });
-it('works correctly', () => { /* ... */ });
+it('test checkWin', () => {
+  /* ... */
+});
+it('returns true', () => {
+  /* ... */
+});
+it('works correctly', () => {
+  /* ... */
+});
 ```
 
 ## Unit Test Patterns
@@ -109,7 +125,7 @@ describe('makeMove', () => {
     };
 
     const result = makeMove(wonState, 5);
-    
+
     expect(result).toBe(wonState); // Exact same object reference returned (no new state object created)
   });
 

@@ -69,7 +69,7 @@ export function isBoardFull(board: CellValue[]): boolean {
  */
 function hasLiveWinningLine(board: CellValue[], player: 'X' | 'O'): boolean {
   const opponent: 'X' | 'O' = player === 'X' ? 'O' : 'X';
-  
+
   return WINNING_LINES.some(([a, b, c]) => {
     const cells = [board[a], board[b], board[c]];
     // Line is live if it has no opponent marks
@@ -79,11 +79,11 @@ function hasLiveWinningLine(board: CellValue[], player: 'X' | 'O'): boolean {
 
 /**
  * Checks if the game is an early draw (no winning moves possible).
- * 
+ *
  * An early draw occurs when neither player has any "live" winning line
  * (a line that could potentially be completed). This can happen before
  * the board is completely filled.
- * 
+ *
  * Algorithm: For each player, check if they have any winning line that
  * contains only their marks and empty cells (no opponent marks). If neither
  * player has such a line, the game is mathematically a draw.
@@ -95,7 +95,7 @@ export function isEarlyDraw(board: CellValue[]): boolean {
   // Check if either player has a live winning line
   const xHasLiveLine = hasLiveWinningLine(board, 'X');
   const oHasLiveLine = hasLiveWinningLine(board, 'O');
-  
+
   // Early draw if neither player has any live lines
   return !xHasLiveLine && !oHasLiveLine;
 }
