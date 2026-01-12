@@ -173,6 +173,43 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
       const board: CellValue[] = ['X', 'X', 'X', 'O', 'O', null, null, null, null];
       expect(isEarlyDraw(board)).toBe(false); // Not all lines blocked
     });
+
+    it('should return false when X has two marks on diagonal', () => {
+      // X has 2 marks on anti-diagonal [2,4,6] and could win with position 4
+      // Board: _ _ X / _ _ _ / X _ _
+      const board: CellValue[] = [null, null, 'X', null, null, null, 'X', null, null];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when O has potential winning line', () => {
+      // O has middle column [1,4,7] with only O marks
+      // Board: _ O _ / _ O _ / _ O _
+      const board: CellValue[] = [null, 'O', null, null, 'O', null, null, 'O', null];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when center is empty and playable by either', () => {
+      // Center (position 4) is part of 4 winning lines
+      // Board: X O _ / O _ X / _ X O
+      const board: CellValue[] = ['X', 'O', null, 'O', null, 'X', null, 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+  });
+
+  describe('Live Line Logic Verification', () => {
+    it('should return false when X has one live line with 2 empty cells', () => {
+      // Top row [0,1,2] has only X marks and empties (no O)
+      // Board: X _ _ / O O X / O X O
+      const board: CellValue[] = ['X', null, null, 'O', 'O', 'X', 'O', 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
+
+    it('should return false when O has one live line with 2 empty cells', () => {
+      // Left column [0,3,6] has only O marks and empties (no X)
+      // Board: O X X / _ X O / _ X O
+      const board: CellValue[] = ['O', 'X', 'X', null, 'X', 'O', null, 'X', 'O'];
+      expect(isEarlyDraw(board)).toBe(false);
+    });
   });
 });
 

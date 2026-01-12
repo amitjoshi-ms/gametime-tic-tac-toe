@@ -59,21 +59,45 @@ export function isBoardFull(board: CellValue[]): boolean {
 }
 
 /**
- * Checks if the game is an early draw (no winning moves possible).
- * A line is "blocked" if it contains both X and O.
- * If all 8 winning lines are blocked, neither player can win.
+ * Checks if a player has any "live" winning line.
+ * A line is "live" for a player if it contains only their marks and empty cells
+ * (no opponent marks). This means the player could potentially complete that line.
  *
  * @param board - Current board state
- * @returns true if all winning lines are blocked (early draw)
+ * @param player - Player to check ('X' or 'O')
+ * @returns true if player has at least one live winning line
+ */
+function hasLiveWinningLine(board: CellValue[], player: 'X' | 'O'): boolean {
+  const opponent: 'X' | 'O' = player === 'X' ? 'O' : 'X';
+  
+  return WINNING_LINES.some(([a, b, c]) => {
+    const cells = [board[a], board[b], board[c]];
+    // Line is live if it has no opponent marks
+    return !cells.includes(opponent);
+  });
+}
+
+/**
+ * Checks if the game is an early draw (no winning moves possible).
+ * 
+ * An early draw occurs when neither player has any "live" winning line
+ * (a line that could potentially be completed). This can happen before
+ * the board is completely filled.
+ * 
+ * Algorithm: For each player, check if they have any winning line that
+ * contains only their marks and empty cells (no opponent marks). If neither
+ * player has such a line, the game is mathematically a draw.
+ *
+ * @param board - Current board state
+ * @returns true if neither player can win (early draw detected)
  */
 export function isEarlyDraw(board: CellValue[]): boolean {
-  return WINNING_LINES.every(([a, b, c]) => {
-    const cells = [board[a], board[b], board[c]];
-    const hasX = cells.includes('X');
-    const hasO = cells.includes('O');
-    // Line is blocked if it has both X and O
-    return hasX && hasO;
-  });
+  // Check if either player has a live winning line
+  const xHasLiveLine = hasLiveWinningLine(board, 'X');
+  const oHasLiveLine = hasLiveWinningLine(board, 'O');
+  
+  // Early draw if neither player has any live lines
+  return !xHasLiveLine && !oHasLiveLine;
 }
 
 /**
