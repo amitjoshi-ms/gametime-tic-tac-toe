@@ -20,8 +20,9 @@ export function getStatusMessage(state: GameState): string {
 
   // Handle computer thinking state.
   // Note: currentPlayer always represents whose turn it is. When isComputerThinking
-  // is true, the active turn is being taken by a computer. In demo mode both X and O
-  // are computers, but currentPlayer still identifies which computer is currently thinking.
+  // is true, the active turn is being taken by a computer. In demo mode, BOTH X and O
+  // are computers, so isComputerThinking can be true for either player depending on
+  // whose turn it is (currentPlayer identifies which computer is currently thinking).
   if (state.isComputerThinking) {
     return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
   }
