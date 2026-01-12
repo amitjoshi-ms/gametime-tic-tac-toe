@@ -135,7 +135,7 @@ After successful workflow completion, check production at: https://gametime-tic-
 If you encounter errors or the trap handler fails to re-lock the branch automatically, manually re-lock it:
 
 ```bash
-gh api repos/$REPO/branches/release/protection -X PUT \
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
   -F "enforce_admins=true" \
@@ -149,7 +149,7 @@ gh api repos/$REPO/branches/release/protection -X PUT \
 Then verify the branch is locked:
 
 ```bash
-gh api repos/$REPO/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
 
 Expected output: `{"lock_branch": true, "enforce_admins": true}`
