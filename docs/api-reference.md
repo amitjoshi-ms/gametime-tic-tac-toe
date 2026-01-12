@@ -601,7 +601,7 @@ Gets the display message for current game state.
 |--------|----------------|------|--------|
 | `'playing'` | `'X'` | any | `"Player X's Turn"` |
 | `'playing'` | `'O'` | `'human'` | `"Player O's Turn"` |
-| `'playing'` | `'O'` | `'computer'` (thinking) | `"Computer is thinking..."` |
+| `'playing'` | `'O'` | `'computer'` (thinking) | `"Computer is thinking"` |
 | `'x-wins'` | - | any | `"🎉 Player X Wins!"` |
 | `'o-wins'` | - | any | `"🎉 Player O Wins!"` |
 | `'draw'` | - | any | `"It's a Draw!"` |
