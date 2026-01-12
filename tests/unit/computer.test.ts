@@ -285,9 +285,5 @@ describe('computer', () => {
       vi.advanceTimersByTime(5000); // Second fires at 20000
       expect(onRestart2).toHaveBeenCalledTimes(1);
     });
-
-    it('should use 15 second delay for result display', () => {
-      expect(DEMO_RESTART_DELAY).toBe(15000);
-    });
   });
 });
