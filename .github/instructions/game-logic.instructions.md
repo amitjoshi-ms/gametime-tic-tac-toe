@@ -196,4 +196,31 @@ export function resetGame(): GameState {
 ```
 
 ## Testing Game Logic
-Write concise unit tests for each pure function (e.g., `makeMove`, `resetGame`) that cover normal play, wins, draws, and invalid moves without duplicating similar scenarios.
+
+All game logic should have comprehensive unit tests:
+
+```typescript
+describe('makeMove', () => {
+  it('should place mark and switch player', () => {
+    const initial = resetGame();
+    const afterMove = makeMove(initial, 0);
+    
+    expect(afterMove.board[0]).toBe('X');
+    expect(afterMove.currentPlayer).toBe('O');
+    expect(afterMove).not.toBe(initial); // New object
+    expect(initial.board[0]).toBe(null); // Original not mutated
+  });
+
+  it('should detect win after winning move', () => {
+    const almostWon: GameState = {
+      board: ['X', 'X', null, 'O', 'O', null, null, null, null],
+      currentPlayer: 'X',
+      status: 'playing',
+      playerNames: { X: 'X', O: 'O' },
+    };
+    
+    const afterWin = makeMove(almostWon, 2);
+    expect(afterWin.status).toBe('x-wins');
+  });
+});
+```
