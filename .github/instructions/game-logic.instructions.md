@@ -131,24 +131,26 @@ export const WINNING_LINES: WinningLine[] = [
 ```typescript
 /**
  * Checks if a move is valid.
- * @param state - Current game state
+ * @param board - Current board state
  * @param cellIndex - Target cell (0-8)
+ * @param status - Current game status
  * @returns true if move is allowed
  */
-export function isValidMove(state: GameState, cellIndex: number): boolean {
+export function isValidMove(
+  board: CellValue[],
+  cellIndex: number,
+  status: GameStatus
+): boolean {
   // Game must be in progress
-  if (state.status !== 'playing') {
-    return false;
-  }
-  // Cell must be empty
-  if (state.board[cellIndex] !== null) {
+  if (status !== 'playing') {
     return false;
   }
   // Index must be valid
   if (cellIndex < 0 || cellIndex > 8) {
     return false;
   }
-  return true;
+  // Cell must be empty
+  return board[cellIndex] === null;
 }
 ```
 
@@ -166,7 +168,7 @@ export function isValidMove(state: GameState, cellIndex: number): boolean {
  * @returns New state (or same state if invalid move)
  */
 export function makeMove(state: GameState, cellIndex: number): GameState {
-  if (!isValidMove(state, cellIndex)) {
+  if (!isValidMove(state.board, cellIndex, state.status)) {
     return state; // Return unchanged for invalid moves
   }
   
@@ -192,13 +194,16 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
 /**
  * Creates a fresh game state.
  * Loads player names from localStorage if available.
+ * @param currentMode - Current game mode to preserve (defaults to 'human')
  */
-export function resetGame(): GameState {
+export function resetGame(currentMode: GameMode = 'human'): GameState {
   return {
     board: Array.from({ length: 9 }, () => null),
     currentPlayer: 'X',
     status: 'playing',
     playerNames: loadPlayerNames(),
+    gameMode: currentMode,
+    isComputerThinking: false,
   };
 }
 ```
