@@ -8,7 +8,7 @@ import { getStatusMessage } from '../../src/ui/status';
 import type { GameState } from '../../src/game/types';
 
 describe('getStatusMessage with custom names', () => {
-  it('should show custom name for X turn', () => {
+  it('should show custom name for X turn without symbol when using default X', () => {
     const state: GameState = {
       board: [null, null, null, null, null, null, null, null, null],
       currentPlayer: 'X',
@@ -19,10 +19,10 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe("Alice (X)'s Turn");
+    expect(message).toBe("Alice's Turn");
   });
 
-  it('should show custom name for O turn', () => {
+  it('should show custom name for O turn without symbol when using default O', () => {
     const state: GameState = {
       board: ['X', null, null, null, null, null, null, null, null],
       currentPlayer: 'O',
@@ -33,10 +33,10 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe("Bob (O)'s Turn");
+    expect(message).toBe("Bob's Turn");
   });
 
-  it('should show custom name when X wins', () => {
+  it('should show custom name when X wins without symbol when using default X', () => {
     const state: GameState = {
       board: ['X', 'X', 'X', 'O', 'O', null, null, null, null],
       currentPlayer: 'O',
@@ -47,10 +47,10 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe('🎉 Alice (X) Wins!');
+    expect(message).toBe('🎉 Alice Wins!');
   });
 
-  it('should show custom name when O wins', () => {
+  it('should show custom name when O wins without symbol when using default O', () => {
     const state: GameState = {
       board: ['X', 'X', null, 'O', 'O', 'O', null, null, null],
       currentPlayer: 'X',
@@ -61,7 +61,7 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe('🎉 Bob (O) Wins!');
+    expect(message).toBe('🎉 Bob Wins!');
   });
 
   it('should show draw message regardless of names', () => {
@@ -78,7 +78,7 @@ describe('getStatusMessage with custom names', () => {
     expect(message).toBe("It's a Draw!");
   });
 
-  it('should work with default player names', () => {
+  it('should work with default player names without showing symbol', () => {
     const state: GameState = {
       board: [null, null, null, null, null, null, null, null, null],
       currentPlayer: 'X',
@@ -89,10 +89,10 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe("Player X (X)'s Turn");
+    expect(message).toBe("Player X's Turn");
   });
 
-  it('should handle names with special characters', () => {
+  it('should handle names with special characters without showing symbol for default', () => {
     const state: GameState = {
       board: [null, null, null, null, null, null, null, null, null],
       currentPlayer: 'X',
@@ -103,7 +103,35 @@ describe('getStatusMessage with custom names', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe("O'Brien (X)'s Turn");
+    expect(message).toBe("O'Brien's Turn");
+  });
+
+  it('should show symbol when using custom symbol', () => {
+    const state: GameState = {
+      board: [null, null, null, null, null, null, null, null, null],
+      currentPlayer: 'X',
+      status: 'playing',
+      playerConfigs: { X: { name: 'Alice', symbol: '★' as const }, O: { name: 'Bob', symbol: '🔵' as const } },
+      gameMode: 'human',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe("Alice (★)'s Turn");
+  });
+
+  it('should show custom symbol in win message', () => {
+    const state: GameState = {
+      board: ['★', '★', '★', '🔵', '🔵', null, null, null, null],
+      currentPlayer: 'O',
+      status: 'x-wins',
+      playerConfigs: { X: { name: 'Alice', symbol: '★' as const }, O: { name: 'Bob', symbol: '🔵' as const } },
+      gameMode: 'human',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('🎉 Alice (★) Wins!');
   });
 });
 
@@ -136,7 +164,7 @@ describe('getStatusMessage with computer thinking', () => {
     expect(message).toBe('HAL 9000 is thinking');
   });
 
-  it('should show normal turn message when not thinking', () => {
+  it('should show normal turn message when not thinking without symbol for default', () => {
     const state: GameState = {
       board: [null, null, null, null, null, null, null, null, null],
       currentPlayer: 'X',
@@ -147,7 +175,7 @@ describe('getStatusMessage with computer thinking', () => {
     };
 
     const message = getStatusMessage(state);
-    expect(message).toBe("Player X (X)'s Turn");
+    expect(message).toBe("Player X's Turn");
   });
 
   it('should prioritize thinking state over turn display', () => {

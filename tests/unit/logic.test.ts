@@ -149,8 +149,8 @@ describe('isEarlyDraw', () => {
 
 describe('determineStatus', () => {
   const defaultConfigs = {
-    X: { symbol: 'X' as const },
-    O: { symbol: 'O' as const },
+    X: { symbol: 'X' as const, name: 'Player X' },
+    O: { symbol: 'O' as const, name: 'Player O' },
   };
 
   it('should return x-wins when X has won', () => {

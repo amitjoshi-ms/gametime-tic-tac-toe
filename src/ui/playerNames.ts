@@ -6,6 +6,7 @@
  */
 
 import type { PlayerConfigs, Player, PlayerSymbol } from '../game/types';
+import { AVAILABLE_SYMBOLS } from '../game/types';
 import { DEFAULT_X_NAME, DEFAULT_O_NAME } from '../game/playerNames';
 import {
   renderSymbolSelectors,
@@ -61,6 +62,11 @@ function handleNameBlur(event: Event): void {
  */
 function handleSymbolChange(player: Player, symbol: PlayerSymbol): void {
   if (!currentChangeHandler || !currentConfigs) return;
+
+  // Validate symbol is from available list
+  if (!AVAILABLE_SYMBOLS.includes(symbol)) {
+    return;
+  }
 
   const configs: PlayerConfigs = {
     X: player === 'X' ? { ...currentConfigs.X, symbol } : currentConfigs.X,

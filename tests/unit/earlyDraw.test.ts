@@ -179,8 +179,8 @@ describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
 describe('determineStatus - Early Draw Integration', () => {
   describe('Should Return Draw Status', () => {
     const defaultConfigs = {
-      X: { symbol: 'X' as const },
-      O: { symbol: 'O' as const },
+      X: { symbol: 'X' as const, name: 'Player X' },
+      O: { symbol: 'O' as const, name: 'Player O' },
     };
 
     it('should return draw when early draw detected at 8 moves', () => {
@@ -210,8 +210,8 @@ describe('determineStatus - Early Draw Integration', () => {
 
   describe('Should Return Playing Status (Not Early Draw)', () => {
     const defaultConfigs = {
-      X: { symbol: 'X' as const },
-      O: { symbol: 'O' as const },
+      X: { symbol: 'X' as const, name: 'Player X' },
+      O: { symbol: 'O' as const, name: 'Player O' },
     };
 
     it('should return playing when at least one line is unblocked', () => {
@@ -227,8 +227,8 @@ describe('determineStatus - Early Draw Integration', () => {
 
   describe('Should Prioritize Win Over Draw', () => {
     const defaultConfigs = {
-      X: { symbol: 'X' as const },
-      O: { symbol: 'O' as const },
+      X: { symbol: 'X' as const, name: 'Player X' },
+      O: { symbol: 'O' as const, name: 'Player O' },
     };
 
     it('should return x-wins even if other lines are blocked', () => {

@@ -11,7 +11,7 @@ import {
   setComputerThinking,
   isComputerTurn,
 } from './game/state';
-import { DEFAULT_COMPUTER_NAME } from './game/playerNames';
+import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
 import { scheduleComputerMove } from './game/computer';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
@@ -19,7 +19,6 @@ import { renderStatus } from './ui/status';
 import { renderControls } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
-import { savePlayerConfigs } from './game/playerNames';
 import type { GameState, GameMode, PlayerConfigs } from './game/types';
 
 /** Current game state - module-level for simplicity */
@@ -134,6 +133,9 @@ function handleModeChange(mode: GameMode): void {
       },
     };
     savePlayerConfigs(gameState.playerConfigs);
+  } else {
+    // Restore saved configs from localStorage when switching back to human
+    gameState = { ...gameState, playerConfigs: loadPlayerConfigs() };
   }
 
   updateUI();

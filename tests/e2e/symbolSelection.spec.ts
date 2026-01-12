@@ -120,7 +120,6 @@ test.describe('Symbol Selection Feature', () => {
 
   test('should persist symbol selection across page refresh', async ({
     page,
-    context,
   }) => {
     const xSelector = page.getByLabel('Symbol for Player X');
     const oSelector = page.getByLabel('Symbol for Player O');

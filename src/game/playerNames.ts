@@ -46,6 +46,12 @@ export function getDefaultPlayerConfigs(): PlayerConfigs {
  * @returns true if configs are valid
  */
 export function validatePlayerConfigs(configs: PlayerConfigs): boolean {
+  // Check structure exists
+  if (!configs || typeof configs !== 'object') return false;
+  if (!configs.X || !configs.O) return false;
+  if (typeof configs.X.symbol !== 'string' || typeof configs.O.symbol !== 'string') return false;
+  if (typeof configs.X.name !== 'string' || typeof configs.O.name !== 'string') return false;
+
   // Symbols must be different
   if (configs.X.symbol === configs.O.symbol) {
     return false;
