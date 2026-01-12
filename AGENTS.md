@@ -147,10 +147,10 @@ npx playwright test --debug
 
 ## Deployment
 
-- **main** branch → Preview: `main.gametime-tic-tac-toe.pages.dev`
+- **main** branch → Preview/Beta testing: `main.gametime-tic-tac-toe.pages.dev`
 - **release** branch → Production: `gametime-tic-tac-toe.pages.dev`
 
-Cloudflare Pages auto-deploys on push.
+Cloudflare Pages auto-deploys on push for all branches; use `main` for preview/beta testing and promote changes to `release` for production.
 
 ## What to Avoid
 
