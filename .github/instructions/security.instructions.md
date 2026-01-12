@@ -1,5 +1,5 @@
 ---
-description: 'Security best practices for this SPA'
+description: 'Security best practices for this Single Page Application (SPA)'
 applyTo: '**/*.ts, **/*.html'
 ---
 
@@ -18,7 +18,7 @@ This is a client-side only SPA with no backend. Security focus areas:
 ### Never Use `innerHTML` with User Data
 
 ```typescript
-// ❌ Dangerous: XSS vulnerability
+// ❌ Dangerous: XSS vulnerability if userInput contains HTML/script tags
 container.innerHTML = `<span>${userInput}</span>`;
 
 // ✅ Safe: Use textContent for user data
@@ -100,7 +100,8 @@ function handleNameChange(name: string, player: Player): void {
   }
   
   // Validate content (optional: restrict characters)
-  if (!/^[\w\s-]+$/.test(name)) {
+  // Allow all Unicode letters and numbers, plus whitespace and hyphens
+  if (!/^[\p{L}\p{N}\s-]*$/u.test(name)) {
     return; // Reject invalid characters
   }
   

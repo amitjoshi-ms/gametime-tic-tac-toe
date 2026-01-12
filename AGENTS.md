@@ -72,7 +72,7 @@ tests/
 ### Type Safety
 
 - **No `any`** - use `unknown` + type narrowing
-- All types defined in `src/game/types.ts`
+- Core game types defined in `src/game/types.ts`
 - Strict mode enabled in TypeScript
 
 ## Branch Workflow
@@ -108,7 +108,7 @@ npm run build      # Must succeed
 
 ## Code Style
 
-- **Files:** kebab-case (`player-names.ts`)
+- **Files:** camelCase (`playerNames.ts`)
 - **Types:** PascalCase (`GameState`)
 - **Functions:** camelCase (`handleCellClick`)
 - **Constants:** UPPER_SNAKE_CASE (`WINNING_LINES`)

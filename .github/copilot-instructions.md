@@ -1,7 +1,7 @@
 # gametime-tic-tac-toe Development Guidelines
 
 > Guidelines for GitHub Copilot and AI assistants working on this codebase.  
-> Maintained by spec-kit tool and manual updates. Last updated: 2026-01-10.
+> Maintained by spec-kit tool and manual updates. Last updated: January 2026.
 
 ## Project Overview
 
@@ -65,7 +65,7 @@ specs/                  # Feature specifications (spec-kit)
 
 ### Naming Conventions
 
-- **Files:** kebab-case (`player-names.ts`, `game-state.ts`)
+- **Files:** camelCase (`playerNames.ts`, `board.ts`)
 - **Types/Interfaces:** PascalCase (`GameState`, `PlayerNames`)
 - **Functions/Variables:** camelCase (`handleCellClick`, `gameState`)
 - **Constants:** UPPER_SNAKE_CASE (`WINNING_LINES`)
@@ -228,7 +228,7 @@ This project uses structured AI configuration to provide consistent guidance.
 
 Focused rules auto-applied to specific file patterns via `applyTo`:
 
-| File | Purpose | Applies To |
+| File | Purpose | ApplyTo |
 |------|---------|------------|
 | `typescript.instructions.md` | Type system, naming, patterns | `**/*.ts, **/*.tsx` |
 | `testing.instructions.md` | Unit/E2E test structure | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
@@ -247,9 +247,13 @@ Reusable task templates invoked via Copilot Chat (`/` command):
 |--------|------|----------|
 | `start.task.prompt.md` | Agent | Starting new work (creates branch, understands task) |
 | `review.task.prompt.md` | Agent | Pre-commit review (quality, security, tests) |
+| `sync.repo.prompt.md` | Agent | Syncing local work with `main`/remote and updating branches |
+| `submit.task.prompt.md` | Agent | Preparing changes for PR/merge (summaries, checklists, metadata) |
+| `release.latest.prompt.md` | Agent | Working on the latest release (notes, checks, deployment steps) |
 
-**Usage:** Type `/start` or `/review` in Copilot Chat, or reference via `@workspace /start`.
+**Usage:** Common commands: `/start`, `/review`, `/sync`, `/submit`, `/release` in Copilot Chat, or reference via `@workspace /start` (and analogous names).
 
+For additional workflow and spec-related prompts (including `speckit.*.prompt.md`), see the full set in `.github/prompts/`.
 ### AGENTS.md (repo root)
 
 Quick reference for AI coding agents. Contains:

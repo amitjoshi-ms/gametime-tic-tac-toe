@@ -107,6 +107,8 @@ function updateUI() {
 
 // ✅ Only update what changed
 function updateUI(prevState: GameState | null, newState: GameState) {
+  // NOTE: This relies on immutable updates: a new board array is created when the board changes.
+  // If you mutate the existing array in place, use a deeper comparison instead of reference equality.
   if (!prevState || prevState.board !== newState.board) {
     updateBoard(container, newState);
   }
@@ -122,9 +124,26 @@ function updateUI(prevState: GameState | null, newState: GameState) {
 function makeMove(state: GameState, cellIndex: number): GameState {
   if (state.status !== 'playing') return state;
   if (state.board[cellIndex] !== null) return state;
-  
+
   // Only proceed if move is valid
-  // Returning same reference = no re-render needed
+  // NOTE: This pattern assumes an immutable state model where callers
+  //       skip re-renders when the returned state is the same reference
+  //       (e.g. `if (nextState === prevState) { return; }`).
+  //       Callers MUST perform that reference check for this optimization
+  //       to have any effect.
+}
+
+// Example caller using the reference-check contract:
+function onCellClick(currentState: GameState, cellIndex: number) {
+  const nextState = makeMove(currentState, cellIndex);
+  if (nextState === currentState) {
+    // No state change; skip expensive work (e.g., re-render)
+    return;
+  }
+
+  // State changed; proceed with update/render
+  renderBoard(container, nextState);
+  renderStatus(statusEl, nextState);
 }
 ```
 
@@ -174,27 +193,4 @@ function makeMove(state: GameState, cellIndex: number): GameState {
 
 ### Keep Imports Minimal
 
-```typescript
-// ✅ Import only what's needed
-import { checkWin, isValidMove } from './logic';
-
-// ❌ Avoid importing entire modules if not needed
-import * as logic from './logic';
-```
-
-## Measurement
-
-### Use Browser DevTools
-
-- **Performance tab**: Profile rendering, scripting, layout
-- **Lighthouse**: Overall performance score
-- **Network tab**: Bundle sizes, load times
-
-### Target Metrics
-
-| Metric | Target |
-|--------|--------|
-| First Contentful Paint | < 1s |
-| Time to Interactive | < 2s |
-| Total Blocking Time | < 100ms |
-| Cumulative Layout Shift | < 0.1 |
+- Prefer importing only the specific functions or values you need instead of entire modules to keep the bundle smaller.

@@ -187,7 +187,7 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
  */
 export function resetGame(): GameState {
   return {
-    board: Array<CellValue>(9).fill(null),
+    board: Array.from({ length: 9 }, () => null),
     currentPlayer: 'X',
     status: 'playing',
     playerNames: loadPlayerNames(),

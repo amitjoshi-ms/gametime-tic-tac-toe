@@ -133,8 +133,33 @@ export default defineConfig({
 
 **Rules:**
 - Use `node` environment (game logic is pure)
-- For coverage, you may exclude orchestration-only entrypoints (for example, `src/main.ts`), but do not exclude core game logic files
 - Keep path alias in sync with tsconfig
+
+### Coverage Configuration
+
+```typescript
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['tests/unit/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/main.ts', 'src/**/*.d.ts'],  // Exclude orchestration-only entrypoints
+    },
+  },
+  resolve: {
+    alias: { '@': resolve(__dirname, 'src') }    // Must match tsconfig.json
+  },
+});
+```
+
+**Rules:**
+- You may exclude orchestration-only entrypoints (for example, `src/main.ts`)
+- Do not exclude core game logic files (e.g., `src/game/**/*.ts`)
+- Always exclude type definition files (`*.d.ts`) from coverage
 
 ## playwright.config.ts
 
@@ -198,29 +223,3 @@ export default tseslint.config(
 
 ## Common Mistakes
 
-❌ **Adding runtime dependencies**
-```json
-{ "dependencies": { "some-lib": "1.0.0" } }
-```
-
-❌ **Disabling strict mode**
-```jsonc
-{ "compilerOptions": { "strict": false } }
-```
-
-❌ **Mismatched path aliases**
-```typescript
-// tsconfig.json has "@/*" but vite.config.ts is missing alias
-```
-
-❌ **Changing ports inconsistently**
-```typescript
-// vite uses 5173 but playwright config says 3000
-```
-
-## When Editing Config Files
-
-1. **Understand the impact** - Config changes affect all code
-2. **Check related files** - Path aliases must sync across configs
-3. **Test thoroughly** - Run full test suite after changes
-4. **Document why** - Add comments for non-obvious settings

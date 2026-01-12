@@ -107,7 +107,9 @@ export function renderBoard(
   const handleClick = (e: MouseEvent) => {
     const cell = (e.target as HTMLElement | null)?.closest('.cell');
     if (cell) {
-      const index = Number((cell as HTMLElement).dataset.index);
+      const indexStr = (cell as HTMLElement).dataset.index;
+      if (indexStr === undefined) return;
+      const index = parseInt(indexStr, 10);
       onCellClick(index);
     }
   };

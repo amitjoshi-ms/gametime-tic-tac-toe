@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.md, .github/**/*.md, AGENTS.md, README.md'
+applyTo: '.github/**/*.md, AGENTS.md'
 ---
 
 # AI Configuration Files Standards
@@ -94,12 +94,12 @@ What to avoid with examples.
 | File | Purpose | Applies To |
 |------|---------|------------|
 | typescript.instructions.md | Type system, naming | `**/*.ts` |
-| testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts` |
+| testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
-| ui.instructions.md | DOM manipulation | `src/ui/**/*.ts` |
+| ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
 | performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
-| tooling.instructions.md | Build configs | `*.config.*, *.json` |
+| tooling.instructions.md | Build configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
 | ai-config.instructions.md | AI configuration standards | `.github/instructions/ai-config.instructions.md` |
 
 ## Prompt Files (.prompt.md)
@@ -116,8 +116,8 @@ What to avoid with examples.
 description: One-line summary shown in picker
 mode: agent | ask
 instructions:
-  - relevant.instructions.md
-  - another.instructions.md
+  - typescript.instructions.md
+  - testing.instructions.md
 ---
 
 # Task Title
@@ -134,6 +134,13 @@ More instructions.
 
 {{input}}
 ```
+
+**Frontmatter Format:**
+- Uses standard YAML syntax with key-value pairs
+- `description` and `mode` are standard GitHub Copilot fields
+- `instructions` is a project-specific convention listing instruction files to reference
+- The `instructions` list uses YAML array syntax (indented with `  -` prefix)
+- GitHub Copilot allows custom fields; our AI agents use `instructions` to load relevant context
 
 **Rules:**
 - Always include frontmatter
@@ -153,7 +160,7 @@ More instructions.
 ---
 description: Agent purpose
 instructions:
-  - relevant.instructions.md
+  - typescript.instructions.md
 ---
 
 # Agent Role
@@ -167,6 +174,13 @@ Steps the agent follows.
 ## Constraints
 What the agent should NOT do.
 ```
+
+**Frontmatter Format:**
+- Uses standard YAML syntax
+- `description` provides a brief purpose statement
+- `instructions` is a project-specific field listing relevant instruction files
+- The `instructions` list uses YAML array syntax (indented with `  -` prefix)
+- Custom frontmatter fields are supported by GitHub Copilot's extensible format
 
 **Rules:**
 - One role per agent
@@ -281,12 +295,4 @@ Use discriminated unions for state:
 type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
 ```
 
-❌ **Overly long files**
-```markdown
-# 1000-line copilot-instructions.md
-```
-
-✅ **Split into focused files**
-```markdown
-# copilot-instructions.md (300 lines) + 6 instruction files
-```
+Prefer short, focused instruction files; if a file starts to grow large, split it into smaller topic-specific files instead of letting it exceed the documented line-count guideline.
