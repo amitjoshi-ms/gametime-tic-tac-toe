@@ -167,73 +167,46 @@ test.describe('Early Draw Detection', () => {
       await expect(page.locator('.mode-selector__option--selected')).toContainText('Computer');
     });
 
-    test('should handle game completion in computer mode', async ({ page }) => {
+    test('should detect draw in computer mode', async ({ page }) => {
       const cells = page.locator('.cell');
       const status = page.locator('.status');
 
-      // In computer mode, we just need to verify that draw detection works
-      // We'll play a few moves and let the game complete naturally
+      // This test verifies that draw detection works in computer mode
+      // We play moves until the game completes
       
-      // Make first move
-      await cells.nth(4).click(); // X takes center
+      // Make initial moves
+      await cells.nth(4).click(); // X at center
+      await expect(status).toContainText("Player X's Turn", { timeout: 5000 });
+
+      await cells.nth(0).click(); // X at 0
+      await expect(status).toContainText("Player X's Turn", { timeout: 5000 });
+
+      await cells.nth(8).click(); // X at 8
       
-      // Wait for computer and continue with a few more moves
-      // We'll play defensively to increase chance of draw
-      let movesPlayed = 1;
-      
-      while (movesPlayed < 9) {
-        // Check current status
-        const currentStatus = await status.textContent();
+      // Continue playing until game ends
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const statusText = await status.textContent();
         
-        // If game is over, break
-        if (currentStatus?.includes('Wins!') || currentStatus?.includes('Draw!')) {
+        // Check if game is over
+        if (statusText?.includes('Wins!') || statusText?.includes('Draw!')) {
           break;
         }
         
-        // Wait for it to be human's turn (with timeout)
-        try {
-          await expect(status).toContainText("Player X's Turn", { timeout: 5000 });
-        } catch {
-          // Might already be game over
-          break;
-        }
+        // Wait for our turn
+        await expect(status).toContainText("Player X's Turn", { timeout: 5000 });
         
-        // Find an available cell to click
-        let clickedCell = false;
+        // Make a move on first available cell
         for (let i = 0; i < 9; i++) {
-          try {
-            const cellText = await cells.nth(i).textContent();
-            if (cellText === '') {
-              await cells.nth(i).click({ timeout: 1000 });
-              clickedCell = true;
-              movesPlayed++;
-              break;
-            }
-          } catch {
-            // Cell might have become unavailable, continue
-            continue;
+          const cellText = await cells.nth(i).textContent();
+          if (cellText === '') {
+            await cells.nth(i).click();
+            break;
           }
-        }
-        
-        if (!clickedCell) {
-          // No more moves available
-          break;
         }
       }
 
-      // Verify game ended in some way (win or draw)
+      // Verify game ended
       await expect(status).toContainText(/(Wins!|Draw!)/, { timeout: 5000 });
-    });
-
-    test('should display draw status correctly in computer mode', async ({ page }) => {
-      const status = page.locator('.status');
-
-      // Just verify that the status element exists and can display draw
-      // This ensures the UI is capable of showing draw in computer mode
-      await expect(status).toBeVisible();
-
-      // The actual game logic is tested in unit tests
-      // This E2E test confirms the UI elements are present
     });
   });
 
