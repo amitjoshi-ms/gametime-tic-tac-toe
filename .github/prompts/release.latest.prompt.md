@@ -16,7 +16,7 @@ Execute these steps in order:
 Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail:
 
 ```bash
-# Function to lock the branch
+# Function to lock the branch (safe to call even if already locked)
 lock_branch() {
   echo "Re-locking release branch..."
   gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
