@@ -180,10 +180,7 @@ fi
 lock_branch
 ```
 
-If the workflow fails, check logs:
-
-You can inspect the run manually with:
-
+If the workflow fails, check the logs using the following commands:
 ```bash
 # List recent runs for the release workflow
 gh run list --workflow=release-to-production.yml --limit 5
