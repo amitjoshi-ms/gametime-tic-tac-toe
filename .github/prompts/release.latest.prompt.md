@@ -80,9 +80,9 @@ sleep_seconds=5
 
 attempt=1
 while [ "$attempt" -le "$max_attempts" ]; do
-  RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+  run_id=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
 
-  if [ -n "$RUN_ID" ] && [ "$RUN_ID" != "null" ]; then
+  if [ -n "$run_id" ] && [ "$run_id" != "null" ]; then
     break
   fi
 
@@ -92,7 +92,7 @@ while [ "$attempt" -le "$max_attempts" ]; do
 done
 
 # Check if a run ID was found before attempting to watch
-if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
   echo "Error: No workflow run found after waiting $((MAX_ATTEMPTS * SLEEP_SECONDS)) seconds."
   echo "The workflow may not have been triggered yet or may be delayed."
   echo "Try checking manually with: gh run list --workflow=release-to-production.yml"
@@ -100,11 +100,11 @@ if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
 fi
 
 # Watch the workflow run, and handle failures explicitly
-if ! gh run watch "$RUN_ID"; then
+if ! gh run watch "$run_id"; then
   status=$?
-  echo "Error: Failed to watch workflow run $RUN_ID (exit status: $status)."
+  echo "Error: Failed to watch workflow run $run_id (exit status: $status)."
   echo "The workflow may have failed or encountered an error."
-  echo "You can inspect the run manually with: gh run view \"$RUN_ID\" --log-failed"
+  echo "You can inspect the run manually with: gh run view \"$run_id\" --log-failed"
   exit "$status"
 fi
 ```
