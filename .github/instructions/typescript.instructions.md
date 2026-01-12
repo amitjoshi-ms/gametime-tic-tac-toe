@@ -58,7 +58,7 @@ interface GameState {
 | Functions | camelCase | `handleCellClick`, `makeMove` |
 | Variables | camelCase | `gameState`, `currentPlayer` |
 | Constants | UPPER_SNAKE_CASE | `WINNING_LINES` |
-| Files | kebab-case | `game-logic.ts`, `player-names.ts` |
+| Files | camelCase | `logic.ts`, `playerNames.ts` |
 
 ## Function Patterns
 
