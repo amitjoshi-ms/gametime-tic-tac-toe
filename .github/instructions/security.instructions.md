@@ -52,9 +52,12 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
+// ❌ Example: Unescaped template literals with user input are still dangerous
+// container.innerHTML = `<span>${userInput}</span>`; // XSS: userInput is interpreted as HTML
+
 // ⚠️ Avoid innerHTML even with escaping - use DOM APIs instead:
 // const escaped = escapeHtml(userInput);
-// container.innerHTML = `<span>${escaped}</span>`; // NOT recommended
+// container.innerHTML = `<span>${escaped}</span>`; // NOT recommended; escaping mitigates XSS but innerHTML is still risky
 // Note: escapeHtml provides protection, not template literals themselves
 
 // ✅ Better: Use DOM APIs with textContent
