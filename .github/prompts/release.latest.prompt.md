@@ -16,10 +16,13 @@ Execute these steps in order:
 Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail:
 
 ```bash
+# Repository identifier
+REPO="amitjoshi-ms/gametime-tic-tac-toe"
+
 # Function to lock the branch (safe to call even if already locked)
 lock_branch() {
   echo "Re-locking release branch..."
-  gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
+  gh api repos/$REPO/branches/release/protection -X PUT \
     -H "Accept: application/vnd.github+json" \
     -f "required_status_checks=null" \
     -F "enforce_admins=true" \
@@ -41,13 +44,13 @@ trap lock_branch EXIT
 Before unlocking, you can verify the current branch protection state:
 
 ```bash
-gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+gh api repos/$REPO/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
 
 ### 3. Unlock the release branch
 
 ```bash
-gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
+gh api repos/$REPO/branches/release/protection -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
   # Temporarily disable admin enforcement to allow release workflow / admin push
@@ -132,7 +135,7 @@ After successful workflow completion, check production at: https://gametime-tic-
 If you encounter errors or the trap handler fails to re-lock the branch automatically, manually re-lock it:
 
 ```bash
-gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PUT \
+gh api repos/$REPO/branches/release/protection -X PUT \
   -H "Accept: application/vnd.github+json" \
   -f "required_status_checks=null" \
   -F "enforce_admins=true" \
@@ -146,7 +149,7 @@ gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection -X PU
 Then verify the branch is locked:
 
 ```bash
-gh api repos/amitjoshi-ms/gametime-tic-tac-toe/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
+gh api repos/$REPO/branches/release/protection --jq '{lock_branch: .lock_branch.enabled, enforce_admins: .enforce_admins.enabled}'
 ```
 
 Expected output: `{"lock_branch": true, "enforce_admins": true}`
