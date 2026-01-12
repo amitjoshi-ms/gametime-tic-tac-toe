@@ -198,7 +198,7 @@ After successful workflow completion, check production at: https://gametime-tic-
 
 **Note:** 
 - If using **Option A** (subshell with trap), the branch will automatically re-lock when the subshell exits.
-- If using **Option B** (explicit cleanup), ensure you called `lock_branch` after step 5.
+- If using **Option B** (explicit cleanup), ensure you called `lock_branch` after step 6.
 
 ### 8. Manual re-lock (if needed)
 
