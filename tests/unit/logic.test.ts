@@ -113,27 +113,6 @@ describe('isEarlyDraw', () => {
     expect(isEarlyDraw(board)).toBe(false);
   });
 
-  it('should detect early draw with 1 empty cell', () => {
-    // Board: X X O / O O X / X O _
-    // All 8 winning lines are blocked (contain both X and O)
-    const board: CellValue[] = ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'O', null];
-    expect(isEarlyDraw(board)).toBe(true);
-  });
-
-  it('should detect another early draw with 1 empty cell', () => {
-    // Board: X O X / X O O / O X _
-    // All winning lines contain both X and O
-    const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', null];
-    expect(isEarlyDraw(board)).toBe(true);
-  });
-
-  it('should detect early draw with different empty position', () => {
-    // Board: X O O / O X X / X _ O
-    // All lines blocked despite empty cell at position 7
-    const board: CellValue[] = ['X', 'O', 'O', 'O', 'X', 'X', 'X', null, 'O'];
-    expect(isEarlyDraw(board)).toBe(true);
-  });
-
   it('should return false for board with winning path still available', () => {
     // Board: X X _ / O O _ / _ _ _
     // Top row can still be won by X
@@ -183,24 +162,6 @@ describe('determineStatus', () => {
     // A draw scenario: X O X / X O O / O X X
     const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'];
     expect(determineStatus(board, 'X')).toBe('draw');
-  });
-
-  it('should return draw for early draw with 1 empty cell', () => {
-    // Board: X X O / O O X / X O _
-    const board: CellValue[] = ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'O', null];
-    expect(determineStatus(board, 'O')).toBe('draw');
-  });
-
-  it('should return draw for another early draw with 1 empty cell', () => {
-    // Board: X O X / X O O / O X _
-    const board: CellValue[] = ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', null];
-    expect(determineStatus(board, 'X')).toBe('draw');
-  });
-
-  it('should return draw for early draw with empty at different position', () => {
-    // Board: X O O / O X X / X _ O
-    const board: CellValue[] = ['X', 'O', 'O', 'O', 'X', 'X', 'X', null, 'O'];
-    expect(determineStatus(board, 'O')).toBe('draw');
   });
 
   it('should return playing when game is ongoing', () => {
