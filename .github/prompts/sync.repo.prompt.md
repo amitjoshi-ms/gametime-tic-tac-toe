@@ -1,6 +1,8 @@
 ---
 description: Sync local Git repository with remote, cleanup stale branches, and optimize storage
 mode: agent
+instructions:
+  - ai-config.instructions.md
 ---
 
 # Sync and Clean Local Repository

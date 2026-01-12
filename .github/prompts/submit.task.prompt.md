@@ -4,6 +4,8 @@ mode: agent
 instructions:
   - typescript.instructions.md
   - testing.instructions.md
+  - security.instructions.md
+  - ai-config.instructions.md
 ---
 
 # Submit PR for Review
