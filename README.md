@@ -7,6 +7,7 @@ A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with *
 ## ✨ Features
 
 - 🎮 Classic two-player gameplay with alternating starting player
+- 🤖 **Computer opponent mode** with smart thinking delay
 - 📱 Responsive design (mobile, tablet, desktop)
 - ✨ Clear turn indicator and congratulations messages
 - 🏁 Win & early draw detection
@@ -68,19 +69,22 @@ src/
 ├── game/           # Core logic (pure functions)
 │   ├── types.ts    # Type definitions
 │   ├── logic.ts    # Win detection, validation
-│   └── state.ts    # State management
+│   ├── state.ts    # State management
+│   └── computer.ts # Computer opponent
 ├── ui/             # DOM rendering
 │   ├── board.ts    # Game board
-│   └── status.ts   # Turn indicator
+│   ├── status.ts   # Turn indicator
+│   └── modeSelector.ts # Mode selection
 └── main.ts         # Entry point
 ```
 
 ## 🎮 How to Play
 
-1. **Player X** starts first
-2. Click any empty cell to place your mark
-3. Alternate turns until someone wins or it's a draw
-4. Click **New Game** to play again
+1. **Choose your opponent**: Select "Human" for 2-player or "Computer" for single-player
+2. **Player X** starts first
+3. Click any empty cell to place your mark
+4. Alternate turns until someone wins or it's a draw
+5. Click **New Game** to play again
 
 ## 🌐 Deployment
 

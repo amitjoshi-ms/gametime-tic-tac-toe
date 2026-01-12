@@ -94,12 +94,14 @@ gametime-tic-tac-toe/
 │   │   ├── types.ts        # TypeScript type definitions
 │   │   ├── logic.ts        # Win detection, move validation
 │   │   ├── state.ts        # State management
-│   │   └── playerNames.ts  # Player name persistence
+│   │   ├── playerNames.ts  # Player name persistence
+│   │   └── computer.ts     # Computer opponent logic
 │   ├── ui/                 # UI components
 │   │   ├── board.ts        # Game board rendering
 │   │   ├── status.ts       # Turn/result display
 │   │   ├── controls.ts     # New Game button
-│   │   └── playerNames.ts  # Name input fields
+│   │   ├── playerNames.ts  # Name input fields
+│   │   └── modeSelector.ts # Game mode selector
 │   ├── utils/
 │   │   └── storage.ts      # localStorage utilities
 │   ├── styles/

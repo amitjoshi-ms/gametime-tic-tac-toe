@@ -308,7 +308,7 @@ test('complete game flow', async ({ page }) => {
 ### Checklist for New Features
 
 - [ ] Added/updated types in `game/types.ts`
-- [ ] Implemented logic in `game/logic.ts`
+- [ ] Implemented logic in `game/logic.ts` or `game/computer.ts`
 - [ ] Updated state management in `game/state.ts`
 - [ ] Updated UI components in `ui/`
 - [ ] Added unit tests
