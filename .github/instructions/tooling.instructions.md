@@ -29,9 +29,12 @@ This project uses several configuration files for tooling. Changes to these file
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "lint": "eslint src tests",
+    "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   }
 }

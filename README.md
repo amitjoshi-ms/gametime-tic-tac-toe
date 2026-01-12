@@ -7,14 +7,15 @@ A modern, offline-capable Tic-Tac-Toe game built as a Progressive Web App with *
 ## ✨ Features
 
 - 🎮 Classic two-player gameplay with alternating starting player
-- 🤖 **Computer opponent mode** with smart thinking delay
+- 🤖 Computer opponent with random move selection
+- 🎯 Toggle between human vs human and human vs computer modes
 - 📱 Responsive design (mobile, tablet, desktop)
 - ✨ Clear turn indicator and congratulations messages
 - 🏁 Win & early draw detection
 - 👤 Custom player names with localStorage persistence
 - 📴 Works offline (PWA)
 - ♿ Full keyboard & screen reader support
-- ⚡ ~10KB total bundle size
+- ⚡ ~15KB total bundle size
 
 ## 🚀 Quick Start
 
@@ -56,9 +57,12 @@ Open [http://localhost:5173](http://localhost:5173) and start playing!
 ```bash
 npm run dev        # Development server
 npm run build      # Production build
+npm run preview    # Preview production build
 npm test           # Unit tests
+npm run test:watch # Unit tests (watch mode)
 npm run test:e2e   # E2E tests
 npm run lint       # Lint code
+npm run format     # Format code with Prettier
 npm run typecheck  # Type checking
 ```
 
@@ -70,21 +74,27 @@ src/
 │   ├── types.ts    # Type definitions
 │   ├── logic.ts    # Win detection, validation
 │   ├── state.ts    # State management
-│   └── computer.ts # Computer opponent
+│   ├── computer.ts # Computer opponent
+│   └── playerNames.ts # Player name persistence
 ├── ui/             # DOM rendering
 │   ├── board.ts    # Game board
 │   ├── status.ts   # Turn indicator
-│   └── modeSelector.ts # Mode selection
+│   ├── controls.ts # Game controls
+│   ├── modeSelector.ts # Mode toggle
+│   └── playerNames.ts # Name inputs
+├── utils/          # Shared utilities
+│   └── storage.ts  # localStorage helpers
 └── main.ts         # Entry point
 ```
 
 ## 🎮 How to Play
 
-1. **Choose your opponent**: Select "Human" for 2-player or "Computer" for single-player
+1. **Choose your mode**: Human vs Human or Human vs Computer
 2. **Player X** starts first
 3. Click any empty cell to place your mark
-4. Alternate turns until someone wins or it's a draw
-5. Click **New Game** to play again
+4. In computer mode, the computer (O) plays automatically after a brief delay
+5. Alternate turns until someone wins or it's a draw
+6. Click **New Game** to play again
 
 ## 🌐 Deployment
 

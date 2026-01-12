@@ -14,6 +14,7 @@ The `src/game/` directory contains **pure functions** with no side effects:
 | `types.ts` | Domain type definitions | None |
 | `logic.ts` | Game rules (win detection, validation) | None |
 | `state.ts` | State transitions | None |
+| `computer.ts` | Computer opponent move selection | None (uses Math.random) |
 | `playerNames.ts` | Name persistence helpers | localStorage only |
 
 ## Pure Function Requirements
@@ -73,6 +74,7 @@ export function determineStatus(board: CellValue[], lastPlayer: Player): GameSta
 export type CellValue = 'X' | 'O' | null;
 export type Player = 'X' | 'O';
 export type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
+export type GameMode = 'human' | 'computer';
 ```
 
 ### Document Invariants
@@ -85,12 +87,15 @@ export type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
  * - board always has exactly 9 elements
  * - If status !== 'playing', no more moves are accepted
  * - Number of X marks >= number of O marks (X always goes first)
+ * - isComputerThinking can only be true when gameMode === 'computer' and currentPlayer === 'O'
  */
 export interface GameState {
   board: CellValue[];
   currentPlayer: Player;
   status: GameStatus;
   playerNames: PlayerNames;
+  gameMode: GameMode;
+  isComputerThinking: boolean;
 }
 ```
 
