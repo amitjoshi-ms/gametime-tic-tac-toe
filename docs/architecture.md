@@ -111,7 +111,6 @@ DOM manipulation and event handling. Depends on game logic.
 | `controls.ts` | Renders "New Game" button |
 | `modeSelector.ts` | Game mode toggle (human vs computer) |
 | `playerNames.ts` | Player name input fields |
-| `modeSelector.ts` | Game mode selector (Human vs Computer) |
 
 #### `src/utils/` - Utilities
 
