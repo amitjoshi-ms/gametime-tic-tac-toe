@@ -117,8 +117,8 @@ You can inspect the run manually with:
 # List recent runs for the release workflow
 gh run list --workflow=release-to-production.yml --limit 5
 
-# Then inspect a specific run (replace RUN_ID with the desired ID)
-gh run view RUN_ID --log-failed
+# Then inspect a specific run (replace RUN_ID with the actual run ID from the list above)
+gh run view RUN_ID --log-failed  # replace RUN_ID with the actual run ID from the list above
 ```
 
 ### 6. Verify deployment
