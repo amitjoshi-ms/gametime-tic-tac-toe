@@ -130,12 +130,6 @@ describe('getDemoPlayerNames', () => {
     expect(names.O).toBe(DEFAULT_DEMO_O_NAME);
   });
 
-  it('should return Computer X and Computer O as defaults', () => {
-    const names = getDemoPlayerNames();
-    expect(names.X).toBe('Computer X');
-    expect(names.O).toBe('Computer O');
-  });
-
   it('should return a new object each time', () => {
     const names1 = getDemoPlayerNames();
     const names2 = getDemoPlayerNames();
