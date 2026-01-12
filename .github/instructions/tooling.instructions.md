@@ -117,7 +117,7 @@ export default defineConfig({
 **Rules:**
 - Keep `sourcemap: true` for debugging
 - Sync `alias` with tsconfig paths
-- Don't add unnecessary plugins (zero-dependency goal)
+- Don't add plugins that introduce runtime dependencies (maintain zero runtime dependencies)
 
 ## vitest.config.ts
 
