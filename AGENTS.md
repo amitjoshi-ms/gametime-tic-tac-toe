@@ -14,7 +14,7 @@ npm run dev
 # Run tests
 npm test
 
-# Run E2E tests (interactive mode - may wait on failure)
+# Run Playwright E2E tests (may wait on failure unless CI=true is set)
 npm run test:e2e
 
 # Run E2E tests (CI mode - no interactive prompts)
