@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderBoard, updateBoard } from '../../src/ui/board';
-import type { GameState } from '../../src/game/types';
+import type { GameState, CellValue } from '../../src/game/types';
 
 describe('board rendering', () => {
   let container: HTMLElement;
@@ -18,7 +18,7 @@ describe('board rendering', () => {
   describe('renderBoard', () => {
     it('should create 9 cell elements', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -35,7 +35,7 @@ describe('board rendering', () => {
 
     it('should render empty cells initially', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -150,7 +150,7 @@ describe('board rendering', () => {
 
     it('should set data-index attribute for each cell', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -169,7 +169,7 @@ describe('board rendering', () => {
 
     it('should set aria-label for each cell', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -207,7 +207,7 @@ describe('board rendering', () => {
 
     it('should call onCellClick when a cell is clicked', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -242,7 +242,7 @@ describe('board rendering', () => {
 
     it('should not add board--thinking class when computer is not thinking', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Computer' },
@@ -260,7 +260,7 @@ describe('board rendering', () => {
   describe('updateBoard', () => {
     it('should update cell content without full re-render', () => {
       const initialState: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
@@ -341,7 +341,7 @@ describe('board rendering', () => {
 
     it('should update aria-labels when cells change', () => {
       const state: GameState = {
-        board: Array.from<CellValue>({ length: 9 }, () => null),
+        board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
         playerNames: { X: 'Player X', O: 'Player O' },
