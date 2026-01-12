@@ -130,11 +130,8 @@ function makeMove(state: GameState, cellIndex: number): GameState {
   if (state.board[cellIndex] !== null) return state;
 
   // Only proceed if move is valid
-  // NOTE: This pattern assumes an immutable state model where callers
-  //       skip re-renders when the returned state is the same reference
-  //       (e.g. `if (nextState === prevState) { return; }`).
-  //       Callers MUST perform that reference check for this optimization
-  //       to have any effect.
+  // NOTE: This pattern returns the same reference when the move is invalid,
+  //       allowing callers to skip re-renders by checking reference equality.
 }
 
 // Example caller using the reference-check contract:
