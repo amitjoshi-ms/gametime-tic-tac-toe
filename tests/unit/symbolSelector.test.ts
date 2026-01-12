@@ -6,8 +6,6 @@
  */
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
@@ -39,8 +37,9 @@ describe('renderSymbolSelectors', () => {
   it('should create selector with all available symbols as options', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const options = Array.from(xSelector.options);
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const options = Array.from((xSelector as HTMLSelectElement).options);
 
     expect(options).toHaveLength(AVAILABLE_SYMBOLS.length);
     AVAILABLE_SYMBOLS.forEach((symbol, index) => {
@@ -51,24 +50,28 @@ describe('renderSymbolSelectors', () => {
   it('should mark the current symbol as selected', () => {
     renderSymbolSelectors(container, '★', '🔵', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    expect(xSelector.value).toBe('★');
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    expect((xSelector as HTMLSelectElement).value).toBe('★');
 
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
-    expect(oSelector.value).toBe('🔵');
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
+    expect((oSelector as HTMLSelectElement).value).toBe('🔵');
   });
 
   it('should disable the other player\'s symbol in each selector', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const xOptions = Array.from(xSelector.options);
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const xOptions = Array.from((xSelector as HTMLSelectElement).options);
     const oOptionInX = xOptions.find((opt) => opt.value === 'O');
     expect(oOptionInX?.disabled).toBe(true);
     expect(oOptionInX?.textContent).toContain('in use');
 
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
-    const oOptions = Array.from(oSelector.options);
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
+    const oOptions = Array.from((oSelector as HTMLSelectElement).options);
     const xOptionInO = oOptions.find((opt) => opt.value === 'X');
     expect(xOptionInO?.disabled).toBe(true);
     expect(xOptionInO?.textContent).toContain('in use');
@@ -77,19 +80,22 @@ describe('renderSymbolSelectors', () => {
   it('should have proper aria labels', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
 
-    expect(xSelector.getAttribute('aria-label')).toBe('Symbol for Player X');
-    expect(oSelector.getAttribute('aria-label')).toBe('Symbol for Player O');
+    expect(xSelector?.getAttribute('aria-label')).toBe('Symbol for Player X');
+    expect(oSelector?.getAttribute('aria-label')).toBe('Symbol for Player O');
   });
 
   it('should call onChange when X selector value changes', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    xSelector.value = '★';
-    xSelector.dispatchEvent(new Event('change'));
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    (xSelector as HTMLSelectElement).value = '★';
+    xSelector?.dispatchEvent(new Event('change'));
 
     expect(mockOnChange).toHaveBeenCalledWith('X', '★');
   });
@@ -97,9 +103,10 @@ describe('renderSymbolSelectors', () => {
   it('should call onChange when O selector value changes', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
-    oSelector.value = '🔵';
-    oSelector.dispatchEvent(new Event('change'));
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
+    (oSelector as HTMLSelectElement).value = '🔵';
+    oSelector?.dispatchEvent(new Event('change'));
 
     expect(mockOnChange).toHaveBeenCalledWith('O', '🔵');
   });
@@ -107,9 +114,10 @@ describe('renderSymbolSelectors', () => {
   it('should not call onChange if selecting the other player\'s symbol', () => {
     renderSymbolSelectors(container, 'X', 'O', mockOnChange);
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    xSelector.value = 'O'; // Try to select O's symbol
-    xSelector.dispatchEvent(new Event('change'));
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    (xSelector as HTMLSelectElement).value = 'O'; // Try to select O's symbol
+    xSelector?.dispatchEvent(new Event('change'));
 
     expect(mockOnChange).not.toHaveBeenCalled();
   });
@@ -150,22 +158,25 @@ describe('updateSymbolSelectors', () => {
   it('should update X selector value when changed', () => {
     updateSymbolSelectors(container, '★', 'O');
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    expect(xSelector.value).toBe('★');
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    expect((xSelector as HTMLSelectElement).value).toBe('★');
   });
 
   it('should update O selector value when changed', () => {
     updateSymbolSelectors(container, 'X', '🔵');
 
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
-    expect(oSelector.value).toBe('🔵');
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
+    expect((oSelector as HTMLSelectElement).value).toBe('🔵');
   });
 
   it('should update disabled state in X selector based on new O symbol', () => {
     updateSymbolSelectors(container, 'X', '★');
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const options = Array.from(xSelector.options);
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const options = Array.from((xSelector as HTMLSelectElement).options);
     const starOption = options.find((opt) => opt.value === '★');
 
     expect(starOption?.disabled).toBe(true);
@@ -175,8 +186,9 @@ describe('updateSymbolSelectors', () => {
   it('should update disabled state in O selector based on new X symbol', () => {
     updateSymbolSelectors(container, '●', 'O');
 
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
-    const options = Array.from(oSelector.options);
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
+    const options = Array.from((oSelector as HTMLSelectElement).options);
     const circleOption = options.find((opt) => opt.value === '●');
 
     expect(circleOption?.disabled).toBe(true);
@@ -184,12 +196,13 @@ describe('updateSymbolSelectors', () => {
   });
 
   it('should not update selector if value is already correct', () => {
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const initialValue = xSelector.value;
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const initialValue = (xSelector as HTMLSelectElement).value;
 
     updateSymbolSelectors(container, 'X', 'O');
 
-    expect(xSelector.value).toBe(initialValue);
+    expect((xSelector as HTMLSelectElement).value).toBe(initialValue);
   });
 
   it('should handle missing selectors gracefully', () => {
@@ -204,24 +217,27 @@ describe('updateSymbolSelectors', () => {
   it('should update both selectors when both symbols change', () => {
     updateSymbolSelectors(container, '★', '🔵');
 
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    const oSelector = container.querySelector('#symbol-selector-O')! as HTMLSelectElement;
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    const oSelector = container.querySelector('#symbol-selector-O');
+    expect(oSelector).toBeInstanceOf(HTMLSelectElement);
 
-    expect(xSelector.value).toBe('★');
-    expect(oSelector.value).toBe('🔵');
+    expect((xSelector as HTMLSelectElement).value).toBe('★');
+    expect((oSelector as HTMLSelectElement).value).toBe('🔵');
   });
 
   it('should properly re-enable previously disabled options', () => {
     // Initially X='X', O='O', so X selector has 'O' disabled
-    const xSelector = container.querySelector('#symbol-selector-X')! as HTMLSelectElement;
-    let options = Array.from(xSelector.options);
+    const xSelector = container.querySelector('#symbol-selector-X');
+    expect(xSelector).toBeInstanceOf(HTMLSelectElement);
+    let options = Array.from((xSelector as HTMLSelectElement).options);
     let oOption = options.find((opt) => opt.value === 'O');
     expect(oOption?.disabled).toBe(true);
 
     // Now change O to '★', so 'O' should become enabled in X selector
     updateSymbolSelectors(container, 'X', '★');
 
-    options = Array.from(xSelector.options);
+    options = Array.from((xSelector as HTMLSelectElement).options);
     oOption = options.find((opt) => opt.value === 'O');
     expect(oOption?.disabled).toBe(false);
     expect(oOption?.textContent).toBe('O');
