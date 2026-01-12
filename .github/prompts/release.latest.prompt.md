@@ -75,20 +75,20 @@ Automatically wait for the workflow to complete:
 
 ```bash
 # Wait for the workflow run to appear and get the latest run ID
-MAX_ATTEMPTS=5
-SLEEP_SECONDS=5
+max_attempts=5
+sleep_seconds=5
 
 attempt=1
-while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+while [ "$attempt" -le "$max_attempts" ]; do
   RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
 
   if [ -n "$RUN_ID" ] && [ "$RUN_ID" != "null" ]; then
     break
   fi
 
-  echo "Workflow run not found yet (attempt $attempt/$MAX_ATTEMPTS). Waiting ${SLEEP_SECONDS}s..."
+  echo "Workflow run not found yet (attempt $attempt/$max_attempts). Waiting ${sleep_seconds}s..."
   attempt=$((attempt + 1))
-  sleep "$SLEEP_SECONDS"
+  sleep "$sleep_seconds"
 done
 
 # Check if a run ID was found before attempting to watch
