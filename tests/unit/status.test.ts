@@ -14,6 +14,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'X',
       status: 'playing',
       playerNames: { X: 'Alice', O: 'Bob' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -26,6 +28,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'O',
       status: 'playing',
       playerNames: { X: 'Alice', O: 'Bob' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -38,6 +42,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'O',
       status: 'x-wins',
       playerNames: { X: 'Alice', O: 'Bob' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -50,6 +56,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'X',
       status: 'o-wins',
       playerNames: { X: 'Alice', O: 'Bob' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -62,6 +70,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'X',
       status: 'draw',
       playerNames: { X: 'Alice', O: 'Bob' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -74,6 +84,8 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'X',
       status: 'playing',
       playerNames: { X: 'Player X', O: 'Player O' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
@@ -86,9 +98,71 @@ describe('getStatusMessage with custom names', () => {
       currentPlayer: 'X',
       status: 'playing',
       playerNames: { X: "O'Brien", O: 'José' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
 
     const message = getStatusMessage(state);
     expect(message).toBe("O'Brien's Turn");
+  });
+});
+
+describe('getStatusMessage with computer thinking', () => {
+  it('should show thinking message when computer is thinking', () => {
+    const state: GameState = {
+      board: ['X', null, null, null, null, null, null, null, null],
+      currentPlayer: 'O',
+      status: 'playing',
+      playerNames: { X: 'Player X', O: 'Computer' },
+      gameMode: 'computer',
+      isComputerThinking: true,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('Computer is thinking');
+  });
+
+  it('should use custom computer name in thinking message', () => {
+    const state: GameState = {
+      board: ['X', null, null, null, null, null, null, null, null],
+      currentPlayer: 'O',
+      status: 'playing',
+      playerNames: { X: 'Alice', O: 'HAL 9000' },
+      gameMode: 'computer',
+      isComputerThinking: true,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('HAL 9000 is thinking');
+  });
+
+  it('should show normal turn message when not thinking', () => {
+    const state: GameState = {
+      board: [null, null, null, null, null, null, null, null, null],
+      currentPlayer: 'X',
+      status: 'playing',
+      playerNames: { X: 'Player X', O: 'Computer' },
+      gameMode: 'computer',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe("Player X's Turn");
+  });
+
+  it('should prioritize thinking state over turn display', () => {
+    const state: GameState = {
+      board: ['X', null, null, null, null, null, null, null, null],
+      currentPlayer: 'O',
+      status: 'playing',
+      playerNames: { X: 'Alice', O: 'Computer' },
+      gameMode: 'computer',
+      isComputerThinking: true,
+    };
+
+    const message = getStatusMessage(state);
+    // Should show "thinking" not "Computer's Turn"
+    expect(message).toBe('Computer is thinking');
+    expect(message).not.toContain('Turn');
   });
 });

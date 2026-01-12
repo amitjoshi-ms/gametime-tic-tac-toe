@@ -5,7 +5,7 @@
  * @module game/state
  */
 
-import type { GameState, Player, PlayerNames } from './types';
+import type { GameState, GameMode, Player, PlayerNames } from './types';
 import { isValidMove, determineStatus } from './logic';
 import { loadPlayerNames } from './playerNames';
 
@@ -19,15 +19,22 @@ let nextStartingPlayer: Player = 'X';
  * Creates a fresh game state with empty board, always with X to play.
  * Note: For alternating starting players, use resetGame() instead.
  *
+ * @param playerNames - Optional custom player names
+ * @param gameMode - Optional game mode (defaults to 'human')
  * @returns Initial game state with X as the starting player
  */
-export function createInitialState(playerNames?: PlayerNames): GameState {
+export function createInitialState(
+  playerNames?: PlayerNames,
+  gameMode: GameMode = 'human'
+): GameState {
   const names = playerNames ?? loadPlayerNames();
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
     playerNames: { ...names },
+    gameMode,
+    isComputerThinking: false,
   };
 }
 
@@ -40,8 +47,11 @@ export function createInitialState(playerNames?: PlayerNames): GameState {
  * @returns New game state (immutable update) or same state if invalid
  */
 export function makeMove(state: GameState, cellIndex: number): GameState {
-  // Validate move
-  if (!isValidMove(state.board, cellIndex, state.status)) {
+  // Validate move - also reject if computer is thinking
+  if (
+    !isValidMove(state.board, cellIndex, state.status) ||
+    state.isComputerThinking
+  ) {
     return state; // Return same reference to indicate no change
   }
 
@@ -60,6 +70,8 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     currentPlayer: nextPlayer,
     status: newStatus,
     playerNames: state.playerNames,
+    gameMode: state.gameMode,
+    isComputerThinking: false,
   };
 }
 
@@ -74,10 +86,12 @@ export function resetStartingPlayerState(): void {
 /**
  * Resets the game to initial state with alternating starting player.
  * Each new game starts with the opposite player from the previous game.
+ * Preserves the current game mode.
  *
+ * @param currentMode - Current game mode to preserve (defaults to 'human')
  * @returns Fresh game state with alternating starting player
  */
-export function resetGame(): GameState {
+export function resetGame(currentMode: GameMode = 'human'): GameState {
   const startingPlayer = nextStartingPlayer;
   // Toggle for next reset
   nextStartingPlayer = nextStartingPlayer === 'X' ? 'O' : 'X';
@@ -87,5 +101,42 @@ export function resetGame(): GameState {
     currentPlayer: startingPlayer,
     status: 'playing',
     playerNames: loadPlayerNames(),
+    gameMode: currentMode,
+    isComputerThinking: false,
   };
+}
+
+/**
+ * Sets the computer thinking state.
+ *
+ * @param state - Current game state
+ * @param isThinking - Whether computer is thinking
+ * @returns New game state with thinking state updated
+ */
+export function setComputerThinking(
+  state: GameState,
+  isThinking: boolean
+): GameState {
+  if (state.isComputerThinking === isThinking) {
+    return state; // No change needed
+  }
+  return {
+    ...state,
+    isComputerThinking: isThinking,
+  };
+}
+
+/**
+ * Checks if it's currently the computer's turn.
+ *
+ * @param state - Current game state
+ * @returns True if computer should move
+ */
+export function isComputerTurn(state: GameState): boolean {
+  return (
+    state.gameMode === 'computer' &&
+    state.currentPlayer === 'O' &&
+    state.status === 'playing' &&
+    !state.isComputerThinking
+  );
 }

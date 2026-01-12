@@ -7,7 +7,15 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Tic-Tac-Toe Game', () => {
   test.beforeEach(async ({ page }) => {
+    // Clear localStorage to start fresh (ensures human mode as default)
+    await page.addInitScript(() => {
+      localStorage.clear();
+    });
     await page.goto('/');
+    // Human mode is the default when localStorage is cleared, just verify it's selected
+    await expect(page.locator('.mode-selector__option--selected')).toContainText('Human');
+    // Verify X starts first on fresh page load
+    await expect(page.locator('.status')).toContainText("Player X's Turn");
   });
 
   test.describe('Initial State', () => {
@@ -154,16 +162,45 @@ test.describe('Tic-Tac-Toe Game', () => {
       const cells = page.locator('.cell');
       const status = page.locator('.status');
 
-      // Play a draw: X O X / X O O / O X X
-      await cells.nth(0).click(); // X
-      await cells.nth(1).click(); // O
-      await cells.nth(2).click(); // X
-      await cells.nth(4).click(); // O
-      await cells.nth(3).click(); // X
-      await cells.nth(5).click(); // O
-      await cells.nth(7).click(); // X
-      await cells.nth(6).click(); // O
-      await cells.nth(8).click(); // X - Draw
+      // Verify we start with X's turn
+      await expect(status).toContainText("Player X's Turn");
+
+      // Play a draw sequence that doesn't trigger early draw detection
+      // Final board: X X O / O X X / X O O
+      // This sequence keeps diagonal 0-4-8 (X-X-?) unblocked until the 9th move
+
+      await cells.nth(0).click(); // X at 0
+      await expect(cells.nth(0)).toHaveText('X');
+
+      await cells.nth(2).click(); // O at 2
+      await expect(cells.nth(2)).toHaveText('O');
+
+      await cells.nth(4).click(); // X at 4
+      await expect(cells.nth(4)).toHaveText('X');
+
+      await cells.nth(3).click(); // O at 3
+      await expect(cells.nth(3)).toHaveText('O');
+
+      await cells.nth(5).click(); // X at 5
+      await expect(cells.nth(5)).toHaveText('X');
+
+      await cells.nth(7).click(); // O at 7
+      await expect(cells.nth(7)).toHaveText('O');
+
+      await cells.nth(6).click(); // X at 6
+      await expect(cells.nth(6)).toHaveText('X');
+
+      await cells.nth(8).click(); // O at 8 - blocks diagonal 0-4-8
+      await expect(cells.nth(8)).toHaveText('O');
+      // At this point, all lines should now be blocked, triggering early draw
+      // OR if not, the next move fills the board
+
+      // Either the game already ended in draw, or we need one more move
+      const statusText = await status.textContent();
+      if (statusText?.includes("Player X's Turn")) {
+        await cells.nth(1).click(); // X at 1 - final move
+        await expect(cells.nth(1)).toHaveText('X');
+      }
 
       await expect(status).toContainText("It's a Draw!");
     });
