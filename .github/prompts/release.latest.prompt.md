@@ -54,18 +54,18 @@ gh api repos/{owner}/{repo}/branches/release/protection -X PUT \
 gh workflow run release-to-production.yml -f confirm=release
 ```
 
-### 4. Poll for workflow completion
+### 3. Wait for workflow completion
 
-Wait a few seconds, then check status:
+Automatically wait for the workflow to complete:
 
 ```bash
-gh run list --workflow=release-to-production.yml --limit 1
+gh run watch $(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
 ```
 
-Repeat until status shows `✓` (success) or `X` (failure). If failed, check logs:
+If the workflow fails, check logs:
 
 ```bash
-gh run view <run-id> --log-failed
+gh run view $(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId') --log-failed
 ```
 
 ### 5. Verify deployment
