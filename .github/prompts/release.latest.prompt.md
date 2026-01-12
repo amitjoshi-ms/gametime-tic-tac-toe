@@ -60,13 +60,28 @@ gh workflow run release-to-production.yml -f confirm=release
 Automatically wait for the workflow to complete:
 
 ```bash
-# Get the latest run ID
-RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+# Wait for the workflow run to appear and get the latest run ID
+MAX_ATTEMPTS=5
+SLEEP_SECONDS=5
+
+attempt=1
+while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+  RUN_ID=$(gh run list --workflow=release-to-production.yml --limit 1 --json databaseId --jq '.[0].databaseId')
+
+  if [ -n "$RUN_ID" ] && [ "$RUN_ID" != "null" ]; then
+    break
+  fi
+
+  echo "Workflow run not found yet (attempt $attempt/$MAX_ATTEMPTS). Waiting ${SLEEP_SECONDS}s..."
+  attempt=$((attempt + 1))
+  sleep "$SLEEP_SECONDS"
+done
 
 # Check if a run ID was found before attempting to watch
 if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-  echo "Error: No workflow run found. The workflow may not have been triggered yet."
-  echo "Wait a few seconds and try checking manually with: gh run list --workflow=release-to-production.yml"
+  echo "Error: No workflow run found after waiting $((MAX_ATTEMPTS * SLEEP_SECONDS)) seconds."
+  echo "The workflow may not have been triggered yet or may be delayed."
+  echo "Try checking manually with: gh run list --workflow=release-to-production.yml"
   exit 1
 fi
 
