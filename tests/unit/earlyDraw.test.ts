@@ -259,6 +259,24 @@ describe('determineStatus - Early Draw Integration', () => {
     });
   });
 
+  describe('Turn-Aware Early Draw Detection', () => {
+    it('should detect draw when next player will block only winning line (1 empty cell)', () => {
+      // Board: X _ O / O O X / X O X
+      // O has live line [1,4,7] but it's X's turn (O just played)
+      // X will play at 1, blocking O → draw
+      const board: CellValue[] = ['X', null, 'O', 'O', 'O', 'X', 'X', 'O', 'X'];
+      expect(determineStatus(board, 'O')).toBe('draw');
+    });
+
+    it('should detect draw when both players have live lines with 2 empty cells', () => {
+      // Board: X O X / O _ X / X _ O (from original issue)
+      // X has live line [2,4,6], O has live line [1,4,7]
+      // Both need position 4, O goes first and blocks → draw
+      const board: CellValue[] = ['X', 'O', 'X', 'O', null, 'X', 'X', null, 'O'];
+      expect(determineStatus(board, 'X')).toBe('playing'); // With 2 empty cells, game continues
+    });
+  });
+
   describe('Should Prioritize Win Over Draw', () => {
     it('should return x-wins even if other lines are blocked', () => {
       // X wins top row
