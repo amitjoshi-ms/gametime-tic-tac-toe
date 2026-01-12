@@ -30,15 +30,19 @@ npm run lint
 src/                    # Application source code
 ├── main.ts             # Entry point (orchestration, event handling)
 ├── game/               # Pure game logic (NO side effects)
-│   ├── types.ts        # Domain types (GameState, CellValue, etc.)
+│   ├── types.ts        # Domain types (GameState, CellValue, GameMode, etc.)
 │   ├── logic.ts        # Game rules (checkWin, isValidMove)
 │   ├── state.ts        # State transitions (makeMove, resetGame)
+│   ├── computer.ts     # Computer opponent (selectComputerMove, scheduleComputerMove)
 │   └── playerNames.ts  # Player name persistence
 ├── ui/                 # DOM manipulation (rendering only)
 │   ├── board.ts        # Board rendering
 │   ├── status.ts       # Status display
 │   ├── controls.ts     # Buttons
+│   ├── modeSelector.ts # Game mode toggle (human vs computer)
 │   └── playerNames.ts  # Name input fields
+├── utils/              # Shared utilities
+│   └── storage.ts      # localStorage helpers
 └── styles/             # CSS
 
 tests/
@@ -59,6 +63,7 @@ tests/
 | Layer | Responsibility | Side Effects |
 |-------|----------------|--------------|
 | `src/game/logic.ts` | Game rules | NONE - pure functions |
+| `src/game/computer.ts` | Computer opponent | NONE - pure functions (uses Math.random) |
 | `src/game/state.ts` | State transitions | NONE - returns new objects |
 | `src/ui/*.ts` | DOM rendering | DOM writes only |
 | `src/main.ts` | Orchestration | Events, DOM, storage |

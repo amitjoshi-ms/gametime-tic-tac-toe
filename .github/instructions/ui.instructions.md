@@ -14,6 +14,7 @@ src/ui/
 ├── board.ts        # Game board rendering
 ├── status.ts       # Game status display
 ├── controls.ts     # Buttons and controls
+├── modeSelector.ts # Game mode toggle (human vs computer)
 └── playerNames.ts  # Player name inputs
 ```
 

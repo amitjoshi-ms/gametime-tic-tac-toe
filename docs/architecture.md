@@ -52,6 +52,7 @@ The application follows a **unidirectional data flow** pattern with clear separa
 │      - Initializes modules                                  │
 │      - Coordinates state and UI                             │
 │      - Handles top-level events                             │
+│      - Schedules computer moves                             │
 └────────────────┬───────────────────────┬────────────────────┘
                  │                       │
         ┌────────▼────────┐     ┌────────▼────────┐
@@ -61,6 +62,7 @@ The application follows a **unidirectional data flow** pattern with clear separa
         │ • types.ts      │     │ • board.ts      │
         │ • logic.ts      │     │ • status.ts     │
         │ • state.ts      │     │ • controls.ts   │
+        │ • computer.ts   │     │ • modeSelector.ts│
         │ • playerNames.ts│     │ • playerNames.ts│
         └────────┬────────┘     └────────┬────────┘
                  │                       │
@@ -85,6 +87,7 @@ Pure functions with no side effects. Easily testable in isolation.
 | `types.ts` | TypeScript type definitions and interfaces |
 | `logic.ts` | Game rules: win detection, draw detection, move validation |
 | `state.ts` | State management: create, update, reset game state |
+| `computer.ts` | Computer opponent: random move selection, thinking delay |
 | `playerNames.ts` | Player name loading/saving with localStorage |
 
 #### `src/ui/` - User Interface
@@ -96,6 +99,7 @@ DOM manipulation and event handling. Depends on game logic.
 | `board.ts` | Renders 3x3 grid, handles cell clicks via event delegation |
 | `status.ts` | Displays turn indicator and game results |
 | `controls.ts` | Renders "New Game" button |
+| `modeSelector.ts` | Game mode toggle (human vs computer) |
 | `playerNames.ts` | Player name input fields |
 
 #### `src/utils/` - Utilities
