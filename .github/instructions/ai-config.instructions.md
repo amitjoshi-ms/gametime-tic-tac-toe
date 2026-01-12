@@ -298,4 +298,4 @@ type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
 ❌ **Huge, catch-all instruction files**
 
 ✅ **Short, focused instruction files**
-Prefer short, focused instruction files; if a file starts to grow large, split it into smaller topic-specific files instead of letting it exceed the documented line-count guideline.
+For most instruction files, prefer short, focused files; if a file starts to grow large, split it into smaller topic-specific files rather than letting it exceed the documented line-count guideline. This central `ai-config.instructions.md` file is an explicit exception because it aggregates cross-cutting standards; other instruction files should follow the line-count guideline or be split accordingly.
