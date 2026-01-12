@@ -140,7 +140,8 @@ More instructions.
 - `description` and `mode` are standard GitHub Copilot fields
 - `instructions` is a project-specific convention listing instruction files to reference
 - The `instructions` list uses YAML array syntax (indented with `  -` prefix)
-- GitHub Copilot allows custom fields; our AI agents use `instructions` to load relevant context
+- GitHub Copilot allows custom fields; our AI agents use `instructions` to load relevant context across prompt and agent files
+- Other prompt/agent files that use the `instructions` field SHOULD either add a brief YAML comment explaining that it is a project-specific field (and what it points to) or reference this section of `ai-config.instructions.md`
 
 **Rules:**
 - Always include frontmatter
