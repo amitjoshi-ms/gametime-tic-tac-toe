@@ -73,8 +73,8 @@ The trap handler below runs on shell EXIT. If you run these commands in an inter
 If you prefer to run commands directly in your interactive shell, skip the trap setup and instead **explicitly call the lock function after step 5** (or immediately if any step fails):
 
 ```bash
-# Exit immediately if any command fails
-set -e
+# Reminder: Do NOT rely on `set -e` here; handle errors explicitly.
+# If any step fails, call lock_branch before exiting to ensure the branch is re-locked.
 
 # Repository identifier
 REPO="amitjoshi-ms/gametime-tic-tac-toe"
