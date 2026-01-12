@@ -13,7 +13,42 @@ Execute these steps in order:
 
 ### 1. Set up error handling to guarantee branch re-lock
 
-Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail:
+Before starting, set up a trap to ensure the branch is always re-locked, even if steps fail.
+
+**⚠️ Important: Run in a subshell or script file**
+
+The trap handler below runs on shell EXIT. If you run these commands in an interactive shell, the trap will only fire when you exit the shell entirely, not when the release steps complete. To ensure proper cleanup:
+
+**Option A (Recommended): Run in a subshell**
+```bash
+(
+  # Repository identifier
+  REPO="amitjoshi-ms/gametime-tic-tac-toe"
+
+  # Function to lock the branch (safe to call even if already locked)
+  lock_branch() {
+    echo "Re-locking release branch..."
+    gh api repos/$REPO/branches/release/protection -X PUT \
+      -H "Accept: application/vnd.github+json" \
+      -f "required_status_checks=null" \
+      -F "enforce_admins=true" \
+      -f "required_pull_request_reviews=null" \
+      -f "restrictions=null" \
+      -F "lock_branch=true" \
+      -F "allow_force_pushes=false" \
+      -F "allow_deletions=false"
+  }
+
+  # Set up trap to always re-lock on exit (success, failure, or interruption)
+  trap lock_branch EXIT
+
+  # ... rest of the steps go here in the subshell ...
+)
+```
+
+**Option B: Explicit cleanup at the end**
+
+If you prefer to run commands directly in your interactive shell, skip the trap setup and instead **explicitly call the lock function after step 5** (or immediately if any step fails):
 
 ```bash
 # Repository identifier
@@ -33,8 +68,7 @@ lock_branch() {
     -F "allow_deletions=false"
 }
 
-# Set up trap to always re-lock on exit (success, failure, or interruption)
-trap lock_branch EXIT
+# Note: Call lock_branch explicitly after step 5 or if any step fails
 ```
 
 **Important:** If the trap handler fails (e.g., due to network issues or API failures), the branch may remain unlocked. In such cases, manually verify and re-lock the branch using the command in step 7.
@@ -113,6 +147,12 @@ if [ "$status" -ne 0 ]; then
 fi
 ```
 
+**If using Option B (explicit cleanup):** After the workflow completes successfully, immediately re-lock the branch:
+
+```bash
+lock_branch
+```
+
 If the workflow fails, check logs:
 
 You can inspect the run manually with:
@@ -129,7 +169,9 @@ gh run view RUN_ID --log-failed  # inspect a specific run
 
 After successful workflow completion, check production at: https://gametime-tic-tac-toe.pages.dev
 
-**Note:** The branch will automatically re-lock when the shell session exits, thanks to the trap handler set up in step 1.
+**Note:** 
+- If using **Option A** (subshell with trap), the branch will automatically re-lock when the subshell exits.
+- If using **Option B** (explicit cleanup), ensure you called `lock_branch` after step 5.
 
 ### 7. Manual re-lock (if needed)
 
