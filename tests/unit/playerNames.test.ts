@@ -10,9 +10,6 @@ import {
   loadPlayerNames,
   savePlayerNames,
   resetPlayerNames,
-  getDemoPlayerNames,
-  DEFAULT_DEMO_X_NAME,
-  DEFAULT_DEMO_O_NAME,
 } from '../../src/game/playerNames';
 
 // Mock localStorage
@@ -120,29 +117,5 @@ describe('resetPlayerNames', () => {
     const loaded = loadPlayerNames();
     expect(loaded.X).toBe('Player X');
     expect(loaded.O).toBe('Player O');
-  });
-});
-
-describe('getDemoPlayerNames', () => {
-  it('should return demo default names', () => {
-    const names = getDemoPlayerNames();
-    expect(names.X).toBe(DEFAULT_DEMO_X_NAME);
-    expect(names.O).toBe(DEFAULT_DEMO_O_NAME);
-  });
-
-  it('should return a new object each time', () => {
-    const names1 = getDemoPlayerNames();
-    const names2 = getDemoPlayerNames();
-    expect(names1).not.toBe(names2);
-  });
-});
-
-describe('demo name constants', () => {
-  it('should have correct default demo X name', () => {
-    expect(DEFAULT_DEMO_X_NAME).toBe('Computer X');
-  });
-
-  it('should have correct default demo O name', () => {
-    expect(DEFAULT_DEMO_O_NAME).toBe('Computer O');
   });
 });

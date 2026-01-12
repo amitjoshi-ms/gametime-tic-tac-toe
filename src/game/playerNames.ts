@@ -19,12 +19,6 @@ export const DEFAULT_O_NAME = 'Player O';
 /** Default name for computer opponent */
 export const DEFAULT_COMPUTER_NAME = 'Computer';
 
-/** Default name for Computer X in demo mode */
-export const DEFAULT_DEMO_X_NAME = 'Computer X';
-
-/** Default name for Computer O in demo mode */
-export const DEFAULT_DEMO_O_NAME = 'Computer O';
-
 /**
  * Gets the default player names.
  *
@@ -64,16 +58,4 @@ export function resetPlayerNames(): PlayerNames {
   const defaults = getDefaultPlayerNames();
   savePlayerNames(defaults);
   return defaults;
-}
-
-/**
- * Gets default player names for demo mode.
- *
- * @returns Player names with computer defaults
- */
-export function getDemoPlayerNames(): PlayerNames {
-  return {
-    X: DEFAULT_DEMO_X_NAME,
-    O: DEFAULT_DEMO_O_NAME,
-  };
 }
