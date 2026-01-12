@@ -1,6 +1,8 @@
 /**
  * Unit tests for board rendering.
  * Tests the board UI component rendering and event handling.
+ * 
+ * @vitest-environment jsdom
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';

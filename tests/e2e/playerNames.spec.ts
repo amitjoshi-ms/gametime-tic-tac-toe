@@ -38,50 +38,60 @@ test.describe('Player Names', () => {
   });
 
   test.describe('Name Input UI', () => {
+    // Note: These tests verify that player name inputs are implemented.
+    // If the feature is not yet implemented, these tests will be skipped.
     test('should have player name input fields', async ({ page }) => {
-      const playerXInput = page.locator('input[placeholder*="Player X" i], input[value="Player X"]');
-      const playerOInput = page.locator('input[placeholder*="Player O" i], input[value="Player O"]');
+      // Try to find player name inputs - they may use different selectors
+      const playerXInput = page.locator('input#player-x-name, input[placeholder*="Player X" i], input[value="Player X"]').first();
+      const playerOInput = page.locator('input#player-o-name, input[placeholder*="Player O" i], input[value="Player O"]').first();
 
-      // Check if name inputs exist (they might not be visible initially)
+      // If player name inputs are not implemented, skip this test
       const xInputCount = await playerXInput.count();
-      const oInputCount = await playerOInput.count();
-
-      // If inputs exist, they should have default values or placeholders
-      if (xInputCount > 0) {
-        const xValue = await playerXInput.first().inputValue();
-        expect(xValue).toBeTruthy();
+      if (xInputCount === 0) {
+        test.skip();
+        return;
       }
 
-      if (oInputCount > 0) {
-        const oValue = await playerOInput.first().inputValue();
-        expect(oValue).toBeTruthy();
-      }
+      // Verify inputs exist and have default values
+      await expect(playerXInput).toBeVisible();
+      await expect(playerOInput).toBeVisible();
+      
+      const xValue = await playerXInput.inputValue();
+      const oValue = await playerOInput.inputValue();
+      expect(xValue).toBeTruthy();
+      expect(oValue).toBeTruthy();
     });
 
     test('should allow typing custom player X name', async ({ page }) => {
-      const playerXInput = page.locator('input[placeholder*="Player X" i], input[value="Player X"]').first();
+      const playerXInput = page.locator('input#player-x-name, input[placeholder*="Player X" i], input[value="Player X"]').first();
       
       const inputCount = await playerXInput.count();
-      if (inputCount > 0) {
-        await playerXInput.clear();
-        await playerXInput.fill('Alice');
-        
-        const value = await playerXInput.inputValue();
-        expect(value).toBe('Alice');
+      if (inputCount === 0) {
+        test.skip();
+        return;
       }
+
+      await playerXInput.clear();
+      await playerXInput.fill('Alice');
+      
+      const value = await playerXInput.inputValue();
+      expect(value).toBe('Alice');
     });
 
     test('should allow typing custom player O name', async ({ page }) => {
-      const playerOInput = page.locator('input[placeholder*="Player O" i], input[value="Player O"]').first();
+      const playerOInput = page.locator('input#player-o-name, input[placeholder*="Player O" i], input[value="Player O"]').first();
       
       const inputCount = await playerOInput.count();
-      if (inputCount > 0) {
-        await playerOInput.clear();
-        await playerOInput.fill('Bob');
-        
-        const value = await playerOInput.inputValue();
-        expect(value).toBe('Bob');
+      if (inputCount === 0) {
+        test.skip();
+        return;
       }
+
+      await playerOInput.clear();
+      await playerOInput.fill('Bob');
+      
+      const value = await playerOInput.inputValue();
+      expect(value).toBe('Bob');
     });
   });
 
@@ -96,7 +106,7 @@ test.describe('Player Names', () => {
         await playerXInput.fill('Alice');
         
         // Wait for update
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
         
         // Check if custom name appears in status
         const statusText = await status.textContent();
@@ -115,7 +125,7 @@ test.describe('Player Names', () => {
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill('Alice');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Quick X win
         await cells.nth(0).click();
@@ -145,7 +155,7 @@ test.describe('Player Names', () => {
         await playerXInput.fill('Alice');
         await playerOInput.clear();
         await playerOInput.fill('Bob');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Make moves and check names appear
         await cells.nth(0).click(); // Alice's move
@@ -166,11 +176,11 @@ test.describe('Player Names', () => {
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill('Alice');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Reload page
         await page.reload();
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Check if name persisted
         const playerXInputAfterReload = page.locator('input[placeholder*="Player X" i], input[value="Player X"], input[value="Alice"]').first();
@@ -189,11 +199,11 @@ test.describe('Player Names', () => {
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill('Alice');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Start new game
         await newGameButton.click();
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Check if name persisted
         const playerXInputAfterNew = page.locator('input[value="Alice"]').first();
@@ -211,7 +221,7 @@ test.describe('Player Names', () => {
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill('');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Should revert to default or show placeholder
         const value = await playerXInput.inputValue();
@@ -227,7 +237,7 @@ test.describe('Player Names', () => {
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill("O'Brien");
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         const value = await playerXInput.inputValue();
         expect(value).toBeTruthy();
@@ -242,7 +252,7 @@ test.describe('Player Names', () => {
         const longName = 'A'.repeat(50);
         await playerXInput.clear();
         await playerXInput.fill(longName);
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         const value = await playerXInput.inputValue();
         // Should either accept the full name or truncate it
@@ -258,13 +268,13 @@ test.describe('Player Names', () => {
 
       // Switch to computer mode
       await computerOption.click();
-      await page.waitForTimeout(500);
+      // Input change handlers are synchronous
 
       const inputCount = await playerXInput.count();
       if (inputCount > 0) {
         await playerXInput.clear();
         await playerXInput.fill('Alice');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         const value = await playerXInput.inputValue();
         expect(value).toBe('Alice');
@@ -278,13 +288,13 @@ test.describe('Player Names', () => {
 
       // Switch to computer mode
       await computerOption.click();
-      await page.waitForTimeout(500);
+      // Input change handlers are synchronous
 
       const inputCount = await playerOInput.count();
       if (inputCount > 0) {
         await playerOInput.clear();
         await playerOInput.fill('HAL 9000');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Make a move to trigger computer turn
         const cells = page.locator('.cell');
@@ -310,7 +320,7 @@ test.describe('Player Names', () => {
         // Set custom name
         await playerXInput.clear();
         await playerXInput.fill('Alice');
-        await page.waitForTimeout(500);
+        // Input change handlers are synchronous
 
         // Look for reset button (if exists)
         const resetButton = page.getByRole('button', { name: /reset/i });
@@ -318,7 +328,7 @@ test.describe('Player Names', () => {
 
         if (resetCount > 0) {
           await resetButton.click();
-          await page.waitForTimeout(500);
+          // Input change handlers are synchronous
 
           // Name should be reset to default
           const value = await playerXInput.inputValue();

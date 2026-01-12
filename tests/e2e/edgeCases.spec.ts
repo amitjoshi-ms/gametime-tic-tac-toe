@@ -118,8 +118,8 @@ test.describe('Edge Cases and Error Handling', () => {
         await cells.nth(1).click();
         await cells.nth(2).click();
         
-        // Wait for computer to finish
-        await page.waitForTimeout(3000);
+        // Wait for computer to finish its turn
+        await expect(status).toContainText("Player X's Turn", { timeout: 3000 });
         
         // Only one cell should have X (center)
         await expect(cells.nth(4)).toHaveText('X');
@@ -157,8 +157,8 @@ test.describe('Edge Cases and Error Handling', () => {
         // Immediately try to switch mode (during computer thinking)
         await humanOption.click();
         
-        // Wait for computer to finish
-        await page.waitForTimeout(3000);
+        // Wait for game to reach a stable state
+        await expect(page.locator('.status')).toContainText(/Turn|Wins!|Draw!/, { timeout: 3000 });
         
         // Mode switching behavior depends on implementation
         // At minimum, game should be in valid state
@@ -223,9 +223,9 @@ test.describe('Edge Cases and Error Handling', () => {
         // Make a quick move
         await cells.nth(4).click();
         
-        // Start new game
+        // Start new game - wait for board to reset
         await newGameButton.click();
-        await page.waitForTimeout(100);
+        await expect(cells.nth(4)).toHaveText('');
       }
       
       // Should still be playable
@@ -245,7 +245,8 @@ test.describe('Edge Cases and Error Handling', () => {
         players.push(player);
         
         await newGameButton.click();
-        await page.waitForTimeout(100);
+        // Wait for status to show a turn (game reset)
+        await expect(status).toContainText(/Turn/);
       }
       
       // Should see alternating pattern
@@ -267,9 +268,8 @@ test.describe('Edge Cases and Error Handling', () => {
       // Try browser back
       await page.goBack();
       
-      // Should handle gracefully (might return to previous page or stay)
-      // This test documents behavior
-      await page.waitForTimeout(500);
+      // Wait for navigation to complete
+      await page.waitForLoadState('networkidle');
     });
 
     test('should handle browser forward button', async ({ page }) => {
@@ -282,8 +282,8 @@ test.describe('Edge Cases and Error Handling', () => {
       // Go forward
       await page.goForward();
       
-      // Should handle gracefully
-      await page.waitForTimeout(500);
+      // Wait for navigation to complete
+      await page.waitForLoadState('networkidle');
     });
   });
 
@@ -295,20 +295,16 @@ test.describe('Edge Cases and Error Handling', () => {
       await cells.nth(0).click();
       await cells.nth(1).click();
       
-      // Resize window
+      // Resize window and verify board is still visible
       await page.setViewportSize({ width: 800, height: 600 });
-      await page.waitForTimeout(200);
-      
-      // Board should still be visible and playable
       await expect(cells.nth(0)).toBeVisible();
+      
+      // Board should still be playable
       await cells.nth(4).click();
       await expect(cells.nth(4)).toHaveText('X');
       
-      // Resize to mobile
+      // Resize to mobile and verify still visible
       await page.setViewportSize({ width: 375, height: 667 });
-      await page.waitForTimeout(200);
-      
-      // Should still be playable
       await expect(cells.nth(4)).toBeVisible();
     });
   });
@@ -379,8 +375,8 @@ test.describe('Edge Cases and Error Handling', () => {
         computerOption.click(),
       ]);
       
-      // Should handle gracefully
-      await page.waitForTimeout(500);
+      // Wait for mode selector to be in a stable state
+      await expect(page.locator('.mode-selector__option--selected')).toBeVisible();
       
       // Game should be in valid state
       const selectedMode = await page.locator('.mode-selector__option--selected').textContent();

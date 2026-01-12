@@ -1,6 +1,8 @@
 /**
  * Unit tests for mode selector.
  * Tests the game mode toggle rendering and event handling.
+ * 
+ * @vitest-environment jsdom
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -122,7 +124,7 @@ describe('modeSelector rendering', () => {
       expect(onChange).toHaveBeenCalledWith('computer');
     });
 
-    it('should not call onChange when already selected option is clicked', () => {
+    it('should call onChange when already selected option triggers change event', () => {
       const onChange = vi.fn();
 
       renderModeSelector(container, 'human', onChange);
@@ -131,7 +133,7 @@ describe('modeSelector rendering', () => {
       onChange.mockClear();
 
       const humanInput = container.querySelector<HTMLInputElement>('input[value="human"]');
-      // Clicking already-selected option
+      // Triggering change event on already-selected option
       humanInput?.dispatchEvent(new Event('change'));
 
       // onChange should still be called (browser behavior)

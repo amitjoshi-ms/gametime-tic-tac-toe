@@ -234,8 +234,8 @@ test.describe('Game Mode Selection and Gameplay', () => {
         
         if (!moveMade) break;
         
-        // Wait a bit for computer's response
-        await page.waitForTimeout(500);
+        // Wait for computer's turn or status change
+        await expect(status).toContainText(/Turn|Wins!|Draw!/, { timeout: 3000 });
       }
 
       // Verify game ended properly
@@ -277,8 +277,8 @@ test.describe('Game Mode Selection and Gameplay', () => {
       if (initialStatus?.includes("Player X's Turn")) {
         await cells.nth(4).click();
       } else {
-        // Wait for computer's first move
-        await page.waitForTimeout(2500);
+        // Wait for computer's first move - status should change
+        await expect(page.locator('.status')).toContainText("Player X's Turn", { timeout: 3000 });
       }
 
       // Try to switch modes - in this implementation, mode can be switched
@@ -317,8 +317,8 @@ test.describe('Game Mode Selection and Gameplay', () => {
       const computerOption = page.locator('.mode-selector__option').filter({ hasText: 'Computer' });
       await computerOption.click();
 
-      // Make or wait for a move
-      await page.waitForTimeout(500);
+      // Wait for mode to be selected
+      await expect(page.locator('.mode-selector__option--selected')).toContainText('Computer');
 
       // Switch back to Human mode
       const humanOption = page.locator('.mode-selector__option').filter({ hasText: 'Human' });
@@ -379,8 +379,8 @@ test.describe('Game Mode Selection and Gameplay', () => {
 
       const newGameButton = page.getByRole('button', { name: /new game/i });
 
-      // Play a bit (let the game progress)
-      await page.waitForTimeout(1000);
+      // Wait for computer mode to be active
+      await expect(page.locator('.mode-selector__option--selected')).toContainText('Computer');
 
       // Click New Game
       await newGameButton.click();
@@ -388,8 +388,8 @@ test.describe('Game Mode Selection and Gameplay', () => {
       // Should still be in Computer mode
       await expect(page.locator('.mode-selector__option--selected')).toContainText('Computer');
       
-      // Game should be ready
-      await page.waitForTimeout(500);
+      // Game should be ready - verify status shows a turn
+      await expect(page.locator('.status')).toContainText(/Turn/, { timeout: 2000 });
     });
   });
 });

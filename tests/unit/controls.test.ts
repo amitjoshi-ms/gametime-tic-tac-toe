@@ -1,6 +1,8 @@
 /**
  * Unit tests for control buttons.
  * Tests the New Game button rendering and event handling.
+ * 
+ * @vitest-environment jsdom
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
