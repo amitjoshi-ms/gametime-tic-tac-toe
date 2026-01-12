@@ -129,14 +129,10 @@ export function updateSymbolSelectors(
   xSymbol: PlayerSymbol,
   oSymbol: PlayerSymbol
 ): void {
-  const xSelector = container.querySelector(
-    '#symbol-selector-X'
-  ) as HTMLSelectElement | null;
-  const oSelector = container.querySelector(
-    '#symbol-selector-O'
-  ) as HTMLSelectElement | null;
+  const xSelector = container.querySelector('#symbol-selector-X');
+  const oSelector = container.querySelector('#symbol-selector-O');
 
-  if (xSelector) {
+  if (xSelector instanceof HTMLSelectElement) {
     if (xSelector.value !== xSymbol) {
       xSelector.value = xSymbol;
     }
@@ -150,7 +146,7 @@ export function updateSymbolSelectors(
     });
   }
 
-  if (oSelector) {
+  if (oSelector instanceof HTMLSelectElement) {
     if (oSelector.value !== oSymbol) {
       oSelector.value = oSymbol;
     }

@@ -47,7 +47,9 @@ export function getDefaultPlayerConfigs(): PlayerConfigs {
  */
 export function validatePlayerConfigs(configs: PlayerConfigs): boolean {
   // Check structure exists
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!configs || typeof configs !== 'object') return false;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!configs.X || !configs.O) return false;
   if (typeof configs.X.symbol !== 'string' || typeof configs.O.symbol !== 'string') return false;
   if (typeof configs.X.name !== 'string' || typeof configs.O.name !== 'string') return false;
@@ -83,6 +85,7 @@ export function loadPlayerConfigs(): PlayerConfigs {
   }
 
   // Try migrating from legacy format
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const legacyNames = getStorageItem<PlayerNames | null>(
     LEGACY_STORAGE_KEY,
     null
@@ -125,6 +128,7 @@ export function resetPlayerConfigs(): PlayerConfigs {
 /**
  * @deprecated Use getDefaultPlayerConfigs instead
  */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export function getDefaultPlayerNames(): PlayerNames {
   return {
     X: DEFAULT_X_NAME,
@@ -135,6 +139,7 @@ export function getDefaultPlayerNames(): PlayerNames {
 /**
  * @deprecated Use loadPlayerConfigs instead
  */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export function loadPlayerNames(): PlayerNames {
   const configs = loadPlayerConfigs();
   return {
@@ -146,6 +151,7 @@ export function loadPlayerNames(): PlayerNames {
 /**
  * @deprecated Use savePlayerConfigs instead
  */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export function savePlayerNames(names: PlayerNames): void {
   const configs = loadPlayerConfigs();
   const updated: PlayerConfigs = {
@@ -158,6 +164,7 @@ export function savePlayerNames(names: PlayerNames): void {
 /**
  * @deprecated Use resetPlayerConfigs instead
  */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export function resetPlayerNames(): PlayerNames {
   const configs = resetPlayerConfigs();
   return {

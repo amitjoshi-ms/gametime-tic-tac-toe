@@ -5,7 +5,13 @@
 
 import { describe, it, expect } from 'vitest';
 import { isEarlyDraw, determineStatus } from '../../src/game/logic';
-import type { CellValue } from '../../src/game/types';
+import type { CellValue, PlayerConfigs } from '../../src/game/types';
+
+// Default player configs for testing
+const defaultPlayerConfigs: PlayerConfigs = {
+  X: { name: 'Player X', symbol: 'X' },
+  O: { name: 'Player O', symbol: 'O' },
+};
 
 describe('isEarlyDraw - Comprehensive Early Draw Detection', () => {
   describe('Early Draw at 8 Moves (1 Empty Cell)', () => {
@@ -265,7 +271,7 @@ describe('determineStatus - Early Draw Integration', () => {
       // Board: O _ X / X X O / O X O
       // X has live line [1,4,7], can win by playing position 1
       const board: CellValue[] = ['O', null, 'X', 'X', 'X', 'O', 'O', 'X', 'O'];
-      expect(determineStatus(board, 'O')).toBe('playing');
+      expect(determineStatus(board, 'O', defaultPlayerConfigs)).toBe('playing');
     });
   });
 
@@ -275,7 +281,7 @@ describe('determineStatus - Early Draw Integration', () => {
       // O has live line [1,4,7] but it's X's turn (O just played)
       // X will play at 1, blocking O → draw
       const board: CellValue[] = ['X', null, 'O', 'O', 'O', 'X', 'X', 'O', 'X'];
-      expect(determineStatus(board, 'O')).toBe('draw');
+      expect(determineStatus(board, 'O', defaultPlayerConfigs)).toBe('draw');
     });
 
     it('should detect draw when both players have live lines with 2 empty cells', () => {
@@ -283,7 +289,7 @@ describe('determineStatus - Early Draw Integration', () => {
       // X has live line [2,4,6], O has live line [1,4,7]
       // Both need position 4, O goes first and blocks → draw
       const board: CellValue[] = ['X', 'O', 'X', 'O', null, 'X', 'X', null, 'O'];
-      expect(determineStatus(board, 'X')).toBe('playing'); // With 2 empty cells, game continues
+      expect(determineStatus(board, 'X', defaultPlayerConfigs)).toBe('playing'); // With 2 empty cells, game continues
     });
   });
 

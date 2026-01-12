@@ -12,7 +12,7 @@ import {
   isComputerTurn,
 } from './game/state';
 import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
-import { scheduleComputerMove } from './game/computer';
+import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
@@ -237,8 +237,8 @@ function handleDemoMove(cellIndex: number): void {
  * Displays result and schedules auto-restart.
  */
 function handleDemoGameComplete(): void {
-  // Save current player names for restart
-  const currentNames = gameState.playerNames;
+  // Save current player configs for restart
+  const currentConfigs = gameState.playerConfigs;
 
   // Schedule auto-restart after DEMO_RESTART_DELAY
   cancelRestartTimer = scheduleDemoRestart(() => {
@@ -248,13 +248,13 @@ function handleDemoGameComplete(): void {
 
     // Only restart if still in demo mode
     if (gameState.gameMode === 'demo') {
-      // Reset game and start new demo with same names.
+      // Reset game and start new demo with same configs.
       // Note: resetGame() alternates the starting player for fairness,
       // so consecutive demo games will alternate between X and O starting.
       gameState = resetGame('demo');
       gameState = {
         ...gameState,
-        playerNames: currentNames,
+        playerConfigs: currentConfigs,
       };
       updateUI();
       triggerDemoMove();
@@ -277,16 +277,16 @@ function startDemo(): void {
     cancelPendingMove = null;
   }
 
-  // Get the current player names from state (which reflects form inputs)
-  const currentNames = gameState.playerNames;
+  // Get the current player configs from state (which reflects form inputs)
+  const currentConfigs = gameState.playerConfigs;
 
   // Reset game with demo mode
   gameState = resetGame('demo');
 
-  // Use the current player names (user-entered names) for the demo
+  // Use the current player configs (user-entered configs) for the demo
   gameState = {
     ...gameState,
-    playerNames: currentNames,
+    playerConfigs: currentConfigs,
   };
 
   updateUI();

@@ -24,7 +24,7 @@ export function getStatusMessage(state: GameState): string {
   // are computers, so isComputerThinking can be true for either player depending on
   // whose turn it is (currentPlayer identifies which computer is currently thinking).
   if (state.isComputerThinking) {
-    return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
+    return `${prefix}${state.playerConfigs[state.currentPlayer].name} is thinking`;
   }
 
   const currentPlayerConfig = state.playerConfigs[state.currentPlayer];

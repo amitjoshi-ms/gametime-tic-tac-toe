@@ -44,6 +44,7 @@ beforeEach(() => {
   vi.stubGlobal('localStorage', localStorageMock);
 });
 
+/* eslint-disable @typescript-eslint/no-deprecated */
 describe('getDefaultPlayerNames', () => {
   it('should return default player names', () => {
     const defaults = getDefaultPlayerNames();
@@ -93,7 +94,7 @@ describe('savePlayerNames', () => {
     const stored = localStorage.getItem('tictactoe_player_configs');
     expect(stored).toBeTruthy();
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed = JSON.parse(stored) as { X: { name: string }; O: { name: string } };
       expect(parsed.X.name).toBe('Alice');
       expect(parsed.O.name).toBe('Bob');
     }
@@ -127,6 +128,7 @@ describe('resetPlayerNames', () => {
     expect(loaded.O).toBe('Player O');
   });
 });
+/* eslint-enable @typescript-eslint/no-deprecated */
 
 describe('validatePlayerConfigs', () => {
   it('should return true for valid configs with different symbols', () => {
@@ -286,7 +288,7 @@ describe('loadPlayerConfigs', () => {
     const stored = localStorage.getItem('tictactoe_player_configs');
     expect(stored).toBeTruthy();
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed = JSON.parse(stored) as { X: { name: string }; O: { name: string } };
       expect(parsed.X.name).toBe('Charlie');
       expect(parsed.O.name).toBe('Diana');
     }
@@ -337,7 +339,7 @@ describe('savePlayerConfigs', () => {
     const stored = localStorage.getItem('tictactoe_player_configs');
     expect(stored).toBeTruthy();
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed = JSON.parse(stored) as { X: { name: string; symbol: string }; O: { name: string; symbol: string } };
       expect(parsed.X.name).toBe('Alice');
       expect(parsed.X.symbol).toBe('★');
       expect(parsed.O.name).toBe('Bob');
