@@ -756,47 +756,6 @@ Updates the player name display without full re-render.
 
 ---
 
-## Mode Selector UI (`ui/modeSelector.ts`)
-
-Game mode selector component for choosing between human and computer opponents.
-
-### Types
-
-```typescript
-type ModeChangeHandler = (mode: GameMode) => void;
-```
-
-Callback signature for mode changes.
-
----
-
-### `renderModeSelector()`
-
-```typescript
-function renderModeSelector(
-  container: HTMLElement,
-  currentMode: GameMode,
-  onChange: ModeChangeHandler
-): void
-```
-
-Renders the game mode selector with radio buttons styled as toggle buttons.
-
-**Parameters**:
-| Name | Type | Description |
-|------|------|-------------|
-| `container` | `HTMLElement` | DOM element to render into |
-| `currentMode` | `GameMode` | Currently selected mode |
-| `onChange` | `ModeChangeHandler` | Handler for mode changes |
-
-**Behavior**:
-- Renders as radio button group with two options: "Human" and "Computer"
-- Uses proper ARIA attributes for accessibility
-- Currently selected mode is visually highlighted
-- Triggers onChange callback when mode is changed
-
----
-
 ## Storage Utilities (`utils/storage.ts`)
 
 Safe localStorage access with JSON serialization.
