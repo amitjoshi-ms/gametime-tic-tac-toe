@@ -11,6 +11,7 @@ import { AVAILABLE_SYMBOLS } from './types';
 
 const STORAGE_KEY = 'player_configs';
 const LEGACY_STORAGE_KEY = 'player_names';
+const REMOTE_NAME_KEY = 'remote_name';
 
 /** Default name for Player X */
 export const DEFAULT_X_NAME = 'Player X';
@@ -127,15 +128,20 @@ export function resetPlayerConfigs(): PlayerConfigs {
 
 /**
  * Gets the local player's name for remote mode.
- * Uses Player X's name since that's typically what users customize
- * (they play as X in human vs human or human vs computer modes).
+ * Uses dedicated remote name storage, falling back to local player names.
  *
- * @returns The local player's name from localStorage
+ * @returns The local player's name for remote mode
  */
 export function getLocalPlayerName(): string {
+  // First check for dedicated remote name
+  const remoteName = getStorageItem<string | null>(REMOTE_NAME_KEY, null);
+  if (remoteName) {
+    return remoteName;
+  }
+
+  // Fall back to local player configs
   const configs = loadPlayerConfigs();
-  // Use X's name as the "local player" name since users typically customize that
-  // If X's name is default, fall back to O's name in case they customized that instead
+  // Use X's name as fallback since users typically customize that
   if (configs.X.name !== DEFAULT_X_NAME) {
     return configs.X.name;
   }
@@ -143,6 +149,17 @@ export function getLocalPlayerName(): string {
     return configs.O.name;
   }
   return DEFAULT_X_NAME;
+}
+
+/**
+ * Saves the local player's name for remote mode.
+ *
+ * @param name - The name to save
+ */
+export function saveLocalPlayerName(name: string): void {
+  if (name && name.trim()) {
+    setStorageItem(REMOTE_NAME_KEY, name.trim());
+  }
 }
 
 /**

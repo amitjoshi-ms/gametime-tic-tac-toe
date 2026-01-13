@@ -15,6 +15,7 @@ import {
   savePlayerConfigs,
   getDefaultPlayerConfigs,
   getLocalPlayerName,
+  saveLocalPlayerName,
   DEFAULT_X_NAME,
   DEFAULT_O_NAME,
 } from '../../src/game/playerNames';
@@ -428,5 +429,55 @@ describe('getLocalPlayerName', () => {
     savePlayerConfigs(configs);
 
     expect(getLocalPlayerName()).toBe(DEFAULT_X_NAME);
+  });
+
+  it('should use dedicated remote name when set', () => {
+    // Set up local configs
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    // Save dedicated remote name
+    saveLocalPlayerName('OnlinePlayer123');
+
+    // Should prefer dedicated remote name over local configs
+    expect(getLocalPlayerName()).toBe('OnlinePlayer123');
+  });
+
+  it('should fall back to local configs when no remote name set', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    // No remote name set, should fall back to X's name
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+});
+
+describe('saveLocalPlayerName', () => {
+  it('should save the remote name', () => {
+    saveLocalPlayerName('TestPlayer');
+    expect(getLocalPlayerName()).toBe('TestPlayer');
+  });
+
+  it('should trim whitespace from name', () => {
+    saveLocalPlayerName('  TestPlayer  ');
+    expect(getLocalPlayerName()).toBe('TestPlayer');
+  });
+
+  it('should not save empty name', () => {
+    saveLocalPlayerName('ValidName');
+    saveLocalPlayerName('');
+    expect(getLocalPlayerName()).toBe('ValidName');
+  });
+
+  it('should not save whitespace-only name', () => {
+    saveLocalPlayerName('ValidName');
+    saveLocalPlayerName('   ');
+    expect(getLocalPlayerName()).toBe('ValidName');
   });
 });

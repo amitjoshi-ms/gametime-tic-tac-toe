@@ -16,7 +16,7 @@ import {
   resetRemoteGame,
   resetRemoteGameKeepSymbols,
 } from './game/state';
-import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName } from './game/playerNames';
+import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import {
   createRemoteSession,
@@ -231,7 +231,7 @@ function handleModeChange(mode: GameMode): void {
  * @param configs - New player configurations
  */
 function handleConfigChange(configs: PlayerConfigs): void {
-  // Save to localStorage
+  // Save to localStorage (for local modes)
   savePlayerConfigs(configs);
 
   // Update game state with new configs
@@ -250,6 +250,8 @@ function handleConfigChange(configs: PlayerConfigs): void {
     const localConfig = configs[localPlayerKey];
     // Send the actual display symbol, not the player key (X/O)
     remoteController.updatePlayer(localConfig.name, localConfig.symbol);
+    // Also save the remote name separately for future remote sessions
+    saveLocalPlayerName(localConfig.name);
   }
 
   // Update UI to reflect new configs
