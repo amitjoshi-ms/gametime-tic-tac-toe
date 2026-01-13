@@ -2,7 +2,9 @@
 description: Code review and pre-commit validation for this project
 mode: agent
 instructions:
-  - typescript.instructions.md
+  - typescript-types.instructions.md
+  - typescript-modules.instructions.md
+  - typescript-patterns.instructions.md
   - testing.instructions.md
   - security.instructions.md
   - performance.instructions.md

@@ -2,8 +2,12 @@
 description: Submit pull request and squash merge changes via GitHub CLI
 mode: agent
 instructions:
-  - typescript.instructions.md
+  - typescript-types.instructions.md
+  - typescript-modules.instructions.md
+  - typescript-patterns.instructions.md
   - testing.instructions.md
+  - security.instructions.md
+  - ai-config.instructions.md
 ---
 
 # Submit PR for Review

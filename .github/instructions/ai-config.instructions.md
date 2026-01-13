@@ -109,7 +109,9 @@ What to avoid with examples.
 **Current files:**
 | File | Purpose | Applies To |
 |------|---------|------------|
-| typescript.instructions.md | Type system, naming | `**/*.ts` |
+| typescript-types.instructions.md | Type system, naming | `**/*.ts` |
+| typescript-modules.instructions.md | Module system, imports | `**/*.ts` |
+| typescript-patterns.instructions.md | Functions, immutability, errors | `**/*.ts` |
 | testing.instructions.md | Unit/E2E patterns | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts` |
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
 | ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
