@@ -142,6 +142,7 @@ function handleCellClick(cellIndex: number): void {
 
 /**
  * Handles the "New Game" button click.
+ * In remote mode, this triggers a rematch request instead.
  */
 function handleNewGame(): void {
   // Cancel any pending computer move
@@ -150,9 +151,12 @@ function handleNewGame(): void {
     cancelPendingMove = null;
   }
 
-  // Don't allow new game in remote mode while connected
+  // In remote mode when connected and game is over, trigger rematch
   if (gameState.gameMode === 'remote' && gameState.remoteSession?.connectionStatus === 'connected') {
-    // TODO: Implement rematch flow for remote games
+    const isGameOver = gameState.status !== 'playing';
+    if (isGameOver && !isRematchPending) {
+      handleRequestRematch();
+    }
     return;
   }
 

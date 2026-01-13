@@ -110,28 +110,27 @@ export function renderControls(
     opts.isDemoActive ? 'Stop demo mode' : 'Start demo mode'
   );
 
-  container.appendChild(newGameBtn);
-
-  // Show rematch button in remote mode when game is over
+  // In remote mode when game is over, change New Game to rematch button
   const isGameOver = opts.gameStatus !== 'playing';
-  if (opts.gameMode === 'remote' && isGameOver && currentRematchHandler) {
-    const rematchBtn = document.createElement('button');
-    rematchBtn.className = 'btn btn-rematch';
-    rematchBtn.textContent = opts.isRematchPending
+  if (opts.gameMode === 'remote' && isGameOver) {
+    newGameBtn.textContent = opts.isRematchPending
       ? 'Rematch Requested...'
       : 'Request Rematch';
-    rematchBtn.type = 'button';
-    rematchBtn.disabled = opts.isRematchPending ?? false;
-    rematchBtn.setAttribute(
+    newGameBtn.disabled = opts.isRematchPending ?? false;
+    newGameBtn.setAttribute(
       'aria-label',
       opts.isRematchPending
         ? 'Waiting for opponent to respond to rematch request'
         : 'Request a rematch with opponent'
     );
-    container.appendChild(rematchBtn);
   }
 
-  container.appendChild(demoBtn);
+  container.appendChild(newGameBtn);
+
+  // Hide demo button in remote mode
+  if (opts.gameMode !== 'remote') {
+    container.appendChild(demoBtn);
+  }
 
   // Remove old event listener to prevent memory leak
   container.removeEventListener('click', handleControlsClick);
@@ -155,7 +154,7 @@ export function updateControls(
       ? { isDemoActive: options, gameMode: 'human', gameStatus: 'playing' }
       : options;
 
-  const demoBtn = container.querySelector('.btn-demo');
+  const demoBtn = container.querySelector<HTMLButtonElement>('.btn-demo');
   if (demoBtn) {
     demoBtn.textContent = opts.isDemoActive ? 'Stop Demo' : 'Start Demo';
     demoBtn.setAttribute(
@@ -164,39 +163,30 @@ export function updateControls(
     );
   }
 
-  // Handle rematch button add/remove/update for remote mode
+  // In remote mode, update New Game button to act as rematch when game is over
   const isGameOver = opts.gameStatus !== 'playing';
-  const shouldShowRematch = opts.gameMode === 'remote' && isGameOver && currentRematchHandler;
-  let rematchBtn = container.querySelector<HTMLButtonElement>('.btn-rematch');
-
-  if (shouldShowRematch && !rematchBtn) {
-    // Add rematch button (game just ended)
-    rematchBtn = document.createElement('button');
-    rematchBtn.className = 'btn btn-rematch';
-    rematchBtn.type = 'button';
-    // Insert before demo button
-    if (demoBtn) {
-      demoBtn.parentNode?.insertBefore(rematchBtn, demoBtn);
+  const newGameBtn = container.querySelector<HTMLButtonElement>('.btn-new-game');
+  if (newGameBtn) {
+    if (opts.gameMode === 'remote' && isGameOver) {
+      newGameBtn.textContent = opts.isRematchPending
+        ? 'Rematch Requested...'
+        : 'Request Rematch';
+      newGameBtn.disabled = opts.isRematchPending ?? false;
+      newGameBtn.setAttribute(
+        'aria-label',
+        opts.isRematchPending
+          ? 'Waiting for opponent to respond to rematch request'
+          : 'Request a rematch with opponent'
+      );
     } else {
-      container.appendChild(rematchBtn);
+      newGameBtn.textContent = 'New Game';
+      newGameBtn.disabled = false;
+      newGameBtn.setAttribute('aria-label', 'Start a new game');
     }
-  } else if (!shouldShowRematch && rematchBtn) {
-    // Remove rematch button (game reset or mode changed)
-    rematchBtn.remove();
-    rematchBtn = null;
   }
 
-  // Update rematch button state if it exists
-  if (rematchBtn) {
-    rematchBtn.textContent = opts.isRematchPending
-      ? 'Rematch Requested...'
-      : 'Request Rematch';
-    rematchBtn.disabled = opts.isRematchPending ?? false;
-    rematchBtn.setAttribute(
-      'aria-label',
-      opts.isRematchPending
-        ? 'Waiting for opponent to respond to rematch request'
-        : 'Request a rematch with opponent'
-    );
+  // Show/hide demo button based on mode
+  if (demoBtn) {
+    demoBtn.style.display = opts.gameMode === 'remote' ? 'none' : '';
   }
 }
