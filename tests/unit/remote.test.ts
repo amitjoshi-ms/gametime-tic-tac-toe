@@ -175,13 +175,17 @@ describe('getLocalPlayerSymbol', () => {
 describe('cleanupRemoteSession', () => {
   it('should be callable without error when no session exists', () => {
     // Should not throw when called with no active session
-    expect(() => cleanupRemoteSession()).not.toThrow();
+    expect(() => {
+      cleanupRemoteSession();
+    }).not.toThrow();
   });
 
   it('should be callable multiple times without error', () => {
     // Should be idempotent
     cleanupRemoteSession();
     cleanupRemoteSession();
-    expect(() => cleanupRemoteSession()).not.toThrow();
+    expect(() => {
+      cleanupRemoteSession();
+    }).not.toThrow();
   });
 });
