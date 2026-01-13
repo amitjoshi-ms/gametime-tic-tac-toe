@@ -236,4 +236,83 @@ test.describe('Remote Multiplayer', () => {
       await expect(oField).not.toHaveClass(/player-config-field--hidden/);
     });
   });
+
+  test.describe('Remote Name Persistence', () => {
+    test('should use customized local name when creating session', async ({ page }) => {
+      // First set up a custom name in Human mode
+      await page.locator('#player-x-name').fill('TestHost');
+      
+      // Switch to Remote mode and create session
+      await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+      await page.getByRole('button', { name: /create game/i }).click();
+
+      // Wait for session to be created
+      await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 30000,
+      });
+
+      // The local player name should be visible in the player config
+      // (Name is shown when session is created, before peer connects)
+      const playerNameInput = page.locator('#player-x-name');
+      await expect(playerNameInput).toHaveValue('TestHost');
+    });
+
+    test('should persist remote name changes across sessions', async ({ page, context }) => {
+      // Set initial name in Human mode
+      await page.locator('#player-x-name').fill('OriginalName');
+
+      // Switch to Remote mode
+      await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+      await page.getByRole('button', { name: /create game/i }).click();
+
+      // Wait for session creation
+      await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 30000,
+      });
+
+      // Change name during remote session (this should save to remote_name storage)
+      const playerNameInput = page.locator('#player-x-name');
+      await playerNameInput.fill('RemotePlayer123');
+
+      // Open new page to verify persistence
+      const newPage = await context.newPage();
+      await newPage.goto('/');
+
+      // Select Remote mode and create new session
+      await newPage.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+      await newPage.getByRole('button', { name: /create game/i }).click();
+
+      // Wait for session creation
+      await expect(newPage.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 30000,
+      });
+
+      // Should have the remote name we set earlier
+      const newPlayerNameInput = newPage.locator('#player-x-name');
+      await expect(newPlayerNameInput).toHaveValue('RemotePlayer123');
+    });
+
+    test('should keep local mode names separate from remote name', async ({ page }) => {
+      // Set name in Human mode
+      await page.locator('#player-x-name').fill('LocalAlice');
+
+      // Switch to Remote mode and set different name
+      await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+      await page.getByRole('button', { name: /create game/i }).click();
+      await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 30000,
+      });
+
+      // Change to remote-specific name
+      await page.locator('#player-x-name').fill('OnlineAlice');
+
+      // Switch back to Human mode
+      await page.locator('.mode-selector__option', { hasText: 'Human' }).click();
+
+      // Local name should still be preserved (or at least not overwritten with remote name)
+      const humanNameInput = page.locator('#player-x-name');
+      // The local config was saved before switching to remote
+      await expect(humanNameInput).toHaveValue('LocalAlice');
+    });
+  });
 });

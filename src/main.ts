@@ -16,7 +16,7 @@ import {
   resetRemoteGame,
   resetRemoteGameKeepSymbols,
 } from './game/state';
-import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName } from './game/playerNames';
+import { savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName, getComputerName, saveComputerName } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import {
   createRemoteSession,
@@ -192,29 +192,39 @@ function handleModeChange(mode: GameMode): void {
   remoteController = null;
   remotePanelState = { phase: 'select' };
 
-  // Save mode to localStorage (except for remote which is transient)
-  if (mode !== 'remote') {
+  // Save mode to localStorage (except for remote and demo which are transient)
+  if (mode !== 'remote' && mode !== 'demo') {
     saveGameMode(mode);
   }
 
   // Reset game with new mode
   gameState = resetGame(mode);
 
-  // Update player O name when switching to computer mode
+  // Update player configs based on mode
   if (mode === 'computer') {
+    // Use saved computer name (separate from Player O)
     gameState = {
       ...gameState,
       playerConfigs: {
         ...gameState.playerConfigs,
         O: {
           ...gameState.playerConfigs.O,
-          name: DEFAULT_COMPUTER_NAME,
+          name: getComputerName(),
         },
       },
     };
-    savePlayerConfigs(gameState.playerConfigs);
+    // Don't save to player_configs - computer name is stored separately
+  } else if (mode === 'demo') {
+    // Demo mode uses temporary names - don't persist
+    gameState = {
+      ...gameState,
+      playerConfigs: {
+        X: { name: 'Computer X', symbol: 'X' },
+        O: { name: 'Computer O', symbol: 'O' },
+      },
+    };
   } else {
-    // Restore saved configs from localStorage when switching back to human
+    // Human mode: restore saved configs from localStorage
     gameState = { ...gameState, playerConfigs: loadPlayerConfigs() };
   }
 
@@ -231,27 +241,35 @@ function handleModeChange(mode: GameMode): void {
  * @param configs - New player configurations
  */
 function handleConfigChange(configs: PlayerConfigs): void {
-  // Save to localStorage (for local modes)
-  savePlayerConfigs(configs);
-
   // Update game state with new configs
   gameState = {
     ...gameState,
     playerConfigs: configs,
   };
 
-  // Sync with remote player if in remote mode
-  if (
-    gameState.gameMode === 'remote' &&
-    gameState.remoteSession?.connectionStatus === 'connected' &&
-    remoteController
-  ) {
-    const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
-    const localConfig = configs[localPlayerKey];
-    // Send the actual display symbol, not the player key (X/O)
-    remoteController.updatePlayer(localConfig.name, localConfig.symbol);
-    // Also save the remote name separately for future remote sessions
-    saveLocalPlayerName(localConfig.name);
+  // Persist based on mode
+  if (gameState.gameMode === 'demo') {
+    // Demo mode: don't persist any changes
+  } else if (gameState.gameMode === 'computer') {
+    // Computer mode: save X's config to player_configs, O's name to computer_name
+    savePlayerConfigs({
+      ...loadPlayerConfigs(),
+      X: configs.X,
+    });
+    saveComputerName(configs.O.name);
+  } else if (gameState.gameMode === 'remote') {
+    // Remote mode: save local player name to remote_name
+    if (gameState.remoteSession?.connectionStatus === 'connected' && remoteController) {
+      const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
+      const localConfig = configs[localPlayerKey];
+      // Send the actual display symbol, not the player key (X/O)
+      remoteController.updatePlayer(localConfig.name, localConfig.symbol);
+      // Save the remote name separately for future remote sessions
+      saveLocalPlayerName(localConfig.name);
+    }
+  } else {
+    // Human mode: save all configs to localStorage
+    savePlayerConfigs(configs);
   }
 
   // Update UI to reflect new configs

@@ -16,8 +16,11 @@ import {
   getDefaultPlayerConfigs,
   getLocalPlayerName,
   saveLocalPlayerName,
+  getComputerName,
+  saveComputerName,
   DEFAULT_X_NAME,
   DEFAULT_O_NAME,
+  DEFAULT_COMPUTER_NAME,
 } from '../../src/game/playerNames';
 import type { PlayerConfigs, PlayerSymbol } from '../../src/game/types';
 
@@ -479,5 +482,52 @@ describe('saveLocalPlayerName', () => {
     saveLocalPlayerName('ValidName');
     saveLocalPlayerName('   ');
     expect(getLocalPlayerName()).toBe('ValidName');
+  });
+});
+
+describe('getComputerName', () => {
+  it('should return default computer name when nothing saved', () => {
+    expect(getComputerName()).toBe(DEFAULT_COMPUTER_NAME);
+  });
+
+  it('should return saved computer name', () => {
+    saveComputerName('HAL 9000');
+    expect(getComputerName()).toBe('HAL 9000');
+  });
+
+  it('should be independent from player configs', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+    saveComputerName('DeepBlue');
+
+    expect(getComputerName()).toBe('DeepBlue');
+    expect(loadPlayerConfigs().O.name).toBe('Bob');
+  });
+});
+
+describe('saveComputerName', () => {
+  it('should save the computer name', () => {
+    saveComputerName('Skynet');
+    expect(getComputerName()).toBe('Skynet');
+  });
+
+  it('should trim whitespace from name', () => {
+    saveComputerName('  Watson  ');
+    expect(getComputerName()).toBe('Watson');
+  });
+
+  it('should not save empty name', () => {
+    saveComputerName('ValidName');
+    saveComputerName('');
+    expect(getComputerName()).toBe('ValidName');
+  });
+
+  it('should not save whitespace-only name', () => {
+    saveComputerName('ValidName');
+    saveComputerName('   ');
+    expect(getComputerName()).toBe('ValidName');
   });
 });

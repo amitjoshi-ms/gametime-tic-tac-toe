@@ -12,6 +12,7 @@ import { AVAILABLE_SYMBOLS } from './types';
 const STORAGE_KEY = 'player_configs';
 const LEGACY_STORAGE_KEY = 'player_names';
 const REMOTE_NAME_KEY = 'remote_name';
+const COMPUTER_NAME_KEY = 'computer_name';
 
 /** Default name for Player X */
 export const DEFAULT_X_NAME = 'Player X';
@@ -159,6 +160,28 @@ export function getLocalPlayerName(): string {
 export function saveLocalPlayerName(name: string): void {
   if (name && name.trim()) {
     setStorageItem(REMOTE_NAME_KEY, name.trim());
+  }
+}
+
+/**
+ * Gets the computer opponent's name.
+ * Uses dedicated computer name storage, falling back to default.
+ *
+ * @returns The computer's display name
+ */
+export function getComputerName(): string {
+  const computerName = getStorageItem<string | null>(COMPUTER_NAME_KEY, null);
+  return computerName ?? DEFAULT_COMPUTER_NAME;
+}
+
+/**
+ * Saves the computer opponent's name.
+ *
+ * @param name - The name to save
+ */
+export function saveComputerName(name: string): void {
+  if (name && name.trim()) {
+    setStorageItem(COMPUTER_NAME_KEY, name.trim());
   }
 }
 
