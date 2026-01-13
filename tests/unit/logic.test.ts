@@ -82,6 +82,92 @@ describe('checkWin', () => {
     expect(checkWin(board, 'X')).toBe(false);
     expect(checkWin(board, 'O')).toBe(false);
   });
+
+  // Comprehensive tests for all 8 winning lines for X
+  describe('X winning lines', () => {
+    it('should detect X wins in top row [0,1,2]', () => {
+      const board: CellValue[] = ['X', 'X', 'X', null, 'O', null, 'O', null, null];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in middle row [3,4,5]', () => {
+      const board: CellValue[] = [null, 'O', null, 'X', 'X', 'X', 'O', null, null];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in bottom row [6,7,8]', () => {
+      const board: CellValue[] = ['O', null, 'O', null, null, null, 'X', 'X', 'X'];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in left column [0,3,6]', () => {
+      const board: CellValue[] = ['X', 'O', null, 'X', 'O', null, 'X', null, null];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in middle column [1,4,7]', () => {
+      const board: CellValue[] = ['O', 'X', null, null, 'X', 'O', null, 'X', null];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in right column [2,5,8]', () => {
+      const board: CellValue[] = [null, 'O', 'X', null, null, 'X', 'O', null, 'X'];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in main diagonal [0,4,8]', () => {
+      const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, 'X'];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+
+    it('should detect X wins in anti-diagonal [2,4,6]', () => {
+      const board: CellValue[] = ['O', null, 'X', null, 'X', null, 'X', 'O', null];
+      expect(checkWin(board, 'X')).toBe(true);
+    });
+  });
+
+  // Comprehensive tests for all 8 winning lines for O
+  describe('O winning lines', () => {
+    it('should detect O wins in top row [0,1,2]', () => {
+      const board: CellValue[] = ['O', 'O', 'O', 'X', null, 'X', null, 'X', null];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in middle row [3,4,5]', () => {
+      const board: CellValue[] = ['X', null, 'X', 'O', 'O', 'O', null, 'X', null];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in bottom row [6,7,8]', () => {
+      const board: CellValue[] = ['X', 'X', null, null, 'X', null, 'O', 'O', 'O'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in left column [0,3,6]', () => {
+      const board: CellValue[] = ['O', 'X', null, 'O', null, 'X', 'O', null, 'X'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in middle column [1,4,7]', () => {
+      const board: CellValue[] = [null, 'O', 'X', 'X', 'O', null, null, 'O', 'X'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in right column [2,5,8]', () => {
+      const board: CellValue[] = ['X', null, 'O', null, 'X', 'O', null, 'X', 'O'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in main diagonal [0,4,8]', () => {
+      const board: CellValue[] = ['O', 'X', null, 'X', 'O', null, null, 'X', 'O'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+
+    it('should detect O wins in anti-diagonal [2,4,6]', () => {
+      const board: CellValue[] = [null, 'X', 'O', 'X', 'O', null, 'O', null, 'X'];
+      expect(checkWin(board, 'O')).toBe(true);
+    });
+  });
 });
 
 describe('isBoardFull', () => {

@@ -1,6 +1,8 @@
 ---
 description: Deploy latest changes from main to production via release workflow
 mode: agent
+instructions:
+  - ai-config.instructions.md
 ---
 
 # Release to Production

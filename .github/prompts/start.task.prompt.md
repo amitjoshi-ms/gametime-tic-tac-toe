@@ -2,7 +2,9 @@
 description: Start new work with proper branch setup and task understanding
 mode: agent
 instructions:
-  - typescript.instructions.md
+  - typescript-types.instructions.md
+  - typescript-modules.instructions.md
+  - typescript-patterns.instructions.md
   - game-logic.instructions.md
   - testing.instructions.md
   - ui.instructions.md
