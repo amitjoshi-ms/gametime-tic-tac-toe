@@ -4,6 +4,8 @@ import { resolve } from 'path';
 export default defineConfig({
   test: {
     globals: true,
+    // Default to node environment for pure logic tests
+    // UI tests use @vitest-environment jsdom comment directive
     environment: 'node',
     include: ['tests/unit/**/*.test.ts'],
     coverage: {
