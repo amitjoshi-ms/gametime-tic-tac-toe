@@ -1,9 +1,11 @@
 /**
  * Game control buttons.
- * Provides the "New Game" and "Start/Stop Demo" buttons.
+ * Provides the "New Game", "Start/Stop Demo", and "Rematch" buttons.
  *
  * @module ui/controls
  */
+
+import type { GameMode, GameStatus } from '../game/types';
 
 /**
  * Callback signature for new game button.
@@ -15,11 +17,19 @@ export type NewGameHandler = () => void;
  */
 export type DemoToggleHandler = () => void;
 
+/**
+ * Callback signature for rematch button.
+ */
+export type RematchHandler = () => void;
+
 /** Reference to current new game handler */
 let currentNewGameHandler: NewGameHandler | null = null;
 
 /** Reference to current demo toggle handler */
 let currentDemoToggleHandler: DemoToggleHandler | null = null;
+
+/** Reference to current rematch handler */
+let currentRematchHandler: RematchHandler | null = null;
 
 /**
  * Handles click events on controls using event delegation.
@@ -34,7 +44,28 @@ function handleControlsClick(event: Event): void {
     currentDemoToggleHandler
   ) {
     currentDemoToggleHandler();
+  } else if (
+    target.classList.contains('btn-rematch') &&
+    currentRematchHandler
+  ) {
+    currentRematchHandler();
   }
+}
+
+/**
+ * Control button options.
+ */
+export interface ControlsOptions {
+  /** Whether demo mode is currently active */
+  isDemoActive: boolean;
+  /** Current game mode */
+  gameMode: GameMode;
+  /** Current game status */
+  gameStatus: GameStatus;
+  /** Whether rematch is pending (waiting for response) */
+  isRematchPending?: boolean;
+  /** Handler for rematch button */
+  onRematch?: RematchHandler;
 }
 
 /**
@@ -43,16 +74,23 @@ function handleControlsClick(event: Event): void {
  * @param container - DOM element to render into
  * @param onNewGame - Handler for "New Game" button click
  * @param onDemoToggle - Handler for "Start/Stop Demo" button click
- * @param isDemoActive - Whether demo mode is currently active
+ * @param options - Control button options
  */
 export function renderControls(
   container: HTMLElement,
   onNewGame: NewGameHandler,
   onDemoToggle: DemoToggleHandler,
-  isDemoActive: boolean
+  options: ControlsOptions | boolean
 ): void {
+  // Handle legacy boolean parameter for backwards compatibility
+  const opts: ControlsOptions =
+    typeof options === 'boolean'
+      ? { isDemoActive: options, gameMode: 'human', gameStatus: 'playing' }
+      : options;
+
   currentNewGameHandler = onNewGame;
   currentDemoToggleHandler = onDemoToggle;
+  currentRematchHandler = opts.onRematch ?? null;
 
   // Clear and rebuild
   container.innerHTML = '';
@@ -65,14 +103,34 @@ export function renderControls(
 
   const demoBtn = document.createElement('button');
   demoBtn.className = 'btn btn-demo';
-  demoBtn.textContent = isDemoActive ? 'Stop Demo' : 'Start Demo';
+  demoBtn.textContent = opts.isDemoActive ? 'Stop Demo' : 'Start Demo';
   demoBtn.type = 'button';
   demoBtn.setAttribute(
     'aria-label',
-    isDemoActive ? 'Stop demo mode' : 'Start demo mode'
+    opts.isDemoActive ? 'Stop demo mode' : 'Start demo mode'
   );
 
   container.appendChild(newGameBtn);
+
+  // Show rematch button in remote mode when game is over
+  const isGameOver = opts.gameStatus !== 'playing';
+  if (opts.gameMode === 'remote' && isGameOver && currentRematchHandler) {
+    const rematchBtn = document.createElement('button');
+    rematchBtn.className = 'btn btn-rematch';
+    rematchBtn.textContent = opts.isRematchPending
+      ? 'Rematch Requested...'
+      : 'Request Rematch';
+    rematchBtn.type = 'button';
+    rematchBtn.disabled = opts.isRematchPending ?? false;
+    rematchBtn.setAttribute(
+      'aria-label',
+      opts.isRematchPending
+        ? 'Waiting for opponent to respond to rematch request'
+        : 'Request a rematch with opponent'
+    );
+    container.appendChild(rematchBtn);
+  }
+
   container.appendChild(demoBtn);
 
   // Remove old event listener to prevent memory leak
@@ -85,18 +143,39 @@ export function renderControls(
  * Updates control button states without full re-render.
  *
  * @param container - DOM element containing controls
- * @param isDemoActive - Whether demo mode is currently active
+ * @param options - Control button options
  */
 export function updateControls(
   container: HTMLElement,
-  isDemoActive: boolean
+  options: ControlsOptions | boolean
 ): void {
+  // Handle legacy boolean parameter for backwards compatibility
+  const opts: ControlsOptions =
+    typeof options === 'boolean'
+      ? { isDemoActive: options, gameMode: 'human', gameStatus: 'playing' }
+      : options;
+
   const demoBtn = container.querySelector('.btn-demo');
   if (demoBtn) {
-    demoBtn.textContent = isDemoActive ? 'Stop Demo' : 'Start Demo';
+    demoBtn.textContent = opts.isDemoActive ? 'Stop Demo' : 'Start Demo';
     demoBtn.setAttribute(
       'aria-label',
-      isDemoActive ? 'Stop demo mode' : 'Start demo mode'
+      opts.isDemoActive ? 'Stop demo mode' : 'Start demo mode'
+    );
+  }
+
+  // Update rematch button if present
+  const rematchBtn = container.querySelector<HTMLButtonElement>('.btn-rematch');
+  if (rematchBtn) {
+    rematchBtn.textContent = opts.isRematchPending
+      ? 'Rematch Requested...'
+      : 'Request Rematch';
+    rematchBtn.disabled = opts.isRematchPending ?? false;
+    rematchBtn.setAttribute(
+      'aria-label',
+      opts.isRematchPending
+        ? 'Waiting for opponent to respond to rematch request'
+        : 'Request a rematch with opponent'
     );
   }
 }

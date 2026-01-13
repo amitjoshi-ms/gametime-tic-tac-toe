@@ -13,6 +13,7 @@ import {
   createRemoteGameState,
   updateRemoteSession,
   clearRemoteSession,
+  resetRemoteGame,
 } from './game/state';
 import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
@@ -25,7 +26,7 @@ import { copyToClipboard } from './network/signaling';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
-import { renderControls, updateControls } from './ui/controls';
+import { renderControls, updateControls, type ControlsOptions } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
 import {
@@ -58,6 +59,9 @@ let remotePanelState: RemotePanelState = { phase: 'select' };
 
 /** Remote panel handlers (set during initApp) */
 let remotePanelHandlers: Parameters<typeof renderRemotePanel>[2] | null = null;
+
+/** Whether we sent a rematch request and are waiting for response */
+let isRematchPending = false;
 
 /**
  * Handles the computer making its move.
@@ -626,10 +630,14 @@ function handleRemoteError(error: string): void {
 
 /**
  * Handles receiving a rematch request from remote player.
+ * Shows UI to accept/decline the rematch.
  */
 function handleRematchRequest(): void {
-  // TODO: Implement rematch request UI
-  console.log('Rematch requested by remote player');
+  remotePanelState = {
+    ...remotePanelState,
+    phase: 'rematch-request',
+  };
+  updateUI();
 }
 
 /**
@@ -637,8 +645,71 @@ function handleRematchRequest(): void {
  * @param accepted - Whether the rematch was accepted
  */
 function handleRematchResponse(accepted: boolean): void {
-  // TODO: Implement rematch response handling
-  console.log('Rematch response:', accepted);
+  isRematchPending = false;
+
+  if (accepted) {
+    // Reset the game with swapped symbols
+    gameState = resetRemoteGame(gameState);
+    remotePanelState = {
+      ...remotePanelState,
+      phase: 'connected',
+    };
+  } else {
+    // Opponent declined - stay in connected state, they can try again
+    remotePanelState = {
+      ...remotePanelState,
+      phase: 'connected',
+    };
+  }
+  updateUI();
+}
+
+/**
+ * Handles user clicking "Request Rematch" button.
+ */
+function handleRequestRematch(): void {
+  if (!remoteController) {
+    return;
+  }
+
+  isRematchPending = true;
+  remoteController.requestRematch();
+  updateUI();
+}
+
+/**
+ * Handles user accepting a rematch request.
+ */
+function handleRematchAccept(): void {
+  if (!remoteController) {
+    return;
+  }
+
+  remoteController.respondToRematch(true);
+  // Reset the game with swapped symbols
+  gameState = resetRemoteGame(gameState);
+  remotePanelState = {
+    ...remotePanelState,
+    phase: 'connected',
+  };
+  updateUI();
+}
+
+/**
+ * Handles user declining a rematch request.
+ */
+function handleRematchDecline(): void {
+  if (!remoteController) {
+    return;
+  }
+
+  remoteController.respondToRematch(false);
+  // Stay in connected state
+  remotePanelState = {
+    ...remotePanelState,
+    phase: 'connected',
+  };
+  updateUI();
 }
 
 /**
@@ -705,7 +776,14 @@ function updateUI(): void {
       controlsContainer.style.display = 'none';
     } else {
       controlsContainer.style.display = '';
-      updateControls(controlsContainer, isDemoActive);
+      const controlsOptions: ControlsOptions = {
+        isDemoActive,
+        gameMode: gameState.gameMode,
+        gameStatus: gameState.status,
+        isRematchPending,
+        onRematch: handleRequestRematch,
+      };
+      updateControls(controlsContainer, controlsOptions);
     }
   }
 }
@@ -766,6 +844,8 @@ function initApp(): void {
     onCopyCode: handleCopyCode,
     onLeave: handleLeaveSession,
     onAnswerSubmit: handleAnswerSubmit,
+    onRematchAccept: handleRematchAccept,
+    onRematchDecline: handleRematchDecline,
   };
 
   // Initialize remote panel (hidden by default)
@@ -778,11 +858,19 @@ function initApp(): void {
   );
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);
+
+  const controlsOptions: ControlsOptions = {
+    isDemoActive: gameState.gameMode === 'demo',
+    gameMode: gameState.gameMode,
+    gameStatus: gameState.status,
+    isRematchPending,
+    onRematch: handleRequestRematch,
+  };
   renderControls(
     controlsContainer,
     handleNewGame,
     handleDemoToggle,
-    gameState.gameMode === 'demo'
+    controlsOptions
   );
 
   // Trigger computer turn if computer starts

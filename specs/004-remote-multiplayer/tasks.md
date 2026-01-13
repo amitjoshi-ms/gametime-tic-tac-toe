@@ -128,15 +128,15 @@
 
 ### Implementation for User Story 4
 
-- [ ] T049 [P] [US4] Add rematch button to game-over UI for remote mode in src/ui/controls.ts
-- [ ] T050 [P] [US4] Add rematch request/response UI overlay in src/ui/remotePanel.ts
-- [ ] T051 [US4] Implement requestRematch() in RemoteSessionController in src/game/remote.ts
-- [ ] T052 [US4] Implement respondToRematch() in RemoteSessionController in src/game/remote.ts
-- [ ] T053 [US4] Handle rematch-request and rematch-response messages in src/game/remote.ts
-- [ ] T054 [US4] Implement resetRemoteGame() to swap symbols in src/game/state.ts
-- [ ] T055 [US4] Wire up handleRematchRequested() callback in src/main.ts
-- [ ] T056 [US4] Wire up handleRematchResponse() callback in src/main.ts
-- [ ] T057 [US4] Add rematch UI styles in src/styles/main.css
+- [x] T049 [P] [US4] Add rematch button to game-over UI for remote mode in src/ui/controls.ts
+- [x] T050 [P] [US4] Add rematch request/response UI overlay in src/ui/remotePanel.ts
+- [x] T051 [US4] Implement requestRematch() in RemoteSessionController in src/game/remote.ts
+- [x] T052 [US4] Implement respondToRematch() in RemoteSessionController in src/game/remote.ts
+- [x] T053 [US4] Handle rematch-request and rematch-response messages in src/game/remote.ts
+- [x] T054 [US4] Implement resetRemoteGame() to swap symbols in src/game/state.ts
+- [x] T055 [US4] Wire up handleRematchRequested() callback in src/main.ts
+- [x] T056 [US4] Wire up handleRematchResponse() callback in src/main.ts
+- [x] T057 [US4] Add rematch UI styles in src/styles/main.css
 
 **Checkpoint**: User Story 4 complete - rematch flow working
 

@@ -19,6 +19,10 @@ export interface RemotePanelHandlers {
   onLeave: () => void;
   /** User submitted answer code (host completing connection) */
   onAnswerSubmit: (code: string) => void | Promise<void>;
+  /** User accepted rematch request */
+  onRematchAccept?: () => void;
+  /** User declined rematch request */
+  onRematchDecline?: () => void;
 }
 
 /**
@@ -34,6 +38,8 @@ export interface RemotePanelState {
     | 'answer-input'
     | 'connecting'
     | 'connected'
+    | 'rematch-request'
+    | 'disconnected'
     | 'error';
   /** Session code to display (when waiting) */
   sessionCode?: string;
@@ -45,6 +51,8 @@ export interface RemotePanelState {
   error?: string;
   /** Whether code was copied */
   codeCopied?: boolean;
+  /** Whether local player sent rematch request */
+  rematchPending?: boolean;
 }
 
 /** Module-level handlers reference for event callbacks */
@@ -393,6 +401,76 @@ function createConnectedPhaseUI(remoteName: string): HTMLElement {
 }
 
 /**
+ * Creates the rematch request phase UI with accept/decline buttons.
+ */
+function createRematchRequestPhaseUI(remoteName: string): HTMLElement {
+  const container = document.createElement('div');
+  container.className = 'remote-panel__rematch-request';
+
+  const icon = document.createElement('span');
+  icon.className = 'remote-panel__rematch-icon';
+  icon.textContent = '🎮';
+
+  const text = document.createElement('p');
+  text.className = 'remote-panel__rematch-text';
+  text.textContent = `${remoteName} wants a rematch!`;
+
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.className = 'remote-panel__buttons';
+
+  const acceptBtn = document.createElement('button');
+  acceptBtn.type = 'button';
+  acceptBtn.className = 'remote-panel__btn remote-panel__btn--primary';
+  acceptBtn.textContent = 'Accept';
+  acceptBtn.setAttribute('aria-label', 'Accept rematch request');
+  acceptBtn.addEventListener('click', () => currentHandlers?.onRematchAccept?.());
+
+  const declineBtn = document.createElement('button');
+  declineBtn.type = 'button';
+  declineBtn.className = 'remote-panel__btn remote-panel__btn--secondary';
+  declineBtn.textContent = 'Decline';
+  declineBtn.setAttribute('aria-label', 'Decline rematch request');
+  declineBtn.addEventListener('click', () => currentHandlers?.onRematchDecline?.());
+
+  buttonsContainer.appendChild(acceptBtn);
+  buttonsContainer.appendChild(declineBtn);
+
+  container.appendChild(icon);
+  container.appendChild(text);
+  container.appendChild(buttonsContainer);
+
+  return container;
+}
+
+/**
+ * Creates the disconnected phase UI.
+ */
+function createDisconnectedPhaseUI(reason?: string): HTMLElement {
+  const container = document.createElement('div');
+  container.className = 'remote-panel__disconnected';
+
+  const icon = document.createElement('span');
+  icon.className = 'remote-panel__disconnected-icon';
+  icon.textContent = '🔌';
+
+  const text = document.createElement('p');
+  text.className = 'remote-panel__disconnected-text';
+  text.textContent = reason ?? 'Connection lost';
+
+  const backBtn = document.createElement('button');
+  backBtn.type = 'button';
+  backBtn.className = 'remote-panel__btn remote-panel__btn--secondary';
+  backBtn.textContent = 'Back to Menu';
+  backBtn.addEventListener('click', () => currentHandlers?.onLeave());
+
+  container.appendChild(icon);
+  container.appendChild(text);
+  container.appendChild(backBtn);
+
+  return container;
+}
+
+/**
  * Creates the error phase UI with error message.
  */
 function createErrorPhaseUI(error: string): HTMLElement {
@@ -465,6 +543,12 @@ export function renderRemotePanel(
       break;
     case 'connected':
       content = createConnectedPhaseUI(state.remoteName ?? 'Unknown');
+      break;
+    case 'rematch-request':
+      content = createRematchRequestPhaseUI(state.remoteName ?? 'Opponent');
+      break;
+    case 'disconnected':
+      content = createDisconnectedPhaseUI(state.error);
       break;
     case 'error':
       content = createErrorPhaseUI(state.error ?? 'An error occurred');

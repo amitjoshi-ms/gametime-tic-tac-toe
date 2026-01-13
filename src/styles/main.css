@@ -359,6 +359,26 @@ body {
   background-color: color-mix(in srgb, var(--color-primary) 85%, white);
 }
 
+/* Rematch button in remote mode */
+.btn-rematch {
+  background-color: var(--color-win);
+  color: #1a1a2e;
+}
+
+.btn-rematch:hover {
+  background-color: color-mix(in srgb, var(--color-win) 85%, white);
+}
+
+.btn-rematch:disabled {
+  background-color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-rematch:disabled:hover {
+  transform: none;
+}
+
 /* ============================================
    Mode Selector
    ============================================ */
@@ -816,6 +836,64 @@ body {
 
 .remote-panel__error-text {
   color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+/* Rematch Request State */
+.remote-panel__rematch-request {
+  text-align: center;
+  animation: pulse-border 2s ease-in-out infinite;
+  padding: 1.5rem;
+  border: 2px solid var(--color-win);
+  border-radius: var(--border-radius);
+  background-color: rgba(74, 222, 128, 0.1);
+}
+
+.remote-panel__rematch-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  animation: bounce 1s ease infinite;
+}
+
+.remote-panel__rematch-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: var(--color-win);
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Disconnected State */
+.remote-panel__disconnected {
+  text-align: center;
+}
+
+.remote-panel__disconnected-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.remote-panel__disconnected-text {
+  color: var(--color-text-muted);
   margin-bottom: 1rem;
 }
 
