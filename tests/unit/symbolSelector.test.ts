@@ -2,7 +2,7 @@
  * Unit tests for symbol selector UI component.
  * Tests DOM creation, option handling, and event callbacks.
  * 
- * @vitest-environment happy-dom
+ * @vitest-environment jsdom
  */
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
