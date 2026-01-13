@@ -70,33 +70,20 @@ describe('renderPlayerNames', () => {
   });
 
   describe('remote mode options', () => {
-    it('should disable X input when local player is O', () => {
+    it('should hide X field when local player is O', () => {
       renderPlayerNames(container, defaultConfigs, mockOnChange, {
         isRemoteMode: true,
         localPlayerSymbol: 'O',
       });
 
-      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xInput.disabled).toBe(true);
-      expect(oInput.disabled).toBe(false);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(true);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
     });
 
-    it('should disable O input when local player is X', () => {
-      renderPlayerNames(container, defaultConfigs, mockOnChange, {
-        isRemoteMode: true,
-        localPlayerSymbol: 'X',
-      });
-
-      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
-
-      expect(xInput.disabled).toBe(false);
-      expect(oInput.disabled).toBe(true);
-    });
-
-    it('should add disabled class to field when input is disabled', () => {
+    it('should hide O field when local player is X', () => {
       renderPlayerNames(container, defaultConfigs, mockOnChange, {
         isRemoteMode: true,
         localPlayerSymbol: 'X',
@@ -105,30 +92,43 @@ describe('renderPlayerNames', () => {
       const xField = container.querySelector('.player-config-field:has(#player-x-name)');
       const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xField?.classList.contains('player-config-field--disabled')).toBe(false);
-      expect(oField?.classList.contains('player-config-field--disabled')).toBe(true);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
     });
 
-    it('should enable both inputs when not in remote mode', () => {
+    it('should add hidden class to field in remote mode', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'X',
+      });
+
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
+    });
+
+    it('should show both fields when not in remote mode', () => {
       renderPlayerNames(container, defaultConfigs, mockOnChange, {
         isRemoteMode: false,
       });
 
-      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xInput.disabled).toBe(false);
-      expect(oInput.disabled).toBe(false);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
     });
 
-    it('should enable both inputs when options not provided', () => {
+    it('should show both fields when options not provided', () => {
       renderPlayerNames(container, defaultConfigs, mockOnChange);
 
-      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xInput.disabled).toBe(false);
-      expect(oInput.disabled).toBe(false);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
     });
   });
 });
@@ -178,7 +178,7 @@ describe('updatePlayerNames', () => {
   });
 
   describe('with remote mode options', () => {
-    it('should disable remote player input on update', () => {
+    it('should hide remote player field on update', () => {
       // Start in non-remote mode
       renderPlayerNames(container, defaultConfigs, mockOnChange);
 
@@ -188,14 +188,14 @@ describe('updatePlayerNames', () => {
         localPlayerSymbol: 'X',
       });
 
-      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xInput.disabled).toBe(false);
-      expect(oInput.disabled).toBe(true);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
     });
 
-    it('should update disabled class on fields', () => {
+    it('should update hidden class on fields', () => {
       // Start in non-remote mode
       renderPlayerNames(container, defaultConfigs, mockOnChange);
 
@@ -208,8 +208,8 @@ describe('updatePlayerNames', () => {
       const xField = container.querySelector('.player-config-field:has(#player-x-name)');
       const oField = container.querySelector('.player-config-field:has(#player-o-name)');
 
-      expect(xField?.classList.contains('player-config-field--disabled')).toBe(true);
-      expect(oField?.classList.contains('player-config-field--disabled')).toBe(false);
+      expect(xField?.classList.contains('player-config-field--hidden')).toBe(true);
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
     });
 
     it('should use stored options if not provided on update', () => {
@@ -226,9 +226,9 @@ describe('updatePlayerNames', () => {
       };
       updatePlayerNames(container, newConfigs);
 
-      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
-      // Should still be disabled from stored options
-      expect(oInput.disabled).toBe(true);
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      // Should still be hidden from stored options
+      expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
     });
   });
 });
