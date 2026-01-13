@@ -16,7 +16,7 @@ import {
   resetRemoteGame,
   resetRemoteGameKeepSymbols,
 } from './game/state';
-import { savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName, getComputerName, saveComputerName } from './game/playerNames';
+import { savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName, getComputerConfig, saveComputerConfig } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import {
   createRemoteSession,
@@ -36,9 +36,33 @@ import {
   type RemotePanelState,
 } from './ui/remotePanel';
 import type { GameState, GameMode, PlayerConfigs } from './game/types';
+import { AVAILABLE_SYMBOLS } from './game/types';
+
+/**
+ * Applies mode-specific player configs to the game state.
+ * Computer mode uses separate storage for the computer opponent's config.
+ * @param state - Current game state
+ * @returns Updated game state with mode-specific configs
+ */
+function applyModeSpecificConfigs(state: GameState): GameState {
+  if (state.gameMode === 'computer') {
+    const computerConfig = getComputerConfig();
+    return {
+      ...state,
+      playerConfigs: {
+        ...state.playerConfigs,
+        O: {
+          name: computerConfig.name,
+          symbol: computerConfig.symbol,
+        },
+      },
+    };
+  }
+  return state;
+}
 
 /** Current game state - module-level for simplicity */
-let gameState: GameState = resetGame(loadGameMode());
+let gameState: GameState = applyModeSpecificConfigs(resetGame(loadGameMode()));
 
 /** Cancel function for pending computer move */
 let cancelPendingMove: (() => void) | null = null;
@@ -202,18 +226,9 @@ function handleModeChange(mode: GameMode): void {
 
   // Update player configs based on mode
   if (mode === 'computer') {
-    // Use saved computer name (separate from Player O)
-    gameState = {
-      ...gameState,
-      playerConfigs: {
-        ...gameState.playerConfigs,
-        O: {
-          ...gameState.playerConfigs.O,
-          name: getComputerName(),
-        },
-      },
-    };
-    // Don't save to player_configs - computer name is stored separately
+    // Use saved computer config (name and symbol) - separate from Player O
+    gameState = applyModeSpecificConfigs(gameState);
+    // Don't save to player_configs - computer config is stored separately
   } else if (mode === 'demo') {
     // Demo mode uses temporary names - don't persist
     gameState = {
@@ -251,12 +266,12 @@ function handleConfigChange(configs: PlayerConfigs): void {
   if (gameState.gameMode === 'demo') {
     // Demo mode: don't persist any changes
   } else if (gameState.gameMode === 'computer') {
-    // Computer mode: save X's config to player_configs, O's name to computer_name
+    // Computer mode: save X's config to player_configs, O's config to computer_config
     savePlayerConfigs({
       ...loadPlayerConfigs(),
       X: configs.X,
     });
-    saveComputerName(configs.O.name);
+    saveComputerConfig(configs.O.name, configs.O.symbol);
   } else if (gameState.gameMode === 'remote') {
     // Remote mode: save local player name to remote_name
     if (gameState.remoteSession?.connectionStatus === 'connected' && remoteController) {
@@ -696,6 +711,9 @@ function handleRemoteGameReset(): void {
 
 /**
  * Handles player info update from remote player (name/symbol changed).
+ * If remote player picks the same symbol as local player, we assign a
+ * temporary different symbol to the remote player locally. The local
+ * player's symbol is never changed - they chose it intentionally.
  * @param name - New player name
  * @param symbol - New player symbol (display character)
  */
@@ -705,11 +723,22 @@ function handleRemotePlayerUpdate(name: string, symbol: string): void {
   }
 
   const remotePlayerKey = gameState.remoteSession.remotePlayer.symbol;
+  const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
+  const localSymbol = gameState.playerConfigs[localPlayerKey].symbol;
+
+  // Check for symbol conflict - assign temporary symbol to remote player if needed
+  let displaySymbol = symbol;
+  if (symbol === localSymbol) {
+    // Remote player chose the same symbol as local player
+    // Assign a different symbol to remote player locally (they won't know)
+    displaySymbol = AVAILABLE_SYMBOLS.find((s) => s !== localSymbol) ?? 'O';
+  }
+
   gameState = {
     ...gameState,
     playerConfigs: {
       ...gameState.playerConfigs,
-      [remotePlayerKey]: { name, symbol },
+      [remotePlayerKey]: { name, symbol: displaySymbol },
     },
     remoteSession: {
       ...gameState.remoteSession,
@@ -720,11 +749,11 @@ function handleRemotePlayerUpdate(name: string, symbol: string): void {
     },
   };
 
-  // Update panel with new name and symbol
+  // Update panel with new name and resolved symbol
   remotePanelState = {
     ...remotePanelState,
     remoteName: name,
-    remoteSymbol: symbol,
+    remoteSymbol: displaySymbol,
   };
   updateUI();
 }

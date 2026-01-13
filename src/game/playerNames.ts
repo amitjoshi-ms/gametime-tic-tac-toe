@@ -158,30 +158,55 @@ export function getLocalPlayerName(): string {
  * @param name - The name to save
  */
 export function saveLocalPlayerName(name: string): void {
-  if (name && name.trim()) {
-    setStorageItem(REMOTE_NAME_KEY, name.trim());
+  const trimmed = name.trim();
+  if (trimmed) {
+    setStorageItem(REMOTE_NAME_KEY, trimmed);
   }
 }
 
-/**
- * Gets the computer opponent's name.
- * Uses dedicated computer name storage, falling back to default.
- *
- * @returns The computer's display name
- */
-export function getComputerName(): string {
-  const computerName = getStorageItem<string | null>(COMPUTER_NAME_KEY, null);
-  return computerName ?? DEFAULT_COMPUTER_NAME;
+/** Computer config type for storage */
+interface ComputerConfig {
+  name: string;
+  symbol: PlayerSymbol;
 }
 
 /**
- * Saves the computer opponent's name.
+ * Gets the computer opponent's configuration (name and symbol).
+ * Uses dedicated computer config storage, falling back to defaults.
+ *
+ * @returns The computer's config (name and symbol)
+ */
+export function getComputerConfig(): ComputerConfig {
+  const stored = getStorageItem<ComputerConfig | string | null>(COMPUTER_NAME_KEY, null);
+  
+  // Handle null
+  if (stored === null) {
+    return { name: DEFAULT_COMPUTER_NAME, symbol: DEFAULT_O_SYMBOL };
+  }
+  
+  // Handle legacy format (just name string)
+  if (typeof stored === 'string') {
+    return { name: stored, symbol: DEFAULT_O_SYMBOL };
+  }
+  
+  // Handle new format - validate symbol is from available list
+  if (AVAILABLE_SYMBOLS.includes(stored.symbol)) {
+    return stored;
+  }
+  
+  return { name: DEFAULT_COMPUTER_NAME, symbol: DEFAULT_O_SYMBOL };
+}
+
+/**
+ * Saves the computer opponent's configuration (name and symbol).
  *
  * @param name - The name to save
+ * @param symbol - The symbol to save
  */
-export function saveComputerName(name: string): void {
-  if (name && name.trim()) {
-    setStorageItem(COMPUTER_NAME_KEY, name.trim());
+export function saveComputerConfig(name: string, symbol: PlayerSymbol): void {
+  const trimmed = name.trim();
+  if (trimmed && AVAILABLE_SYMBOLS.includes(symbol)) {
+    setStorageItem(COMPUTER_NAME_KEY, { name: trimmed, symbol });
   }
 }
 

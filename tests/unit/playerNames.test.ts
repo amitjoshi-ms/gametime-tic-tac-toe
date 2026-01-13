@@ -16,8 +16,8 @@ import {
   getDefaultPlayerConfigs,
   getLocalPlayerName,
   saveLocalPlayerName,
-  getComputerName,
-  saveComputerName,
+  getComputerConfig,
+  saveComputerConfig,
   DEFAULT_X_NAME,
   DEFAULT_O_NAME,
   DEFAULT_COMPUTER_NAME,
@@ -485,14 +485,18 @@ describe('saveLocalPlayerName', () => {
   });
 });
 
-describe('getComputerName', () => {
-  it('should return default computer name when nothing saved', () => {
-    expect(getComputerName()).toBe(DEFAULT_COMPUTER_NAME);
+describe('getComputerConfig', () => {
+  it('should return default computer config when nothing saved', () => {
+    const config = getComputerConfig();
+    expect(config.name).toBe(DEFAULT_COMPUTER_NAME);
+    expect(config.symbol).toBe('O');
   });
 
-  it('should return saved computer name', () => {
-    saveComputerName('HAL 9000');
-    expect(getComputerName()).toBe('HAL 9000');
+  it('should return saved computer config', () => {
+    saveComputerConfig('HAL 9000', '🔴');
+    const config = getComputerConfig();
+    expect(config.name).toBe('HAL 9000');
+    expect(config.symbol).toBe('🔴');
   });
 
   it('should be independent from player configs', () => {
@@ -501,33 +505,82 @@ describe('getComputerName', () => {
       O: { name: 'Bob', symbol: 'O' },
     };
     savePlayerConfigs(configs);
-    saveComputerName('DeepBlue');
+    saveComputerConfig('DeepBlue', '★');
 
-    expect(getComputerName()).toBe('DeepBlue');
+    const computerConfig = getComputerConfig();
+    expect(computerConfig.name).toBe('DeepBlue');
+    expect(computerConfig.symbol).toBe('★');
     expect(loadPlayerConfigs().O.name).toBe('Bob');
+    expect(loadPlayerConfigs().O.symbol).toBe('O');
+  });
+
+  it('should handle legacy format (name only)', () => {
+    // Simulate legacy format - just a string
+    localStorage.setItem('tictactoe_computer_name', JSON.stringify('OldBot'));
+    const config = getComputerConfig();
+    expect(config.name).toBe('OldBot');
+    expect(config.symbol).toBe('O'); // Default symbol
   });
 });
 
-describe('saveComputerName', () => {
-  it('should save the computer name', () => {
-    saveComputerName('Skynet');
-    expect(getComputerName()).toBe('Skynet');
+describe('saveComputerConfig', () => {
+  it('should save the computer name and symbol', () => {
+    saveComputerConfig('Skynet', '☀️');
+    const config = getComputerConfig();
+    expect(config.name).toBe('Skynet');
+    expect(config.symbol).toBe('☀️');
   });
 
   it('should trim whitespace from name', () => {
-    saveComputerName('  Watson  ');
-    expect(getComputerName()).toBe('Watson');
+    saveComputerConfig('  Watson  ', '🌙');
+    const config = getComputerConfig();
+    expect(config.name).toBe('Watson');
+    expect(config.symbol).toBe('🌙');
   });
 
   it('should not save empty name', () => {
-    saveComputerName('ValidName');
-    saveComputerName('');
-    expect(getComputerName()).toBe('ValidName');
+    saveComputerConfig('ValidName', '◆');
+    saveComputerConfig('', '▲');
+    const config = getComputerConfig();
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
   });
 
   it('should not save whitespace-only name', () => {
-    saveComputerName('ValidName');
-    saveComputerName('   ');
-    expect(getComputerName()).toBe('ValidName');
+    saveComputerConfig('ValidName', '◆');
+    saveComputerConfig('   ', '▲');
+    const config = getComputerConfig();
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
+  });
+
+  it('should not save invalid symbol', () => {
+    saveComputerConfig('ValidName', '◆');
+    // Invalid symbol that's not in AVAILABLE_SYMBOLS
+    saveComputerConfig('NewName', '💀' as PlayerSymbol);
+    const config = getComputerConfig();
+    // Should keep previous valid config
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
+  });
+
+  it('should persist symbol separately from human mode', () => {
+    // Save human mode configs
+    savePlayerConfigs({
+      X: { name: 'Alice', symbol: '★' },
+      O: { name: 'Bob', symbol: '☀️' },
+    });
+    
+    // Save computer config
+    saveComputerConfig('CPU', '🌙');
+    
+    // Human configs unchanged
+    const humanConfigs = loadPlayerConfigs();
+    expect(humanConfigs.X.symbol).toBe('★');
+    expect(humanConfigs.O.symbol).toBe('☀️');
+    
+    // Computer config separate
+    const computerConfig = getComputerConfig();
+    expect(computerConfig.symbol).toBe('🌙');
   });
 });
