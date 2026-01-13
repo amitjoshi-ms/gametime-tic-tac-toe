@@ -255,7 +255,7 @@ Focused rules auto-applied to specific file patterns via `applyTo`:
 | ------------------------------------ | ----------------------------- | --------------------------------------------------------------- |
 | `typescript-types.instructions.md`   | Type system, naming           | `**/*.ts`                                                       |
 | `typescript-modules.instructions.md` | Module system, imports        | `**/*.ts`                                                       |
-| `typescript-patterns.instructions.md`| Functions, immutability       | `**/*.ts`                                                       |
+| `typescript-patterns.instructions.md`| Functions, immutability, errors | `**/*.ts`                                                       |
 | `testing.instructions.md`            | Unit/E2E test structure       | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts`                     |
 | `game-logic.instructions.md`         | Pure functions, state         | `src/game/**/*.ts`                                              |
 | `ui.instructions.md`                 | DOM, accessibility, CSS       | `src/ui/**/*.ts, src/styles/**/*.css`                           |
