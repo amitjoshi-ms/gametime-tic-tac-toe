@@ -155,20 +155,20 @@ test.describe('Symbol Selection Feature', () => {
     await xSelector.waitFor({ state: 'visible' });
     await oSelector.waitFor({ state: 'visible' });
 
-    // Select custom symbol for X
-    await xSelector.selectOption('💎');
+    // Select custom symbol for X (use ★ which is in AVAILABLE_SYMBOLS)
+    await xSelector.selectOption('★');
 
     // Wait for update
     await page.waitForTimeout(100);
 
-    // Select custom symbol for O (computer)
-    await oSelector.selectOption('🔥');
+    // Select custom symbol for O (computer) (use ☀️ which is in AVAILABLE_SYMBOLS)
+    await oSelector.selectOption('☀️');
 
     // Make a move
     await page.getByRole('button', { name: 'Cell 1' }).click();
 
-    // Check that X's symbol appears
-    await expect(page.getByRole('button', { name: /Cell 1.*💎/ })).toBeVisible();
+    // Check that X's symbol appears (★)
+    await expect(page.getByRole('button', { name: /Cell 1.*★/ })).toBeVisible();
 
     // Wait for computer to make a move (with thinking delay)
     await page.waitForTimeout(2500);
