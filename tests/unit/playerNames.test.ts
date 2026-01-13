@@ -1,6 +1,7 @@
 /**
  * Unit tests for player names management.
  * Tests storage, loading, and persistence of custom player names.
+ * Includes tests for demo mode player names.
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';

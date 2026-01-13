@@ -9,13 +9,13 @@ applyTo: 'src/game/**/*.ts'
 
 The `src/game/` directory contains **pure functions** with no side effects:
 
-| File | Responsibility | Side Effects |
-|------|----------------|--------------|
-| `types.ts` | Domain type definitions | None |
-| `logic.ts` | Game rules (win detection, validation) | None |
-| `state.ts` | State transitions | None |
-| `computer.ts` | Computer opponent move selection | None (uses Math.random) |
-| `playerNames.ts` | Name persistence helpers | localStorage only |
+| File             | Responsibility                         | Side Effects            |
+| ---------------- | -------------------------------------- | ----------------------- |
+| `types.ts`       | Domain type definitions                | None                    |
+| `logic.ts`       | Game rules (win detection, validation) | None                    |
+| `state.ts`       | State transitions                      | None                    |
+| `computer.ts`    | Computer opponent move selection       | None (uses Math.random) |
+| `playerNames.ts` | Name persistence helpers               | localStorage only       |
 
 ## Pure Function Requirements
 
@@ -55,7 +55,10 @@ Same inputs must always produce same outputs:
 
 ```typescript
 // ✅ Deterministic
-export function determineStatus(board: CellValue[], lastPlayer: Player): GameStatus {
+export function determineStatus(
+  board: CellValue[],
+  lastPlayer: Player
+): GameStatus {
   if (checkWin(board, lastPlayer)) {
     return lastPlayer === 'X' ? 'x-wins' : 'o-wins';
   }
@@ -103,7 +106,7 @@ export interface GameState {
 
 ### Export Constants for Magic Numbers
 
-```typescript
+````typescript
 // Define the type for a winning line
 type WinningLine = [number, number, number];
 
@@ -120,35 +123,42 @@ type WinningLine = [number, number, number];
  * ```
  */
 export const WINNING_LINES: WinningLine[] = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-  [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-  [0, 4, 8], [2, 4, 6],            // Diagonals
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8], // Rows
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8], // Columns
+  [0, 4, 8],
+  [2, 4, 6], // Diagonals
 ];
-```
+````
 
 ### Validation Functions
 
 ```typescript
 /**
  * Checks if a move is valid.
- * @param state - Current game state
+ * @param board - Current board state
  * @param cellIndex - Target cell (0-8)
+ * @param status - Current game status
  * @returns true if move is allowed
  */
-export function isValidMove(state: GameState, cellIndex: number): boolean {
+export function isValidMove(
+  board: CellValue[],
+  cellIndex: number,
+  status: GameStatus
+): boolean {
   // Game must be in progress
-  if (state.status !== 'playing') {
-    return false;
-  }
-  // Cell must be empty
-  if (state.board[cellIndex] !== null) {
+  if (status !== 'playing') {
     return false;
   }
   // Index must be valid
   if (cellIndex < 0 || cellIndex > 8) {
     return false;
   }
-  return true;
+  // Cell must be empty
+  return board[cellIndex] === null;
 }
 ```
 
@@ -166,17 +176,17 @@ export function isValidMove(state: GameState, cellIndex: number): boolean {
  * @returns New state (or same state if invalid move)
  */
 export function makeMove(state: GameState, cellIndex: number): GameState {
-  if (!isValidMove(state, cellIndex)) {
+  if (!isValidMove(state.board, cellIndex, state.status)) {
     return state; // Return unchanged for invalid moves
   }
-  
+
   // Create new board with move
   const newBoard = [...state.board];
   newBoard[cellIndex] = state.currentPlayer;
-  
+
   // Determine new status
   const newStatus = determineStatus(newBoard, state.currentPlayer);
-  
+
   return {
     ...state,
     board: newBoard,
@@ -192,13 +202,16 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
 /**
  * Creates a fresh game state.
  * Loads player names from localStorage if available.
+ * @param currentMode - Current game mode to preserve (defaults to 'human')
  */
-export function resetGame(): GameState {
+export function resetGame(currentMode: GameMode = 'human'): GameState {
   return {
     board: Array.from({ length: 9 }, () => null),
     currentPlayer: 'X',
     status: 'playing',
     playerNames: loadPlayerNames(),
+    gameMode: currentMode,
+    isComputerThinking: false,
   };
 }
 ```
@@ -212,7 +225,7 @@ describe('makeMove', () => {
   it('should place mark and switch player', () => {
     const initial = resetGame();
     const afterMove = makeMove(initial, 0);
-    
+
     expect(afterMove.board[0]).toBe('X');
     expect(afterMove.currentPlayer).toBe('O');
     expect(afterMove).not.toBe(initial); // New object
@@ -225,8 +238,10 @@ describe('makeMove', () => {
       currentPlayer: 'X',
       status: 'playing',
       playerNames: { X: 'X', O: 'O' },
+      gameMode: 'human',
+      isComputerThinking: false,
     };
-    
+
     const afterWin = makeMove(almostWon, 2);
     expect(afterWin.status).toBe('x-wins');
   });

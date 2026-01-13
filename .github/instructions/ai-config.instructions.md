@@ -1,4 +1,5 @@
 ---
+description: 'AI configuration file standards for maintaining instruction files, prompts, and agents'
 applyTo: '.github/**/*.md, AGENTS.md'
 ---
 
@@ -26,36 +27,46 @@ AGENTS.md                        # Quick reference (repo root)
 **Purpose:** Primary context for all AI interactions. Auto-loaded by GitHub Copilot.
 
 **Structure:**
+
 ```markdown
 # Project Name Guidelines
 
 ## Project Overview
+
 Brief description, purpose, key constraints.
 
 ## Tech Stack
+
 | Technology | Version | Purpose |
 Table format for quick scanning.
 
 ## Project Structure
+
 Directory tree with descriptions.
 
 ## Code Style & Conventions
+
 Naming, formatting, patterns.
 
 ## Commands
+
 npm scripts table.
 
 ## Testing Standards
+
 Unit and E2E patterns.
 
 ## Architecture Patterns
+
 Key design decisions.
 
 ## What NOT to Do
+
 Explicit prohibitions.
 ```
 
 **Rules:**
+
 - Keep under 500 lines
 - Use tables for structured data
 - Include concrete examples
@@ -68,22 +79,27 @@ Explicit prohibitions.
 **Naming:** `<topic>.instructions.md` (kebab-case)
 
 **Structure:**
+
 ```markdown
 # Topic Name
 
 Brief purpose statement.
 
 ## Section 1
+
 Rules with examples.
 
 ## Section 2
+
 More rules.
 
 ## Anti-Patterns
+
 What to avoid with examples.
 ```
 
 **Rules:**
+
 - One concern per file
 - Keep under 200 lines
 - Include code examples (✅ good, ❌ bad)
@@ -98,7 +114,7 @@ What to avoid with examples.
 | game-logic.instructions.md | Pure functions | `src/game/**/*.ts` |
 | ui.instructions.md | DOM manipulation | `src/ui/**/*.ts, src/styles/**/*.css` |
 | security.instructions.md | XSS, validation | `**/*.ts, **/*.html` |
-| performance.instructions.md | Optimization | `**/*.ts, **/*.css` |
+| performance.instructions.md | Optimization | `**/*.ts, **/*.css, **/*.html` |
 | tooling.instructions.md | Build configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
 | ai-config.instructions.md | AI configuration standards | `.github/**/*.md, AGENTS.md` |
 
@@ -107,10 +123,12 @@ What to avoid with examples.
 **Purpose:** Reusable task templates invoked via Copilot Chat.
 
 **Naming:** `<action>.<type>.prompt.md`
+
 - Types: `task` (agent mode), `chat` (ask mode)
 - Examples: `start.task.prompt.md`, `explain.chat.prompt.md`
 
 **Structure:**
+
 ```markdown
 ---
 description: One-line summary shown in picker
@@ -125,9 +143,11 @@ instructions:
 Brief description.
 
 ## Step 1: First Action
+
 Instructions with commands.
 
 ## Step 2: Next Action
+
 More instructions.
 
 ## User Request
@@ -136,6 +156,7 @@ More instructions.
 ```
 
 **Frontmatter Format:**
+
 - Uses standard YAML syntax with key-value pairs
 - `description` and `mode` are standard GitHub Copilot fields
 - `instructions` is a project-specific convention listing instruction files to reference
@@ -144,6 +165,7 @@ More instructions.
 - Other prompt/agent files that use the `instructions` field SHOULD either add a brief YAML comment explaining that it is a project-specific field (and what it points to) or reference this section of `ai-config.instructions.md`
 
 **Rules:**
+
 - Always include frontmatter
 - Reference instructions, don't duplicate
 - Use `{{input}}` for user context
@@ -157,6 +179,7 @@ More instructions.
 **Naming:** `<role>.agent.md` (kebab-case)
 
 **Structure:**
+
 ```markdown
 ---
 description: Agent purpose
@@ -167,16 +190,20 @@ instructions:
 # Agent Role
 
 ## Expertise
+
 What this agent specializes in.
 
 ## Workflow
+
 Steps the agent follows.
 
 ## Constraints
+
 What the agent should NOT do.
 ```
 
 **Frontmatter Format:**
+
 - Uses standard YAML syntax
 - `description` provides a brief purpose statement
 - `instructions` is a project-specific field listing relevant instruction files
@@ -184,6 +211,7 @@ What the agent should NOT do.
 - Custom frontmatter fields are supported by GitHub Copilot's extensible format
 
 **Rules:**
+
 - One role per agent
 - Clear expertise boundaries
 - Reference shared instructions
@@ -194,26 +222,33 @@ What the agent should NOT do.
 **Purpose:** Quick reference for AI coding agents. Complements copilot-instructions.md.
 
 **Structure:**
+
 ```markdown
 # AGENTS.md
 
 ## Quick Start
+
 Essential commands.
 
 ## Repository Structure
+
 Simplified tree.
 
 ## Architecture Rules
+
 Key constraints table.
 
 ## Common Tasks
+
 Step-by-step workflows.
 
 ## What to Avoid
+
 Explicit prohibitions.
 ```
 
 **Rules:**
+
 - Keep under 200 lines
 - Optimize for fast context loading
 - Focus on actionable information
@@ -221,35 +256,40 @@ Explicit prohibitions.
 
 ## When to Update
 
-| Change | Update These Files |
-|--------|-------------------|
-| New npm script | copilot-instructions.md, AGENTS.md |
-| New directory | copilot-instructions.md, AGENTS.md |
-| New code pattern | Relevant instruction file |
-| New workflow | Create/update prompt |
-| Project conventions | copilot-instructions.md |
+| Change              | Update These Files                 |
+| ------------------- | ---------------------------------- |
+| New npm script      | copilot-instructions.md, AGENTS.md |
+| New directory       | copilot-instructions.md, AGENTS.md |
+| New code pattern    | Relevant instruction file          |
+| New workflow        | Create/update prompt               |
+| Project conventions | copilot-instructions.md            |
 
 ## Editing Best Practices
 
 ### Before Editing
+
 1. Read the existing file completely
 2. Identify the appropriate section for changes
 3. Check for related content in other files to avoid duplication
 
 ### Writing Style
+
 - **Be concise**: Use bullet points and tables over paragraphs
 - **Be specific**: Include file paths, command examples, code snippets
 - **Be consistent**: Match existing formatting and terminology
 - **Use examples**: Show ✅ good and ❌ bad patterns
 
 ### Formatting Rules
-```markdown
+
+````markdown
 # H1 for file title only
+
 ## H2 for major sections
+
 ### H3 for subsections
 
 | Tables | For | Structured Data |
-|--------|-----|-----------------|
+| ------ | --- | --------------- |
 
 - Bullets for lists
 - Code in `backticks`
@@ -257,7 +297,9 @@ Explicit prohibitions.
 ```language
 Code blocks with language hint
 ```
-```
+````
+
+````
 
 ### Content Guidelines
 - **copilot-instructions.md**: High-level overview, no deep implementation details
@@ -276,21 +318,26 @@ Code blocks with language hint
 ```markdown
 # In both copilot-instructions.md AND typescript.instructions.md
 Use strict TypeScript with no `any` types...
-```
+````
 
 ✅ **Reference instead**
+
 ```markdown
 # In prompt frontmatter
+
 instructions:
-  - typescript.instructions.md
+
+- typescript.instructions.md
 ```
 
 ❌ **Vague instructions**
+
 ```markdown
 Write good code.
 ```
 
 ✅ **Specific with examples**
+
 ```markdown
 Use discriminated unions for state:
 type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
@@ -300,6 +347,7 @@ type Status = { kind: 'playing' } | { kind: 'won'; winner: Player }
 
 ✅ **Short, focused instruction files**
 For most instruction files:
+
 - Prefer short, focused instruction files.
 - If a file starts to grow large, split it into smaller topic-specific files rather than letting it exceed the documented line-count guideline.
 - Treat this central `ai-config.instructions.md` file as an explicit exception because it aggregates cross-cutting standards.

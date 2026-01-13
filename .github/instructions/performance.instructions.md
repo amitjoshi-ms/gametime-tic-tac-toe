@@ -163,10 +163,12 @@ function onCellClick(currentState: GameState, cellIndex: number) {
 
 ```css
 /* ❌ Complex, slow selector */
-.board > div:nth-child(3n+1):not(.disabled) .cell-content { }
+.board > div:nth-child(3n + 1):not(.disabled) .cell-content {
+}
 
 /* ✅ Simple, fast selector */
-.cell--active { }
+.cell--active {
+}
 ```
 
 ### Use `will-change` Sparingly

@@ -261,10 +261,12 @@ describe('determineStatus', () => {
     expect(determineStatus(board, 'O')).toBe('playing');
   });
 
-  it('should return playing when main diagonal not blocked', () => {
+  it('should detect draw when opponent cannot win on last move', () => {
     // Board: X O X / O X O / O X _
+    // X has main diagonal [0,4,8] but it's O's turn (X just played)
+    // O has no live lines, will block X's diagonal → draw
     const board: CellValue[] = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', null];
-    expect(determineStatus(board, 'X')).toBe('playing');
+    expect(determineStatus(board, 'X')).toBe('draw');
   });
 
   it('should check only the last player who moved', () => {

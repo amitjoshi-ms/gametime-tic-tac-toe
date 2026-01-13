@@ -11,15 +11,17 @@ import {
   setComputerThinking,
   isComputerTurn,
 } from './game/state';
-import { DEFAULT_COMPUTER_NAME } from './game/playerNames';
-import { scheduleComputerMove } from './game/computer';
+import {
+  DEFAULT_COMPUTER_NAME,
+  savePlayerNames,
+} from './game/playerNames';
+import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
-import { renderControls } from './ui/controls';
+import { renderControls, updateControls } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
-import { savePlayerNames } from './game/playerNames';
 import type { GameState, GameMode, PlayerNames } from './game/types';
 
 /** Current game state - module-level for simplicity */
@@ -27,6 +29,12 @@ let gameState: GameState = resetGame(loadGameMode());
 
 /** Cancel function for pending computer move */
 let cancelPendingMove: (() => void) | null = null;
+
+/** Cancel function for pending demo restart timer */
+let cancelRestartTimer: (() => void) | null = null;
+
+/** Previous game mode before demo started (to restore on stop) */
+let preDemoMode: GameMode | null = null;
 
 /**
  * Handles the computer making its move.
@@ -71,6 +79,11 @@ function triggerComputerTurn(): void {
  * @param cellIndex - Index 0-8 of the clicked cell
  */
 function handleCellClick(cellIndex: number): void {
+  // Ignore clicks in demo mode
+  if (gameState.gameMode === 'demo') {
+    return;
+  }
+
   const newState = makeMove(gameState, cellIndex);
 
   // Only update if state actually changed
@@ -160,6 +173,169 @@ function handleNameChange(names: PlayerNames): void {
 }
 
 /**
+ * Triggers the next computer move in demo mode.
+ * Called after each move completes or on demo start.
+ */
+function triggerDemoMove(): void {
+  // Only proceed if in demo mode and game is still playing
+  if (gameState.gameMode !== 'demo' || gameState.status !== 'playing') {
+    return;
+  }
+
+  // Set thinking state
+  gameState = setComputerThinking(gameState, true);
+  updateUI();
+
+  // Schedule the computer move and store cancel function
+  cancelPendingMove = scheduleComputerMove(gameState.board, handleDemoMove);
+}
+
+/**
+ * Handles a computer move in demo mode.
+ * @param cellIndex - Index of the cell the computer selected
+ */
+function handleDemoMove(cellIndex: number): void {
+  // Clear the pending move reference
+  cancelPendingMove = null;
+
+  // Exit if not in demo mode anymore
+  if (gameState.gameMode !== 'demo') {
+    return;
+  }
+
+  // Clear thinking state before making move
+  gameState = setComputerThinking(gameState, false);
+
+  // Ignore if no valid move (shouldn't happen in normal gameplay)
+  if (cellIndex === -1) {
+    updateUI();
+    return;
+  }
+
+  // Make the computer's move
+  const newState = makeMove(gameState, cellIndex);
+  if (newState !== gameState) {
+    gameState = newState;
+  }
+
+  updateUI();
+
+  // Check if game ended
+  if (gameState.status !== 'playing') {
+    handleDemoGameComplete();
+  } else {
+    // Schedule next move
+    triggerDemoMove();
+  }
+}
+
+/**
+ * Handles demo game completion.
+ * Displays result and schedules auto-restart.
+ */
+function handleDemoGameComplete(): void {
+  // Save current player names for restart
+  const currentNames = gameState.playerNames;
+
+  // Schedule auto-restart after DEMO_RESTART_DELAY
+  cancelRestartTimer = scheduleDemoRestart(() => {
+    // Clear timer reference before executing callback to prevent race condition
+    // with stopDemo() being called while this callback is executing
+    cancelRestartTimer = null;
+
+    // Only restart if still in demo mode
+    if (gameState.gameMode === 'demo') {
+      // Reset game and start new demo with same names.
+      // Note: resetGame() alternates the starting player for fairness,
+      // so consecutive demo games will alternate between X and O starting.
+      gameState = resetGame('demo');
+      gameState = {
+        ...gameState,
+        playerNames: currentNames,
+      };
+      updateUI();
+      triggerDemoMove();
+    }
+  });
+}
+
+/**
+ * Starts demo mode.
+ * Saves current mode for restoration, resets game, and begins auto-play.
+ * Uses current player names from the form inputs for the demo.
+ */
+function startDemo(): void {
+  // Save current mode for restoration on stop
+  preDemoMode = gameState.gameMode;
+
+  // Cancel any pending computer move from previous mode
+  if (cancelPendingMove) {
+    cancelPendingMove();
+    cancelPendingMove = null;
+  }
+
+  // Get the current player names from state (which reflects form inputs)
+  const currentNames = gameState.playerNames;
+
+  // Reset game with demo mode
+  gameState = resetGame('demo');
+
+  // Use the current player names (user-entered names) for the demo
+  gameState = {
+    ...gameState,
+    playerNames: currentNames,
+  };
+
+  updateUI();
+
+  // Schedule first move
+  triggerDemoMove();
+}
+
+/**
+ * Stops demo mode.
+ * Cancels pending timers and restores previous game mode.
+ */
+function stopDemo(): void {
+  // Cancel any pending move timer
+  if (cancelPendingMove) {
+    cancelPendingMove();
+    cancelPendingMove = null;
+  }
+
+  // Cancel any pending restart timer
+  if (cancelRestartTimer) {
+    cancelRestartTimer();
+    cancelRestartTimer = null;
+  }
+
+  // Clear thinking state
+  gameState = setComputerThinking(gameState, false);
+
+  // Restore previous mode (keep current board state)
+  const restoredMode = preDemoMode ?? 'human';
+  gameState = {
+    ...gameState,
+    gameMode: restoredMode,
+  };
+  preDemoMode = null;
+
+  updateUI();
+}
+
+/**
+ * Handles demo toggle button click.
+ * Starts demo if not active, stops if active.
+ */
+function handleDemoToggle(): void {
+  if (gameState.gameMode === 'demo') {
+    stopDemo();
+  } else {
+    startDemo();
+  }
+}
+
+/**
  * Updates all UI components to reflect current game state.
  */
 function updateUI(): void {
@@ -167,9 +343,13 @@ function updateUI(): void {
   const playerNamesContainer = document.getElementById('player-names');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
+  const controlsContainer = document.getElementById('controls');
+
+  const isDemoActive = gameState.gameMode === 'demo';
 
   if (modeSelectorContainer) {
-    updateModeSelector(modeSelectorContainer, gameState.gameMode);
+    // Keep mode selector visible but disable it during demo mode.
+    updateModeSelector(modeSelectorContainer, gameState.gameMode, isDemoActive);
   }
 
   if (playerNamesContainer) {
@@ -182,6 +362,10 @@ function updateUI(): void {
 
   if (statusContainer) {
     renderStatus(statusContainer, gameState);
+  }
+
+  if (controlsContainer) {
+    updateControls(controlsContainer, isDemoActive);
   }
 }
 
@@ -237,7 +421,12 @@ function initApp(): void {
   );
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);
-  renderControls(controlsContainer, handleNewGame);
+  renderControls(
+    controlsContainer,
+    handleNewGame,
+    handleDemoToggle,
+    gameState.gameMode === 'demo'
+  );
 
   // Trigger computer turn if computer starts
   if (isComputerTurn(gameState)) {

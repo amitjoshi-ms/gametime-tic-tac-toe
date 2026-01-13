@@ -10,7 +10,9 @@ import {
   selectRandomCell,
   selectComputerMove,
   scheduleComputerMove,
+  scheduleDemoRestart,
   COMPUTER_THINKING_DELAY,
+  DEMO_RESTART_DELAY,
 } from '../../src/game/computer';
 import type { CellValue } from '../../src/game/types';
 
@@ -219,6 +221,69 @@ describe('computer', () => {
   describe('COMPUTER_THINKING_DELAY', () => {
     it('should be 2000 milliseconds', () => {
       expect(COMPUTER_THINKING_DELAY).toBe(2000);
+    });
+  });
+
+  describe('DEMO_RESTART_DELAY', () => {
+    it('should be 15000 milliseconds (15 seconds)', () => {
+      expect(DEMO_RESTART_DELAY).toBe(15000);
+    });
+  });
+
+  describe('scheduleDemoRestart', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should call onRestart after DEMO_RESTART_DELAY', () => {
+      const onRestart = vi.fn();
+
+      scheduleDemoRestart(onRestart);
+      expect(onRestart).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(DEMO_RESTART_DELAY - 1);
+      expect(onRestart).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(1);
+      expect(onRestart).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return a cancel function', () => {
+      const onRestart = vi.fn();
+      const cancel = scheduleDemoRestart(onRestart);
+
+      expect(typeof cancel).toBe('function');
+    });
+
+    it('should cancel restart when cancel function is called', () => {
+      const onRestart = vi.fn();
+      const cancel = scheduleDemoRestart(onRestart);
+
+      vi.advanceTimersByTime(5000); // Some time before full delay
+      cancel();
+      vi.advanceTimersByTime(15000); // Well past the delay
+
+      expect(onRestart).not.toHaveBeenCalled();
+    });
+
+    it('should allow multiple restarts to be scheduled independently', () => {
+      const onRestart1 = vi.fn();
+      const onRestart2 = vi.fn();
+
+      scheduleDemoRestart(onRestart1);
+      vi.advanceTimersByTime(5000);
+      scheduleDemoRestart(onRestart2);
+
+      vi.advanceTimersByTime(10000); // First should fire at 15000
+      expect(onRestart1).toHaveBeenCalledTimes(1);
+      expect(onRestart2).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(5000); // Second fires at 20000
+      expect(onRestart2).toHaveBeenCalledTimes(1);
     });
   });
 });

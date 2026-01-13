@@ -1,0 +1,17 @@
+# HTML - always revalidate (ensures fresh asset references)
+/
+  Cache-Control: no-cache, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+# Vite hashed assets - cache forever (hash changes on content change)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static assets - cache with revalidation
+/icons/*
+  Cache-Control: public, max-age=86400
+
+/manifest.json
+  Cache-Control: public, max-age=3600
