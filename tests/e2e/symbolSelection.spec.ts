@@ -140,20 +140,26 @@ test.describe('Symbol Selection Feature', () => {
   });
 
   test('should work with computer mode', async ({ page }) => {
-    const xSelector = page.getByLabel('Symbol for Player X');
-
     // Switch to computer mode by clicking the computer radio button
     // Use force: true to bypass label interception
     await page.getByRole('radio', { name: 'Play against Computer' }).click({ force: true });
 
+    // Wait for mode change and UI update
+    await page.waitForTimeout(200);
+
+    // Get selectors after mode change
+    const xSelector = page.getByLabel('Symbol for Player X');
+    const oSelector = page.getByLabel('Symbol for Player O');
+
+    // Wait for selectors to be ready
+    await xSelector.waitFor({ state: 'visible' });
+    await oSelector.waitFor({ state: 'visible' });
+
     // Select custom symbol for X
     await xSelector.selectOption('💎');
 
-    // Wait for computer name to update
+    // Wait for update
     await page.waitForTimeout(100);
-
-    // Get O selector after mode change
-    const oSelector = page.getByLabel('Symbol for Player O');
 
     // Select custom symbol for O (computer)
     await oSelector.selectOption('🔥');

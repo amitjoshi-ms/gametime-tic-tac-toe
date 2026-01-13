@@ -13,7 +13,7 @@ export default tseslint.config(
         ...globals.es2022,
       },
       parserOptions: {
-        project: './tsconfig.eslint.json',
+        project: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
