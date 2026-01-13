@@ -194,4 +194,46 @@ test.describe('Remote Multiplayer', () => {
       await expect(selectedOption).toContainText('Remote');
     });
   });
+
+  test.describe('Player Configuration in Remote Mode', () => {
+    test('should show both player fields in Human mode', async ({ page }) => {
+      // In Human mode, both player config fields should be visible
+      const xField = page.locator('.player-config-field:has(#player-x-name)');
+      const oField = page.locator('.player-config-field:has(#player-o-name)');
+
+      await expect(xField).toBeVisible();
+      await expect(oField).toBeVisible();
+    });
+
+    test('should hide player names container when waiting for peer', async ({ page }) => {
+      // Select Remote mode and create session
+      await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+      await page.getByRole('button', { name: /create game/i }).click();
+
+      // Wait for session creation
+      await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 30000,
+      });
+
+      // Player names container should be hidden while waiting for peer
+      // (The full player config with hidden class is only shown when connected)
+      const playerNamesContainer = page.locator('#player-names');
+      await expect(playerNamesContainer).toBeHidden();
+    });
+
+    test('should restore player fields when switching back to Human mode', async ({ page }) => {
+      // Select Remote mode
+      await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
+
+      // Switch back to Human mode
+      await page.locator('.mode-selector__option', { hasText: 'Human' }).click();
+
+      // Both player fields should be visible again
+      const xField = page.locator('.player-config-field:has(#player-x-name)');
+      const oField = page.locator('.player-config-field:has(#player-o-name)');
+
+      await expect(xField).toBeVisible();
+      await expect(oField).not.toHaveClass(/player-config-field--hidden/);
+    });
+  });
 });
