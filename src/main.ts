@@ -460,7 +460,8 @@ async function handleCreateSession(): Promise<void> {
  * @param sessionCode - The session code from the host
  */
 async function handleJoinSession(sessionCode: string): Promise<void> {
-  const localName = gameState.playerConfigs.X.name;
+  // Guest is player O, so use O's name from local config
+  const localName = gameState.playerConfigs.O.name;
 
   // Update UI to show joining state
   remotePanelState = { phase: 'joining' };

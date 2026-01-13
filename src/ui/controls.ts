@@ -164,8 +164,29 @@ export function updateControls(
     );
   }
 
-  // Update rematch button if present
-  const rematchBtn = container.querySelector<HTMLButtonElement>('.btn-rematch');
+  // Handle rematch button add/remove/update for remote mode
+  const isGameOver = opts.gameStatus !== 'playing';
+  const shouldShowRematch = opts.gameMode === 'remote' && isGameOver && currentRematchHandler;
+  let rematchBtn = container.querySelector<HTMLButtonElement>('.btn-rematch');
+
+  if (shouldShowRematch && !rematchBtn) {
+    // Add rematch button (game just ended)
+    rematchBtn = document.createElement('button');
+    rematchBtn.className = 'btn btn-rematch';
+    rematchBtn.type = 'button';
+    // Insert before demo button
+    if (demoBtn) {
+      demoBtn.parentNode?.insertBefore(rematchBtn, demoBtn);
+    } else {
+      container.appendChild(rematchBtn);
+    }
+  } else if (!shouldShowRematch && rematchBtn) {
+    // Remove rematch button (game reset or mode changed)
+    rematchBtn.remove();
+    rematchBtn = null;
+  }
+
+  // Update rematch button state if it exists
   if (rematchBtn) {
     rematchBtn.textContent = opts.isRematchPending
       ? 'Rematch Requested...'
