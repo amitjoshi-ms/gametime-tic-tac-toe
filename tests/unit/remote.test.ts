@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { isLocalPlayerTurn, getLocalPlayerSymbol } from '../../src/game/remote';
+import { isLocalPlayerTurn, getLocalPlayerSymbol, cleanupRemoteSession } from '../../src/game/remote';
 import { resetGame, createRemoteGameState } from '../../src/game/state';
 import type { GameState, RemoteSession } from '../../src/game/types';
 
@@ -169,5 +169,19 @@ describe('getLocalPlayerSymbol', () => {
       const state = createRemoteGameState(false, 'Local');
       expect(getLocalPlayerSymbol(state)).toBe('O');
     });
+  });
+});
+
+describe('cleanupRemoteSession', () => {
+  it('should be callable without error when no session exists', () => {
+    // Should not throw when called with no active session
+    expect(() => cleanupRemoteSession()).not.toThrow();
+  });
+
+  it('should be callable multiple times without error', () => {
+    // Should be idempotent
+    cleanupRemoteSession();
+    cleanupRemoteSession();
+    expect(() => cleanupRemoteSession()).not.toThrow();
   });
 });

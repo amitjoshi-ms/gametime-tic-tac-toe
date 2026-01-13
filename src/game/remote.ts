@@ -87,11 +87,28 @@ let guestConnection: GuestConnection | null = null;
 let expectedPlayer: Player = 'X';
 
 /**
- * Resets the move counter.
+ * Resets the move counter and expected player.
  */
 function resetMoveCount(): void {
   moveCount = 0;
   expectedPlayer = 'X';
+}
+
+/**
+ * Cleans up all module state.
+ * Called internally by cleanup functions and exported for explicit cleanup.
+ * Note: Only one remote session is supported at a time by design.
+ */
+export function cleanupRemoteSession(): void {
+  resetMoveCount();
+  if (hostConnection) {
+    hostConnection.close();
+    hostConnection = null;
+  }
+  if (guestConnection) {
+    guestConnection.close();
+    guestConnection = null;
+  }
 }
 
 /**
@@ -181,6 +198,8 @@ function handleMessage(
 
 /**
  * Creates a new remote game session as host.
+ * Note: Only one remote session is supported at a time.
+ * Any existing session will be cleaned up automatically.
  *
  * @param localName - Local player's display name
  * @param callbacks - Event callbacks
@@ -195,7 +214,8 @@ export async function createRemoteSession(
   controller: RemoteSessionController;
   cleanup: () => void;
 }> {
-  resetMoveCount();
+  // Clean up any existing session first
+  cleanupRemoteSession();
 
   // Create host connection
   const handlers = createPeerHandlers(callbacks);
@@ -263,10 +283,8 @@ export async function createRemoteSession(
   };
 
   const cleanup = (): void => {
-    if (hostConnection) {
-      hostConnection.close();
-      hostConnection = null;
-    }
+    // Centralized cleanup handles all module state
+    cleanupRemoteSession();
   };
 
   return { sessionCode, sessionId, controller, cleanup };
@@ -293,6 +311,8 @@ export async function completeHostConnection(answerCode: string): Promise<void> 
 
 /**
  * Joins an existing remote game session.
+ * Note: Only one remote session is supported at a time.
+ * Any existing session will be cleaned up automatically.
  *
  * @param sessionCode - Code from host
  * @param localName - Local player's display name
@@ -308,7 +328,8 @@ export async function joinRemoteSession(
   controller: RemoteSessionController;
   cleanup: () => void;
 }> {
-  resetMoveCount();
+  // Clean up any existing session first
+  cleanupRemoteSession();
 
   // Decode the session code
   const decoded = decodeSessionCode(sessionCode);
@@ -380,10 +401,8 @@ export async function joinRemoteSession(
   };
 
   const cleanup = (): void => {
-    if (guestConnection) {
-      guestConnection.close();
-      guestConnection = null;
-    }
+    // Centralized cleanup handles all module state
+    cleanupRemoteSession();
   };
 
   return { answerCode, controller, cleanup };
