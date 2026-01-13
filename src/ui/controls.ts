@@ -151,10 +151,16 @@ export function updateControls(
   // In remote mode, update New Game button to act as rematch when game is over
   const newGameBtn = container.querySelector<HTMLButtonElement>('.btn-new-game');
   if (newGameBtn) {
-    // Always show "New Game" - remote mode uses it to reset game
-    newGameBtn.textContent = 'New Game';
-    newGameBtn.disabled = false;
-    newGameBtn.setAttribute('aria-label', 'Start a new game');
+    // Show "Waiting..." when rematch is pending in remote mode
+    if (opts.gameMode === 'remote' && opts.isRematchPending) {
+      newGameBtn.textContent = 'Waiting...';
+      newGameBtn.disabled = true;
+      newGameBtn.setAttribute('aria-label', 'Waiting for opponent to accept rematch');
+    } else {
+      newGameBtn.textContent = 'New Game';
+      newGameBtn.disabled = false;
+      newGameBtn.setAttribute('aria-label', 'Start a new game');
+    }
   }
 
   // Show/hide demo button based on mode

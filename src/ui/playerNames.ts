@@ -244,7 +244,8 @@ export function updatePlayerNames(
     updateSymbolSelectors(
       symbolWrapper as HTMLElement,
       playerConfigs.X.symbol,
-      playerConfigs.O.symbol
+      playerConfigs.O.symbol,
+      isRemote ? localSymbol : undefined
     );
   }
 }

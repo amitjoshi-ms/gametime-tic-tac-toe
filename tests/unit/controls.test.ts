@@ -260,7 +260,7 @@ describe('controls rendering', () => {
       expect(container.querySelector('.btn-new-game')?.textContent).toBe('New Game');
     });
 
-    it('should keep button enabled even when isRematchPending is true', () => {
+    it('should show Waiting state when isRematchPending is true', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       
@@ -283,9 +283,9 @@ describe('controls rendering', () => {
         isRematchPending: true,
       });
 
-      // Button should remain enabled (pending state no longer used)
-      expect((button as HTMLButtonElement).disabled).toBe(false);
-      expect((button as HTMLButtonElement).textContent).toBe('New Game');
+      // Button should be disabled and show "Waiting..." when rematch is pending
+      expect((button as HTMLButtonElement).disabled).toBe(true);
+      expect((button as HTMLButtonElement).textContent).toBe('Waiting...');
     });
 
     it('should restore "New Game" when game resets after rematch', () => {

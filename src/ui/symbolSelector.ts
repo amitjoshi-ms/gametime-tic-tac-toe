@@ -129,14 +129,26 @@ export function renderSymbolSelectors(
  * @param container - DOM element containing the selectors
  * @param xSymbol - Current symbol for Player X
  * @param oSymbol - Current symbol for Player O
+ * @param localPlayerOnly - Only show selector for this player (remote mode)
  */
 export function updateSymbolSelectors(
   container: HTMLElement,
   xSymbol: PlayerSymbol,
-  oSymbol: PlayerSymbol
+  oSymbol: PlayerSymbol,
+  localPlayerOnly?: 'X' | 'O'
 ): void {
   const xSelector = container.querySelector('#symbol-selector-X');
   const oSelector = container.querySelector('#symbol-selector-O');
+  const xGroup = xSelector?.closest('.symbol-selector-group');
+  const oGroup = oSelector?.closest('.symbol-selector-group');
+
+  // Hide/show selector groups based on localPlayerOnly
+  if (xGroup instanceof HTMLElement) {
+    xGroup.style.display = localPlayerOnly === 'O' ? 'none' : '';
+  }
+  if (oGroup instanceof HTMLElement) {
+    oGroup.style.display = localPlayerOnly === 'X' ? 'none' : '';
+  }
 
   if (xSelector instanceof HTMLSelectElement) {
     if (xSelector.value !== xSymbol) {
