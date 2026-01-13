@@ -9,7 +9,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   encodeSessionDescription,
   decodeSessionCode,
-  createSessionDescription,
   getSessionFromURL,
   setSessionInURL,
   clearSessionFromURL,
@@ -122,36 +121,6 @@ describe('decodeSessionCode', () => {
 
   it('should handle empty string', () => {
     expect(decodeSessionCode('')).toBeNull();
-  });
-});
-
-// Note: createSessionDescription tests are skipped because jsdom doesn't provide WebRTC APIs.
-// These are covered by E2E tests in tests/e2e/remote.spec.ts
-describe.skip('createSessionDescription', () => {
-  it('should create RTCSessionDescription from decoded session', () => {
-    const session = {
-      id: 'ABC123',
-      sdp: 'v=0\r\ntest-sdp',
-      type: 'offer' as const,
-    };
-
-    const description = createSessionDescription(session);
-
-    expect(description.type).toBe('offer');
-    expect(description.sdp).toBe('v=0\r\ntest-sdp');
-  });
-
-  it('should create answer type description', () => {
-    const session = {
-      id: 'ANS789',
-      sdp: 'answer-sdp',
-      type: 'answer' as const,
-    };
-
-    const description = createSessionDescription(session);
-
-    expect(description.type).toBe('answer');
-    expect(description.sdp).toBe('answer-sdp');
   });
 });
 
