@@ -437,7 +437,7 @@ describe('resetRemoteGameKeepSymbols', () => {
 
     expect(newState.remoteSession).toBeDefined();
     expect(newState.remoteSession?.localPlayer.symbol).toBe('X');
-    expect(newState.remoteSession?.remotePlayer.symbol).toBe('O');
+    expect(newState.remoteSession?.remotePlayer?.symbol).toBe('O');
   });
 
   it('should preserve player configs', () => {
