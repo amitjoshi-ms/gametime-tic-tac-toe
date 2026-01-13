@@ -59,12 +59,17 @@ test.describe('Remote Multiplayer', () => {
       });
     });
 
-    test('should have Cancel button during creation', async ({ page }) => {
+    test('should have Cancel button after session is created', async ({ page }) => {
       // Select Remote mode and click Create
       await page.locator('.mode-selector__option', { hasText: 'Remote' }).click();
       await page.getByRole('button', { name: /create game/i }).click();
 
-      // Cancel button should be visible
+      // Wait for session to be created (waiting phase has Cancel button)
+      await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
+        timeout: 10000,
+      });
+
+      // Cancel button should be visible in waiting phase
       const cancelButton = page.getByRole('button', { name: /cancel/i });
       await expect(cancelButton).toBeVisible();
     });
