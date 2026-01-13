@@ -34,15 +34,15 @@ export function getStatusMessage(state: GameState): string {
       const xConfig = state.playerConfigs.X;
       const showSymbol = xConfig.symbol !== 'X';
       return showSymbol
-        ? `🎉 ${xConfig.name} (${xConfig.symbol}) Wins!`
-        : `🎉 ${xConfig.name} Wins!`;
+        ? `${prefix}🎉 ${xConfig.name} (${xConfig.symbol}) Wins!`
+        : `${prefix}🎉 ${xConfig.name} Wins!`;
     }
     case 'o-wins': {
       const oConfig = state.playerConfigs.O;
       const showSymbol = oConfig.symbol !== 'O';
       return showSymbol
-        ? `🎉 ${oConfig.name} (${oConfig.symbol}) Wins!`
-        : `🎉 ${oConfig.name} Wins!`;
+        ? `${prefix}🎉 ${oConfig.name} (${oConfig.symbol}) Wins!`
+        : `${prefix}🎉 ${oConfig.name} Wins!`;
     }
     case 'draw':
       return `${prefix}It's a Draw!`;
@@ -50,8 +50,8 @@ export function getStatusMessage(state: GameState): string {
     default: {
       const showSymbol = currentPlayerConfig.symbol !== state.currentPlayer;
       return showSymbol
-        ? `${currentPlayerConfig.name} (${currentPlayerConfig.symbol})'s Turn`
-        : `${currentPlayerConfig.name}'s Turn`;
+        ? `${prefix}${currentPlayerConfig.name} (${currentPlayerConfig.symbol})'s Turn`
+        : `${prefix}${currentPlayerConfig.name}'s Turn`;
     }
   }
 }

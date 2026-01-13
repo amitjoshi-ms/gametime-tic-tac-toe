@@ -194,3 +194,89 @@ describe('getStatusMessage with computer thinking', () => {
     expect(message).not.toContain('Turn');
   });
 });
+
+describe('getStatusMessage with demo mode', () => {
+  it('should show demo prefix during turn', () => {
+    const state: GameState = {
+      board: [null, null, null, null, null, null, null, null, null],
+      currentPlayer: 'X',
+      status: 'playing',
+      playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
+      gameMode: 'demo',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe("🎬 Player X's Turn");
+  });
+
+  it('should show demo prefix when X wins', () => {
+    const state: GameState = {
+      board: ['X', 'X', 'X', 'O', 'O', null, null, null, null],
+      currentPlayer: 'O',
+      status: 'x-wins',
+      playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
+      gameMode: 'demo',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('🎬 🎉 Player X Wins!');
+  });
+
+  it('should show demo prefix when O wins', () => {
+    const state: GameState = {
+      board: ['X', 'X', null, 'O', 'O', 'O', null, null, null],
+      currentPlayer: 'X',
+      status: 'o-wins',
+      playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
+      gameMode: 'demo',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('🎬 🎉 Player O Wins!');
+  });
+
+  it('should show demo prefix on draw', () => {
+    const state: GameState = {
+      board: ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'],
+      currentPlayer: 'X',
+      status: 'draw',
+      playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
+      gameMode: 'demo',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe("🎬 It's a Draw!");
+  });
+
+  it('should show demo prefix when computer is thinking', () => {
+    const state: GameState = {
+      board: ['X', null, null, null, null, null, null, null, null],
+      currentPlayer: 'O',
+      status: 'playing',
+      playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
+      gameMode: 'demo',
+      isComputerThinking: true,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('🎬 Player O is thinking');
+  });
+
+  it('should show demo prefix with custom symbols in win message', () => {
+    const state: GameState = {
+      board: ['★', '★', '★', '🔵', '🔵', null, null, null, null],
+      currentPlayer: 'O',
+      status: 'x-wins',
+      playerConfigs: { X: { name: 'Alice', symbol: '★' as const }, O: { name: 'Bob', symbol: '🔵' as const } },
+      gameMode: 'demo',
+      isComputerThinking: false,
+    };
+
+    const message = getStatusMessage(state);
+    expect(message).toBe('🎬 🎉 Alice (★) Wins!');
+  });
+});
