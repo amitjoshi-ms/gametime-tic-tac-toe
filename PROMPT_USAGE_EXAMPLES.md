@@ -102,7 +102,7 @@ Verdict: ⚠️ MINOR ISSUES
 5. Squash merges when ready (never local merge)
 6. Cleans up local branch after merge
 
-**References:** `typescript`, `testing`, `security`, `ai-config` instruction files
+**References:** `typescript-types`, `typescript-modules`, `typescript-patterns`, `testing`, `security`, `ai-config` instruction files
 
 **Important notes:**
 - Never merges locally—always via GitHub PR
