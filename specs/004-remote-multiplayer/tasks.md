@@ -107,14 +107,14 @@
 - [x] T038 [US3] Add handshake exchange on connection (send/receive playerName) in src/game/remote.ts
 - [x] T039 [US3] Implement sendMove() in RemoteSessionController in src/game/remote.ts
 - [x] T040 [US3] Add move validation for received messages in src/game/remote.ts
-- [ ] T041 [US3] Update isBoardInteractive() to check isLocalPlayerTurn for remote mode in src/ui/board.ts
-- [ ] T042 [US3] Add remote-specific status messages (Your turn, Opponent's turn) in src/ui/status.ts
+- [x] T041 [US3] Update isBoardInteractive() to check isLocalPlayerTurn for remote mode in src/ui/board.ts
+- [x] T042 [US3] Add remote-specific status messages (Your turn, Opponent's turn) in src/ui/status.ts
 - [x] T043 [US3] Wire up handleRemoteMove() callback in src/main.ts
-- [ ] T044 [US3] Wire up handleCellClick to send moves via controller in src/main.ts
+- [x] T044 [US3] Wire up handleCellClick to send moves via controller in src/main.ts
 - [x] T045 [US3] Add "connected" phase UI with opponent name display in src/ui/remotePanel.ts
-- [ ] T046 [US3] Add connected status styles and turn indicators in src/styles/main.css
-- [ ] T047 [US3] Add unit tests for remote game logic in tests/unit/remote.test.ts
-- [ ] T048 [US3] Add E2E test for two-player connection and gameplay in tests/e2e/remote.spec.ts
+- [x] T046 [US3] Add connected status styles and turn indicators in src/styles/main.css
+- [x] T047 [US3] Add unit tests for remote game logic in tests/unit/remote.test.ts
+- [x] T048 [US3] Add E2E test for two-player connection and gameplay in tests/e2e/remote.spec.ts
 
 **Checkpoint**: User Story 3 complete - full remote gameplay working
 

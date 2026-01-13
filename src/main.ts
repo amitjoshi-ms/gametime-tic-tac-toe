@@ -50,9 +50,6 @@ let preDemoMode: GameMode | null = null;
 /** Remote session controller for sending messages */
 let remoteController: Awaited<ReturnType<typeof createRemoteSession>>['controller'] | null = null;
 
-// Temporary: export to suppress unused warning until Phase 5 implementation
-export { remoteController as remoteController };
-
 /** Cleanup function for remote session */
 let remoteCleanup: (() => void) | null = null;
 
@@ -107,6 +104,21 @@ function triggerComputerTurn(): void {
 function handleCellClick(cellIndex: number): void {
   // Ignore clicks in demo mode
   if (gameState.gameMode === 'demo') {
+    return;
+  }
+
+  // For remote mode, send move via controller and apply locally
+  if (gameState.gameMode === 'remote' && remoteController) {
+    // Board interactivity is already handled in ui/board.ts via isBoardInteractive()
+    // This is a defensive check - the click handler shouldn't be called for invalid moves
+    const newState = makeMove(gameState, cellIndex);
+    if (newState !== gameState) {
+      // Send the move to the remote player
+      remoteController.sendMove(cellIndex);
+      // Apply move locally
+      gameState = newState;
+      updateUI();
+    }
     return;
   }
 
@@ -391,7 +403,7 @@ function handleDemoToggle(): void {
  * Handles creating a new remote session (host flow).
  */
 async function handleCreateSession(): Promise<void> {
-  const localName = gameState.playerNames.X;
+  const localName = gameState.playerConfigs.X.name;
 
   // Update UI to show creating state
   remotePanelState = { phase: 'creating' };
@@ -444,7 +456,7 @@ async function handleCreateSession(): Promise<void> {
  * @param sessionCode - The session code from the host
  */
 async function handleJoinSession(sessionCode: string): Promise<void> {
-  const localName = gameState.playerNames.X;
+  const localName = gameState.playerConfigs.X.name;
 
   // Update UI to show joining state
   remotePanelState = { phase: 'joining' };
@@ -555,12 +567,12 @@ function handleRemoteConnected(remoteName: string): void {
     },
   });
 
-  // Update player names with remote player's name
+  // Update player configs with remote player's name
   gameState = {
     ...gameState,
-    playerNames: {
-      ...gameState.playerNames,
-      [remoteSymbol]: remoteName,
+    playerConfigs: {
+      ...gameState.playerConfigs,
+      [remoteSymbol]: { name: remoteName, symbol: remoteSymbol },
     },
   };
 

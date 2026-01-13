@@ -6,17 +6,19 @@
  */
 
 import type { GameState } from '../game/types';
+import { isLocalPlayerTurn, getLocalPlayerSymbol } from '../game/remote';
 
 /**
  * Gets the display message for current game state.
- * Extended to handle computer thinking state and demo mode.
+ * Extended to handle computer thinking state, demo mode, and remote mode.
  *
  * @param state - Current game state
  * @returns Human-readable status message
  */
 export function getStatusMessage(state: GameState): string {
   const isDemo = state.gameMode === 'demo';
-  const prefix = isDemo ? '🎬 ' : '';
+  const isRemote = state.gameMode === 'remote';
+  const prefix = isDemo ? '🎬 ' : isRemote ? '🌐 ' : '';
 
   // Handle computer thinking state.
   // Note: currentPlayer always represents whose turn it is. When isComputerThinking
@@ -48,6 +50,23 @@ export function getStatusMessage(state: GameState): string {
       return `${prefix}It's a Draw!`;
     case 'playing':
     default: {
+      // Remote mode: show "Your turn" or "Waiting for opponent..."
+      if (isRemote) {
+        const localSymbol = getLocalPlayerSymbol(state);
+        if (localSymbol && isLocalPlayerTurn(state)) {
+          const localConfig = state.playerConfigs[localSymbol];
+          const showSymbol = localConfig.symbol !== localSymbol;
+          return showSymbol
+            ? `${prefix}Your turn (${localConfig.name}, ${localConfig.symbol})`
+            : `${prefix}Your turn (${localConfig.name})`;
+        } else if (localSymbol) {
+          const opponentConfig = state.playerConfigs[state.currentPlayer];
+          const showSymbol = opponentConfig.symbol !== state.currentPlayer;
+          return showSymbol
+            ? `${prefix}Waiting for ${opponentConfig.name} (${opponentConfig.symbol})...`
+            : `${prefix}Waiting for ${opponentConfig.name}...`;
+        }
+      }
       const showSymbol = currentPlayerConfig.symbol !== state.currentPlayer;
       return showSymbol
         ? `${prefix}${currentPlayerConfig.name} (${currentPlayerConfig.symbol})'s Turn`
@@ -76,6 +95,13 @@ function getStatusClass(state: GameState): string {
       return 'status--draw';
     case 'playing':
     default:
+      // Remote mode: distinguish local turn vs waiting
+      if (state.gameMode === 'remote') {
+        if (isLocalPlayerTurn(state)) {
+          return 'status--your-turn';
+        }
+        return 'status--waiting';
+      }
       return state.currentPlayer === 'X' ? 'status--x-turn' : 'status--o-turn';
   }
 }

@@ -26,6 +26,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -43,6 +44,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -62,6 +64,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -81,6 +84,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -100,6 +104,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -119,6 +124,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -139,6 +145,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -158,6 +165,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -177,6 +185,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -196,6 +205,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -215,6 +225,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -234,6 +245,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: true,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -250,6 +262,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -268,6 +281,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -280,6 +294,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
 
       updateBoard(container, updatedState);
@@ -296,6 +311,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -308,6 +324,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
 
       updateBoard(container, wonState);
@@ -326,6 +343,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -334,6 +352,7 @@ describe('board rendering', () => {
       const thinkingState: GameState = {
         ...state,
         isComputerThinking: true,
+      remoteSession: null,
       };
 
       updateBoard(container, thinkingState);
@@ -349,6 +368,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
       const onCellClick = vi.fn();
 
@@ -361,6 +381,7 @@ describe('board rendering', () => {
         playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
+      remoteSession: null,
       };
 
       updateBoard(container, updatedState);

@@ -200,6 +200,23 @@ body {
   animation: thinking-dots 1.5s infinite;
 }
 
+/* Remote mode status styles */
+.status--your-turn {
+  border-left: 4px solid var(--color-win);
+  background-color: rgba(46, 204, 113, 0.15);
+}
+
+.status--waiting {
+  border-left: 4px solid var(--color-accent);
+  opacity: 0.8;
+}
+
+.status--waiting::after {
+  content: '';
+  display: inline-block;
+  animation: thinking-dots 1.5s infinite;
+}
+
 @keyframes thinking-dots {
   0% {
     content: '';
@@ -235,6 +252,20 @@ body {
 .board--thinking {
   pointer-events: none;
   opacity: 0.7;
+}
+
+/* Remote mode board styles */
+.board--remote {
+  /* Base styling for remote games */
+}
+
+.board--waiting {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.board--demo {
+  pointer-events: none;
 }
 
 /* ============================================

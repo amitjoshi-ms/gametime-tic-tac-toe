@@ -172,15 +172,21 @@ export function createRemoteGameState(
 ): GameState {
   const localSymbol: Player = isHost ? 'X' : 'O';
 
-  const playerNames: PlayerNames = isHost
-    ? { X: localName, O: 'Opponent' }
-    : { X: 'Opponent', O: localName };
+  const playerConfigs: PlayerConfigs = isHost
+    ? {
+        X: { name: localName, symbol: 'X' },
+        O: { name: 'Opponent', symbol: 'O' },
+      }
+    : {
+        X: { name: 'Opponent', symbol: 'X' },
+        O: { name: localName, symbol: 'O' },
+      };
 
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
-    playerNames,
+    playerConfigs,
     gameMode: 'remote',
     isComputerThinking: false,
     remoteSession: {
@@ -256,9 +262,9 @@ export function setRemotePlayer(
 
   return {
     ...state,
-    playerNames: {
-      ...state.playerNames,
-      [remoteSymbol]: remoteName,
+    playerConfigs: {
+      ...state.playerConfigs,
+      [remoteSymbol]: { name: remoteName, symbol: remoteSymbol },
     },
     remoteSession: {
       ...state.remoteSession,
@@ -306,17 +312,23 @@ export function resetRemoteGame(state: GameState): GameState {
   const localName = state.remoteSession.localPlayer.name;
   const remoteName = state.remoteSession.remotePlayer.name;
 
-  const playerNames: PlayerNames =
+  const playerConfigs: PlayerConfigs =
     newLocalSymbol === 'X'
-      ? { X: localName, O: remoteName }
-      : { X: remoteName, O: localName };
+      ? {
+          X: { name: localName, symbol: 'X' },
+          O: { name: remoteName, symbol: 'O' },
+        }
+      : {
+          X: { name: remoteName, symbol: 'X' },
+          O: { name: localName, symbol: 'O' },
+        };
 
   return {
     ...state,
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
-    playerNames,
+    playerConfigs,
     remoteSession: {
       ...state.remoteSession,
       localPlayer: {

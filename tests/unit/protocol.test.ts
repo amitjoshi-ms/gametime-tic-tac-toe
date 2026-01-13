@@ -188,7 +188,7 @@ describe('validateMoveMessage', () => {
       player: 'X',
       moveNumber: 1,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     expect(validateMoveMessage(message, board, 'X', 1)).toBe(true);
   });
@@ -200,7 +200,7 @@ describe('validateMoveMessage', () => {
       player: 'O',
       moveNumber: 1,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     expect(validateMoveMessage(message, board, 'X', 1)).toBe(false);
   });
@@ -212,7 +212,7 @@ describe('validateMoveMessage', () => {
       player: 'X',
       moveNumber: 2,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
     board[4] = 'O';
 
     expect(validateMoveMessage(message, board, 'X', 2)).toBe(false);
@@ -225,7 +225,7 @@ describe('validateMoveMessage', () => {
       player: 'X',
       moveNumber: 2,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     expect(validateMoveMessage(message, board, 'X', 1)).toBe(false);
   });
@@ -237,7 +237,7 @@ describe('validateMoveMessage', () => {
       player: 'X',
       moveNumber: 1,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     expect(validateMoveMessage(message, board, 'X', 1)).toBe(false);
   });
@@ -249,13 +249,13 @@ describe('validateMoveMessage', () => {
       player: 'X',
       moveNumber: 1,
     };
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     expect(validateMoveMessage(message, board, 'X', 1)).toBe(false);
   });
 
   it('should accept moves at board boundaries', () => {
-    const board = Array<CellValue>(9).fill(null) as CellValue[];
+    const board = Array<CellValue>(9).fill(null);
 
     // First cell
     const message1: MoveMessage = {
