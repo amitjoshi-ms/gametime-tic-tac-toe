@@ -150,15 +150,15 @@
 
 ### Implementation for User Story 5
 
-- [ ] T058 [P] [US5] Add disconnected status UI in src/ui/remotePanel.ts
-- [ ] T059 [P] [US5] Add disconnection notification styles in src/styles/main.css
-- [ ] T060 [US5] Handle DataChannel close event in src/network/peer.ts
-- [ ] T061 [US5] Implement leave() in RemoteSessionController in src/game/remote.ts
-- [ ] T062 [US5] Send disconnect message before closing in src/game/remote.ts
-- [ ] T063 [US5] Wire up handleRemoteDisconnect() callback in src/main.ts
-- [ ] T064 [US5] Implement clearRemoteSession() in src/game/state.ts
-- [ ] T065 [US5] Add "Leave Game" button to remote panel in src/ui/remotePanel.ts
-- [ ] T066 [US5] Wire up handleLeaveSession() in src/main.ts
+- [x] T058 [P] [US5] Add disconnected status UI in src/ui/remotePanel.ts
+- [x] T059 [P] [US5] Add disconnection notification styles in src/styles/main.css
+- [x] T060 [US5] Handle DataChannel close event in src/network/peer.ts
+- [x] T061 [US5] Implement leave() in RemoteSessionController in src/game/remote.ts
+- [x] T062 [US5] Send disconnect message before closing in src/game/remote.ts
+- [x] T063 [US5] Wire up handleRemoteDisconnect() callback in src/main.ts
+- [x] T064 [US5] Implement clearRemoteSession() in src/game/state.ts
+- [x] T065 [US5] Add "Leave Game" button to remote panel in src/ui/remotePanel.ts
+- [x] T066 [US5] Wire up handleLeaveSession() in src/main.ts
 
 **Checkpoint**: User Story 5 complete - graceful disconnect handling
 

@@ -607,11 +607,19 @@ function handleRemoteMove(cellIndex: number): void {
  */
 function handleRemoteDisconnect(reason?: string): void {
   const message = reason ?? 'Remote player disconnected';
-  remotePanelState = { phase: 'error', error: message };
+  remotePanelState = {
+    phase: 'disconnected',
+    error: message,
+    ...(remotePanelState.remoteName ? { remoteName: remotePanelState.remoteName } : {}),
+  };
   gameState = updateRemoteSession(gameState, {
     connectionStatus: 'disconnected',
     error: message,
   });
+
+  // Clean up controller reference but keep remoteCleanup for full cleanup on leave
+  remoteController = null;
+  isRematchPending = false;
   updateUI();
 }
 
