@@ -18,7 +18,7 @@ This document provides practical examples of how to use the prompt files in `.gi
 2. Ensures you're synced with `main`
 3. Guides you through understanding the task structure
 4. Verifies TypeScript, linting, and tests are passing
-5. References instruction files: `typescript`, `game-logic`, `testing`, `ui`
+5. References instruction files: `typescript-types`, `typescript-modules`, `typescript-patterns`, `game-logic`, `testing`, `ui`
 
 ---
 
