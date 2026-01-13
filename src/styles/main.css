@@ -599,6 +599,10 @@ body {
   max-width: 180px;
 }
 
+.player-config-field--hidden {
+  display: none;
+}
+
 .player-config-field > .player-name-label {
   margin-bottom: -0.25rem;
 }

@@ -153,14 +153,12 @@ function handleNewGame(): void {
     cancelPendingMove = null;
   }
 
-  // In remote mode when connected, reset game and sync
+  // In remote mode when connected, use rematch request flow for confirmation
   if (gameState.gameMode === 'remote' && gameState.remoteSession?.connectionStatus === 'connected') {
-    if (remoteController) {
-      // Send reset to remote player
-      remoteController.resetGame();
-      // Reset locally - preserve player configs and connection
-      gameState = resetRemoteGameKeepSymbols(gameState);
-      isRematchPending = false;
+    if (remoteController && !isRematchPending) {
+      // Send rematch request to remote player for confirmation
+      remoteController.requestRematch();
+      isRematchPending = true;
       updateUI();
     }
     return;
@@ -248,9 +246,10 @@ function handleConfigChange(configs: PlayerConfigs): void {
     gameState.remoteSession?.connectionStatus === 'connected' &&
     remoteController
   ) {
-    const localSymbol = gameState.remoteSession.localPlayer.symbol;
-    const localConfig = configs[localSymbol];
-    remoteController.updatePlayer(localConfig.name, localSymbol);
+    const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
+    const localConfig = configs[localPlayerKey];
+    // Send the actual display symbol, not the player key (X/O)
+    remoteController.updatePlayer(localConfig.name, localConfig.symbol);
   }
 
   // Update UI to reflect new configs
@@ -587,29 +586,31 @@ function handleLeaveSession(): void {
  */
 function handleRemoteConnected(remoteName: string): void {
   // Update game state with remote player info
-  const remoteSymbol = gameState.remoteSession?.localPlayer.symbol === 'X' ? 'O' : 'X';
+  const remotePlayerKey = gameState.remoteSession?.localPlayer.symbol === 'X' ? 'O' : 'X';
   gameState = updateRemoteSession(gameState, {
     connectionStatus: 'connected',
     remotePlayer: {
       name: remoteName,
-      symbol: remoteSymbol,
+      symbol: remotePlayerKey,
       isLocal: false,
     },
   });
 
   // Update player configs with remote player's name
+  const remoteDisplaySymbol = gameState.playerConfigs[remotePlayerKey].symbol;
   gameState = {
     ...gameState,
     playerConfigs: {
       ...gameState.playerConfigs,
-      [remoteSymbol]: { name: remoteName, symbol: remoteSymbol },
+      [remotePlayerKey]: { name: remoteName, symbol: remoteDisplaySymbol },
     },
   };
 
-  // Update panel to connected state
+  // Update panel to connected state with remote player's display symbol
   remotePanelState = {
     phase: 'connected',
     remoteName,
+    remoteSymbol: remoteDisplaySymbol,
   };
   updateUI();
 }
@@ -682,12 +683,12 @@ function handleRemotePlayerUpdate(name: string, symbol: string): void {
     return;
   }
 
-  const remotePlayerSymbol = gameState.remoteSession.remotePlayer.symbol;
+  const remotePlayerKey = gameState.remoteSession.remotePlayer.symbol;
   gameState = {
     ...gameState,
     playerConfigs: {
       ...gameState.playerConfigs,
-      [remotePlayerSymbol]: { name, symbol },
+      [remotePlayerKey]: { name, symbol },
     },
     remoteSession: {
       ...gameState.remoteSession,
@@ -698,10 +699,11 @@ function handleRemotePlayerUpdate(name: string, symbol: string): void {
     },
   };
 
-  // Update panel with new name
+  // Update panel with new name and symbol
   remotePanelState = {
     ...remotePanelState,
     remoteName: name,
+    remoteSymbol: symbol,
   };
   updateUI();
 }

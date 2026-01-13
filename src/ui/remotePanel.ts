@@ -47,6 +47,8 @@ export interface RemotePanelState {
   sessionId?: string;
   /** Remote player name (when connected) */
   remoteName?: string;
+  /** Remote player symbol (when connected) */
+  remoteSymbol?: string;
   /** Error message (when error) */
   error?: string;
   /** Whether code was copied */
@@ -376,7 +378,7 @@ function createConnectingPhaseUI(): HTMLElement {
 /**
  * Creates the connected phase UI with opponent info.
  */
-function createConnectedPhaseUI(remoteName: string): HTMLElement {
+function createConnectedPhaseUI(remoteName: string, remoteSymbol?: string): HTMLElement {
   const container = document.createElement('div');
   container.className = 'remote-panel__connected';
 
@@ -387,7 +389,8 @@ function createConnectedPhaseUI(remoteName: string): HTMLElement {
 
   const opponent = document.createElement('p');
   opponent.className = 'remote-panel__opponent-name';
-  opponent.textContent = `Playing against: ${remoteName}`;
+  const symbolDisplay = remoteSymbol ? ` (${remoteSymbol})` : '';
+  opponent.textContent = `Playing against: ${remoteName}${symbolDisplay}`;
   container.appendChild(opponent);
 
   const leaveBtn = document.createElement('button');
@@ -542,7 +545,7 @@ export function renderRemotePanel(
       content = createConnectingPhaseUI();
       break;
     case 'connected':
-      content = createConnectedPhaseUI(state.remoteName ?? 'Unknown');
+      content = createConnectedPhaseUI(state.remoteName ?? 'Unknown', state.remoteSymbol);
       break;
     case 'rematch-request':
       content = createRematchRequestPhaseUI(state.remoteName ?? 'Opponent');
