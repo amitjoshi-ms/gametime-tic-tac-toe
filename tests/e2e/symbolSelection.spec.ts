@@ -142,8 +142,8 @@ test.describe('Symbol Selection Feature', () => {
   test('should work with computer mode', async ({ page }) => {
     const xSelector = page.getByLabel('Symbol for Player X');
 
-    // Switch to computer mode by clicking the label text
-    await page.getByText('Computer', { exact: true }).click();
+    // Switch to computer mode by clicking the computer radio button
+    await page.getByRole('radio', { name: 'Play against Computer' }).click();
 
     // Select custom symbol for X
     await xSelector.selectOption('💎');
