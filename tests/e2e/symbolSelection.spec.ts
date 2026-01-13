@@ -143,7 +143,8 @@ test.describe('Symbol Selection Feature', () => {
     const xSelector = page.getByLabel('Symbol for Player X');
 
     // Switch to computer mode by clicking the computer radio button
-    await page.getByRole('radio', { name: 'Play against Computer' }).click();
+    // Use force: true to bypass label interception
+    await page.getByRole('radio', { name: 'Play against Computer' }).click({ force: true });
 
     // Select custom symbol for X
     await xSelector.selectOption('💎');
