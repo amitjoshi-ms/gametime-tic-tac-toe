@@ -168,12 +168,12 @@
 
 **Purpose**: Final improvements and validation
 
-- [ ] T067 [P] Add keyboard accessibility to remote panel buttons in src/ui/remotePanel.ts
-- [ ] T068 [P] Add responsive styles for mobile devices in src/styles/main.css
-- [ ] T069 [P] Add loading spinners during ICE gathering in src/ui/remotePanel.ts
-- [ ] T070 Run full E2E test suite with CI=true
-- [ ] T071 Run quickstart.md validation (manual test of documented flow)
-- [ ] T072 Update README.md with remote multiplayer instructions
+- [x] T067 [P] Add keyboard accessibility to remote panel buttons in src/ui/remotePanel.ts
+- [x] T068 [P] Add responsive styles for mobile devices in src/styles/main.css
+- [x] T069 [P] Add loading spinners during ICE gathering in src/ui/remotePanel.ts
+- [x] T070 Run full E2E test suite with CI=true
+- [x] T071 Run quickstart.md validation (manual test of documented flow)
+- [x] T072 Update README.md with remote multiplayer instructions
 
 ---
 
