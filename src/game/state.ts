@@ -5,9 +5,9 @@
  * @module game/state
  */
 
-import type { GameState, GameMode, Player, PlayerNames } from './types';
+import type { GameState, GameMode, Player, PlayerConfigs } from './types';
 import { isValidMove, determineStatus } from './logic';
-import { loadPlayerNames } from './playerNames';
+import { loadPlayerConfigs } from './playerNames';
 
 /**
  * Tracks which player should start the next game.
@@ -19,20 +19,23 @@ let nextStartingPlayer: Player = 'X';
  * Creates a fresh game state with empty board, always with X to play.
  * Unlike resetGame(), this function does NOT alternate starting players.
  *
- * @param playerNames - Optional custom player names
+ * @param playerConfigs - Optional custom player configs
  * @param gameMode - Optional game mode (defaults to 'human')
  * @returns Initial game state with X as the starting player
  */
 export function createInitialState(
-  playerNames?: PlayerNames,
+  playerConfigs?: PlayerConfigs,
   gameMode: GameMode = 'human'
 ): GameState {
-  const names = playerNames ?? loadPlayerNames();
+  const configs = playerConfigs ?? loadPlayerConfigs();
   return {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: 'X',
     status: 'playing',
-    playerNames: { ...names },
+    playerConfigs: {
+      X: { ...configs.X },
+      O: { ...configs.O },
+    },
     gameMode,
     isComputerThinking: false,
   };
@@ -55,12 +58,12 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     return state; // Return same reference to indicate no change
   }
 
-  // Create new board with the move
+  // Create new board with the move (using player's symbol)
   const newBoard = [...state.board];
-  newBoard[cellIndex] = state.currentPlayer;
+  newBoard[cellIndex] = state.playerConfigs[state.currentPlayer].symbol;
 
   // Determine new status after this move
-  const newStatus = determineStatus(newBoard, state.currentPlayer);
+  const newStatus = determineStatus(newBoard, state.currentPlayer, state.playerConfigs);
 
   // Determine next player
   const nextPlayer: Player = state.currentPlayer === 'X' ? 'O' : 'X';
@@ -69,7 +72,7 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     board: newBoard,
     currentPlayer: nextPlayer,
     status: newStatus,
-    playerNames: state.playerNames,
+    playerConfigs: state.playerConfigs,
     gameMode: state.gameMode,
     isComputerThinking: false,
   };
@@ -101,7 +104,7 @@ export function resetGame(currentMode: GameMode = 'human'): GameState {
     board: [null, null, null, null, null, null, null, null, null],
     currentPlayer: startingPlayer,
     status: 'playing',
-    playerNames: loadPlayerNames(),
+    playerConfigs: loadPlayerConfigs(),
     gameMode: currentMode,
     isComputerThinking: false,
   };

@@ -37,26 +37,32 @@ describe('createInitialState', () => {
     expect(state1.board).not.toBe(state2.board);
   });
 
-  it('should include playerNames from localStorage by default', () => {
+  it('should include playerConfigs from localStorage by default', () => {
     const state = createInitialState();
-    expect(state.playerNames).toBeDefined();
-    expect(state.playerNames.X).toBeDefined();
-    expect(state.playerNames.O).toBeDefined();
+    expect(state.playerConfigs).toBeDefined();
+    expect(state.playerConfigs.X).toBeDefined();
+    expect(state.playerConfigs.O).toBeDefined();
   });
 
-  it('should use provided playerNames when parameter is given', () => {
-    const customNames = { X: 'Alice', O: 'Bob' };
-    const state = createInitialState(customNames);
-    expect(state.playerNames).toEqual(customNames);
-    expect(state.playerNames.X).toBe('Alice');
-    expect(state.playerNames.O).toBe('Bob');
+  it('should use provided playerConfigs when parameter is given', () => {
+    const customConfigs = {
+      X: { name: 'Alice', symbol: 'X' as const },
+      O: { name: 'Bob', symbol: 'O' as const },
+    };
+    const state = createInitialState(customConfigs);
+    expect(state.playerConfigs).toEqual(customConfigs);
+    expect(state.playerConfigs.X.name).toBe('Alice');
+    expect(state.playerConfigs.O.name).toBe('Bob');
   });
 
-  it('should not modify the original playerNames object', () => {
-    const customNames = { X: 'Alice', O: 'Bob' };
-    const state = createInitialState(customNames);
-    customNames.X = 'Changed';
-    expect(state.playerNames.X).toBe('Alice');
+  it('should not modify the original playerConfigs object', () => {
+    const customConfigs = {
+      X: { name: 'Alice', symbol: 'X' as const },
+      O: { name: 'Bob', symbol: 'O' as const },
+    };
+    const state = createInitialState(customConfigs);
+    customConfigs.X.name = 'Changed';
+    expect(state.playerConfigs.X.name).toBe('Alice');
   });
 });
 

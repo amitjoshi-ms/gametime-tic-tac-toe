@@ -24,19 +24,35 @@ export function getStatusMessage(state: GameState): string {
   // are computers, so isComputerThinking can be true for either player depending on
   // whose turn it is (currentPlayer identifies which computer is currently thinking).
   if (state.isComputerThinking) {
-    return `${prefix}${state.playerNames[state.currentPlayer]} is thinking`;
+    return `${prefix}${state.playerConfigs[state.currentPlayer].name} is thinking`;
   }
 
+  const currentPlayerConfig = state.playerConfigs[state.currentPlayer];
+
   switch (state.status) {
-    case 'x-wins':
-      return `${prefix}🎉 ${state.playerNames.X} Wins!`;
-    case 'o-wins':
-      return `${prefix}🎉 ${state.playerNames.O} Wins!`;
+    case 'x-wins': {
+      const xConfig = state.playerConfigs.X;
+      const showSymbol = xConfig.symbol !== 'X';
+      return showSymbol
+        ? `${prefix}🎉 ${xConfig.name} (${xConfig.symbol}) Wins!`
+        : `${prefix}🎉 ${xConfig.name} Wins!`;
+    }
+    case 'o-wins': {
+      const oConfig = state.playerConfigs.O;
+      const showSymbol = oConfig.symbol !== 'O';
+      return showSymbol
+        ? `${prefix}🎉 ${oConfig.name} (${oConfig.symbol}) Wins!`
+        : `${prefix}🎉 ${oConfig.name} Wins!`;
+    }
     case 'draw':
       return `${prefix}It's a Draw!`;
     case 'playing':
-    default:
-      return `${prefix}${state.playerNames[state.currentPlayer]}'s Turn`;
+    default: {
+      const showSymbol = currentPlayerConfig.symbol !== state.currentPlayer;
+      return showSymbol
+        ? `${prefix}${currentPlayerConfig.name} (${currentPlayerConfig.symbol})'s Turn`
+        : `${prefix}${currentPlayerConfig.name}'s Turn`;
+    }
   }
 }
 

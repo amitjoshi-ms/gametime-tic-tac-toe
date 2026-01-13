@@ -23,7 +23,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -40,7 +40,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -59,7 +59,7 @@ describe('board rendering', () => {
         board: ['X', null, null, null, 'X', null, null, null, 'X'],
         currentPlayer: 'O',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -78,7 +78,7 @@ describe('board rendering', () => {
         board: ['O', 'X', null, 'O', null, null, 'O', null, null],
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -97,7 +97,7 @@ describe('board rendering', () => {
         board: ['X', 'O', null, null, null, null, null, null, null],
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -116,7 +116,7 @@ describe('board rendering', () => {
         board: ['X', 'X', 'X', 'O', 'O', null, null, null, null],
         currentPlayer: 'O',
         status: 'x-wins',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -136,7 +136,7 @@ describe('board rendering', () => {
         board: ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'],
         currentPlayer: 'X',
         status: 'draw',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -155,7 +155,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -174,7 +174,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -193,7 +193,7 @@ describe('board rendering', () => {
         board: ['X', 'O', null, null, null, null, null, null, null],
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -212,7 +212,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -231,7 +231,7 @@ describe('board rendering', () => {
         board: ['X', null, null, null, null, null, null, null, null],
         currentPlayer: 'O',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Computer' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: true,
       };
@@ -247,7 +247,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Computer' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: false,
       };
@@ -265,7 +265,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -277,7 +277,7 @@ describe('board rendering', () => {
         board: ['X', null, null, null, null, null, null, null, null],
         currentPlayer: 'O',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -293,7 +293,7 @@ describe('board rendering', () => {
         board: ['X', 'X', null, 'O', 'O', null, null, null, null],
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -305,7 +305,7 @@ describe('board rendering', () => {
         board: ['X', 'X', 'X', 'O', 'O', null, null, null, null],
         currentPlayer: 'X',
         status: 'x-wins',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -323,7 +323,7 @@ describe('board rendering', () => {
         board: ['X', null, null, null, null, null, null, null, null],
         currentPlayer: 'O',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Computer' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Computer', symbol: 'O' } },
         gameMode: 'computer',
         isComputerThinking: false,
       };
@@ -346,7 +346,7 @@ describe('board rendering', () => {
         board: Array.from({ length: 9 }, (): CellValue => null),
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };
@@ -358,7 +358,7 @@ describe('board rendering', () => {
         board: ['X', 'O', null, null, null, null, null, null, null],
         currentPlayer: 'X',
         status: 'playing',
-        playerNames: { X: 'Player X', O: 'Player O' },
+        playerConfigs: { X: { name: 'Player X', symbol: 'X' }, O: { name: 'Player O', symbol: 'O' } },
         gameMode: 'human',
         isComputerThinking: false,
       };

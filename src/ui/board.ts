@@ -18,15 +18,17 @@ let currentClickHandler: CellClickHandler | null = null;
 /**
  * Creates a cell element for the board.
  *
- * @param value - Current cell value (X, O, or null)
+ * @param value - Current cell value
  * @param index - Cell index (0-8)
  * @param isGameOver - Whether the game has ended
+ * @param playerConfigs - Player configurations to determine which player placed the symbol
  * @returns HTMLButtonElement for the cell
  */
 function createCellElement(
   value: CellValue,
   index: number,
-  isGameOver: boolean
+  isGameOver: boolean,
+  playerConfigs: { X: { symbol: CellValue }; O: { symbol: CellValue } }
 ): HTMLButtonElement {
   const cell = document.createElement('button');
   cell.className = 'cell';
@@ -36,8 +38,16 @@ function createCellElement(
 
   if (value) {
     cell.textContent = value;
-    cell.classList.add(`cell--${value.toLowerCase()}`);
     cell.classList.add('cell--occupied');
+    cell.dataset.symbol = value;
+    
+    // Determine which player placed this symbol for coloring
+    if (value === playerConfigs.X.symbol) {
+      cell.classList.add('cell--x');
+    } else if (value === playerConfigs.O.symbol) {
+      cell.classList.add('cell--o');
+    }
+    
     cell.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
   }
 
@@ -95,7 +105,7 @@ export function renderBoard(
 
   // Create cells
   state.board.forEach((value, index) => {
-    const cell = createCellElement(value, index, isGameOver);
+    const cell = createCellElement(value, index, isGameOver, state.playerConfigs);
     container.appendChild(cell);
   });
 
@@ -137,10 +147,19 @@ export function updateBoard(container: HTMLElement, state: GameState): void {
     // Update classes
     button.className = 'cell';
     if (value) {
-      button.classList.add(`cell--${value.toLowerCase()}`);
       button.classList.add('cell--occupied');
+      button.dataset.symbol = value;
+      
+      // Determine which player placed this symbol for coloring
+      if (value === state.playerConfigs.X.symbol) {
+        button.classList.add('cell--x');
+      } else if (value === state.playerConfigs.O.symbol) {
+        button.classList.add('cell--o');
+      }
+      
       button.setAttribute('aria-label', `Cell ${String(index + 1)}: ${value}`);
     } else {
+      delete button.dataset.symbol;
       button.setAttribute('aria-label', `Cell ${String(index + 1)}`);
     }
 

@@ -5,10 +5,32 @@
  * @module game/types
  */
 
-/** Possible values for a cell on the board */
-export type CellValue = 'X' | 'O' | null;
+/**
+ * Available symbols for players to choose from.
+ * Includes classic letters, shapes, and emojis for variety.
+ */
+export const AVAILABLE_SYMBOLS = [
+  'X',
+  'O',
+  '●',
+  '■',
+  '▲',
+  '◆',
+  '★',
+  '🔵',
+  '🔴',
+  '⭐',
+  '🌙',
+  '☀️',
+] as const;
 
-/** The two players */
+/** Type representing any available player symbol */
+export type PlayerSymbol = (typeof AVAILABLE_SYMBOLS)[number];
+
+/** Possible values for a cell on the board */
+export type CellValue = PlayerSymbol | null;
+
+/** The two players (internal representation) */
 export type Player = 'X' | 'O';
 
 /** Possible game outcomes */
@@ -22,7 +44,19 @@ export type GameStatus = 'playing' | 'x-wins' | 'o-wins' | 'draw';
  */
 export type GameMode = 'human' | 'computer' | 'demo';
 
-/** Player names for both X and O */
+/** Player configuration including name and symbol */
+export interface PlayerConfig {
+  name: string;
+  symbol: PlayerSymbol;
+}
+
+/** Player configurations for both players */
+export interface PlayerConfigs {
+  X: PlayerConfig;
+  O: PlayerConfig;
+}
+
+/** @deprecated Use PlayerConfigs instead */
 export interface PlayerNames {
   X: string;
   O: string;
@@ -44,8 +78,8 @@ export interface GameState {
   currentPlayer: Player;
   /** Current game status */
   status: GameStatus;
-  /** Custom names for both players */
-  playerNames: PlayerNames;
+  /** Custom configurations (name and symbol) for both players */
+  playerConfigs: PlayerConfigs;
   /** Current game mode (human vs computer) */
   gameMode: GameMode;
   /** True while computer is "thinking" (during delay before move) */

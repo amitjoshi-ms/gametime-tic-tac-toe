@@ -457,6 +457,106 @@ body {
   outline-offset: 2px;
 }
 
+/* ============================================
+   Symbol Selectors
+   ============================================ */
+.symbol-selectors-wrapper {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.symbol-selectors {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.symbol-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 180px;
+}
+
+.symbol-selector-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.symbol-selector-label--x {
+  color: var(--color-x);
+}
+
+.symbol-selector-label--o {
+  color: var(--color-o);
+}
+
+.symbol-selector {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.symbol-selector:hover {
+  border-color: var(--color-accent);
+}
+
+.symbol-selector:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.symbol-selector option {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.5rem;
+  font-family: system-ui, -apple-system, "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.symbol-selector option:disabled {
+  color: var(--color-text-muted);
+}
+
+/* Updated player config layout */
+.player-configs {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.player-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 180px;
+}
+
+.player-config-field > .player-name-label {
+  margin-bottom: -0.25rem;
+}
+
+.symbol-selector-container {
+  /* Reserve space but don't use it - selectors rendered separately */
+  display: none;
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,

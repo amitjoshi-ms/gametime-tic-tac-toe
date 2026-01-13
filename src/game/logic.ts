@@ -5,7 +5,7 @@
  * @module game/logic
  */
 
-import type { CellValue, GameStatus, WinningLine } from './types';
+import type { CellValue, GameStatus, WinningLine, PlayerConfigs, PlayerSymbol } from './types';
 
 /**
  * All 8 possible winning combinations.
@@ -38,13 +38,15 @@ export const WINNING_LINES: WinningLine[] = [
  * Checks if the given player has won.
  *
  * @param board - Current board state (9 elements)
- * @param player - Player to check ('X' or 'O')
+ * @param playerSymbol - Player symbol to check
  * @returns true if player has 3 in a row
  */
-export function checkWin(board: CellValue[], player: 'X' | 'O'): boolean {
+export function checkWin(board: CellValue[], playerSymbol: PlayerSymbol): boolean {
   return WINNING_LINES.some(
     ([a, b, c]) =>
-      board[a] === player && board[b] === player && board[c] === player
+      board[a] === playerSymbol &&
+      board[b] === playerSymbol &&
+      board[c] === playerSymbol
   );
 }
 
@@ -178,14 +180,17 @@ export function isEarlyDraw(
  *
  * @param board - Current board state
  * @param lastPlayer - The player who just moved
+ * @param playerConfigs - Player configurations with symbols
  * @returns Updated game status
  */
 export function determineStatus(
   board: CellValue[],
-  lastPlayer: 'X' | 'O'
+  lastPlayer: 'X' | 'O',
+  playerConfigs: PlayerConfigs
 ): GameStatus {
   // Check if the player who just moved has won
-  if (checkWin(board, lastPlayer)) {
+  const playerSymbol = playerConfigs[lastPlayer].symbol;
+  if (checkWin(board, playerSymbol)) {
     return lastPlayer === 'X' ? 'x-wins' : 'o-wins';
   }
 

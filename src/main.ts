@@ -11,10 +11,7 @@ import {
   setComputerThinking,
   isComputerTurn,
 } from './game/state';
-import {
-  DEFAULT_COMPUTER_NAME,
-  savePlayerNames,
-} from './game/playerNames';
+import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
@@ -22,7 +19,7 @@ import { renderStatus } from './ui/status';
 import { renderControls, updateControls } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
-import type { GameState, GameMode, PlayerNames } from './game/types';
+import type { GameState, GameMode, PlayerConfigs } from './game/types';
 
 /** Current game state - module-level for simplicity */
 let gameState: GameState = resetGame(loadGameMode());
@@ -138,12 +135,18 @@ function handleModeChange(mode: GameMode): void {
   if (mode === 'computer') {
     gameState = {
       ...gameState,
-      playerNames: {
-        ...gameState.playerNames,
-        O: DEFAULT_COMPUTER_NAME,
+      playerConfigs: {
+        ...gameState.playerConfigs,
+        O: {
+          ...gameState.playerConfigs.O,
+          name: DEFAULT_COMPUTER_NAME,
+        },
       },
     };
-    savePlayerNames(gameState.playerNames);
+    savePlayerConfigs(gameState.playerConfigs);
+  } else {
+    // Restore saved configs from localStorage when switching back to human
+    gameState = { ...gameState, playerConfigs: loadPlayerConfigs() };
   }
 
   updateUI();
@@ -155,20 +158,20 @@ function handleModeChange(mode: GameMode): void {
 }
 
 /**
- * Handles player name changes.
- * @param names - New player names
+ * Handles player config changes (names and symbols).
+ * @param configs - New player configurations
  */
-function handleNameChange(names: PlayerNames): void {
+function handleConfigChange(configs: PlayerConfigs): void {
   // Save to localStorage
-  savePlayerNames(names);
+  savePlayerConfigs(configs);
 
-  // Update game state with new names
+  // Update game state with new configs
   gameState = {
     ...gameState,
-    playerNames: names,
+    playerConfigs: configs,
   };
 
-  // Update UI to reflect new names
+  // Update UI to reflect new configs
   updateUI();
 }
 
@@ -234,8 +237,8 @@ function handleDemoMove(cellIndex: number): void {
  * Displays result and schedules auto-restart.
  */
 function handleDemoGameComplete(): void {
-  // Save current player names for restart
-  const currentNames = gameState.playerNames;
+  // Save current player configs for restart
+  const currentConfigs = gameState.playerConfigs;
 
   // Schedule auto-restart after DEMO_RESTART_DELAY
   cancelRestartTimer = scheduleDemoRestart(() => {
@@ -245,13 +248,13 @@ function handleDemoGameComplete(): void {
 
     // Only restart if still in demo mode
     if (gameState.gameMode === 'demo') {
-      // Reset game and start new demo with same names.
+      // Reset game and start new demo with same configs.
       // Note: resetGame() alternates the starting player for fairness,
       // so consecutive demo games will alternate between X and O starting.
       gameState = resetGame('demo');
       gameState = {
         ...gameState,
-        playerNames: currentNames,
+        playerConfigs: currentConfigs,
       };
       updateUI();
       triggerDemoMove();
@@ -274,16 +277,16 @@ function startDemo(): void {
     cancelPendingMove = null;
   }
 
-  // Get the current player names from state (which reflects form inputs)
-  const currentNames = gameState.playerNames;
+  // Get the current player configs from state (which reflects form inputs)
+  const currentConfigs = gameState.playerConfigs;
 
   // Reset game with demo mode
   gameState = resetGame('demo');
 
-  // Use the current player names (user-entered names) for the demo
+  // Use the current player configs (user-entered configs) for the demo
   gameState = {
     ...gameState,
-    playerNames: currentNames,
+    playerConfigs: currentConfigs,
   };
 
   updateUI();
@@ -353,7 +356,7 @@ function updateUI(): void {
   }
 
   if (playerNamesContainer) {
-    updatePlayerNames(playerNamesContainer, gameState.playerNames);
+    updatePlayerNames(playerNamesContainer, gameState.playerConfigs);
   }
 
   if (boardContainer) {
@@ -416,8 +419,8 @@ function initApp(): void {
   );
   renderPlayerNames(
     playerNamesContainer,
-    gameState.playerNames,
-    handleNameChange
+    gameState.playerConfigs,
+    handleConfigChange
   );
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);
