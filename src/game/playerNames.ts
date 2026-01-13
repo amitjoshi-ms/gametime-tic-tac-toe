@@ -126,6 +126,26 @@ export function resetPlayerConfigs(): PlayerConfigs {
 }
 
 /**
+ * Gets the local player's name for remote mode.
+ * Uses Player X's name since that's typically what users customize
+ * (they play as X in human vs human or human vs computer modes).
+ *
+ * @returns The local player's name from localStorage
+ */
+export function getLocalPlayerName(): string {
+  const configs = loadPlayerConfigs();
+  // Use X's name as the "local player" name since users typically customize that
+  // If X's name is default, fall back to O's name in case they customized that instead
+  if (configs.X.name !== DEFAULT_X_NAME) {
+    return configs.X.name;
+  }
+  if (configs.O.name !== DEFAULT_O_NAME) {
+    return configs.O.name;
+  }
+  return DEFAULT_X_NAME;
+}
+
+/**
  * @deprecated Use getDefaultPlayerConfigs instead
  */
 // eslint-disable-next-line @typescript-eslint/no-deprecated

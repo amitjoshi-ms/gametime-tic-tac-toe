@@ -14,6 +14,9 @@ import {
   loadPlayerConfigs,
   savePlayerConfigs,
   getDefaultPlayerConfigs,
+  getLocalPlayerName,
+  DEFAULT_X_NAME,
+  DEFAULT_O_NAME,
 } from '../../src/game/playerNames';
 import type { PlayerConfigs, PlayerSymbol } from '../../src/game/types';
 
@@ -378,5 +381,52 @@ describe('savePlayerConfigs', () => {
     const loaded = loadPlayerConfigs();
     expect(loaded.X.name).toBe('Charlie');
     expect(loaded.O.name).toBe('Diana');
+  });
+});
+
+describe('getLocalPlayerName', () => {
+  it('should return X name when X is customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+
+  it('should return O name when only O is customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: DEFAULT_X_NAME, symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Bob');
+  });
+
+  it('should prefer X name when both are customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+
+  it('should return default X name when neither is customized', () => {
+    // No configs saved, should return default
+    expect(getLocalPlayerName()).toBe(DEFAULT_X_NAME);
+  });
+
+  it('should return default X name when both have default names', () => {
+    const configs: PlayerConfigs = {
+      X: { name: DEFAULT_X_NAME, symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe(DEFAULT_X_NAME);
   });
 });

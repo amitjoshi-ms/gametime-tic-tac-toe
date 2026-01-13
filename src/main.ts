@@ -16,7 +16,7 @@ import {
   resetRemoteGame,
   resetRemoteGameKeepSymbols,
 } from './game/state';
-import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
+import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import {
   createRemoteSession,
@@ -427,7 +427,8 @@ function handleDemoToggle(): void {
  * Handles creating a new remote session (host flow).
  */
 async function handleCreateSession(): Promise<void> {
-  const localName = gameState.playerConfigs.X.name;
+  // Use the persisted local player name from localStorage
+  const localName = getLocalPlayerName();
 
   // Update UI to show creating state
   remotePanelState = { phase: 'creating' };
@@ -482,8 +483,8 @@ async function handleCreateSession(): Promise<void> {
  * @param sessionCode - The session code from the host
  */
 async function handleJoinSession(sessionCode: string): Promise<void> {
-  // Guest is player O, so use O's name from local config
-  const localName = gameState.playerConfigs.O.name;
+  // Use the persisted local player name from localStorage
+  const localName = getLocalPlayerName();
 
   // Update UI to show joining state
   remotePanelState = { phase: 'joining' };
