@@ -250,22 +250,22 @@ test.describe('Symbol Selection Feature', () => {
     await xSelector.selectOption('☀️');
     await oSelector.selectOption('🔵');
 
-    // Play a draw game
+    // Play until early draw is detected
+    // Results in: ☀️ 🔵 ☀️ / 🔵 ☀️ 🔵 / 🔵 ☀️ _
     await page.getByRole('button', { name: 'Cell 1' }).click(); // ☀️
     await page.getByRole('button', { name: 'Cell 2' }).click(); // 🔵
     await page.getByRole('button', { name: 'Cell 3' }).click(); // ☀️
-    await page.getByRole('button', { name: 'Cell 5' }).click(); // 🔵
-    await page.getByRole('button', { name: 'Cell 4' }).click(); // ☀️
+    await page.getByRole('button', { name: 'Cell 4' }).click(); // 🔵
+    await page.getByRole('button', { name: 'Cell 5' }).click(); // ☀️
     await page.getByRole('button', { name: 'Cell 6' }).click(); // 🔵
     await page.getByRole('button', { name: 'Cell 8' }).click(); // ☀️
     await page.getByRole('button', { name: 'Cell 7' }).click(); // 🔵
-    await page.getByRole('button', { name: 'Cell 9' }).click(); // ☀️
 
-    // Check draw message
+    // Early draw should be detected at this point
     const status = page.locator('.status');
     await expect(status).toContainText('Draw');
 
-    // Verify all cells show correct symbols
+    // Verify some cells show correct symbols
     await expect(page.getByRole('button', { name: 'Cell 1: ☀️' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cell 2: 🔵' })).toBeVisible();
   });
