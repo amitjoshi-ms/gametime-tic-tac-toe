@@ -226,8 +226,10 @@ All speckit prompts delegate to corresponding custom agents defined in `.github/
 
 Prompts automatically load relevant instruction files:
 
-**All code changes:**
-- `typescript.instructions.md` - Type system, naming, patterns
+**All TypeScript code changes:**
+- `typescript-types.instructions.md` - Type system, naming conventions
+- `typescript-modules.instructions.md` - Module system, imports/exports
+- `typescript-patterns.instructions.md` - Functions, immutability, error handling
 - `testing.instructions.md` - Unit and E2E test standards
 
 **Game logic:**

@@ -30,24 +30,56 @@ Completed a comprehensive review of all prompt files in `.github/prompts/` to en
 
 ## Changes Made
 
-### 1. Created TypeScript Instructions File
+### 1. Split TypeScript Instructions into Focused Files
 
-**File:** `.github/instructions/typescript.instructions.md`
-**Status:** ✅ Created (was previously empty)
+**Original File:** `.github/instructions/typescript.instructions.md` (324 lines - exceeded 200-line guideline)
+**Status:** ✅ Split into three focused files (all within 200-line limit)
 
-Added comprehensive TypeScript coding standards covering:
+Created three TypeScript instruction files:
+
+**a) `typescript-types.instructions.md` (170 lines)**
 - Type system rules and strict mode guidelines
-- Module system (ES modules only)
-- Naming conventions for files, types, and functions
-- Function patterns (pure functions, type guards, return types)
-- Immutability patterns (arrays and objects)
-- Documentation standards (JSDoc, module docs)
-- Error handling best practices
-- Anti-patterns to avoid
+- Type definitions (discriminated unions, interfaces)
+- Utility types (Readonly, Partial, Record, Pick/Omit)
+- Naming conventions (files, types, interfaces, variables, functions)
+- Type guards for narrowing
+- Anti-patterns (unsafe assertions, optional chaining, complex types)
 
-**Rationale:** This file was empty but referenced by multiple prompts. TypeScript is the primary language of the project, so having detailed standards is essential.
+**b) `typescript-modules.instructions.md` (127 lines)**
+- ES modules only (no CommonJS)
+- Import organization and patterns
+- Module structure (export/import patterns)
+- Path aliases configuration
+- Avoiding circular dependencies
+- Managing module side effects
 
-### 2. Enhanced Instruction References in Prompts
+**c) `typescript-patterns.instructions.md` (200 lines)**
+- Pure function patterns
+- Explicit return types
+- Immutability (arrays and objects)
+- JSDoc and module documentation
+- Type-safe error handling
+- Best practices (function size, composition over inheritance)
+
+**Rationale:** The original 324-line file exceeded the ai-config.instructions.md guideline of keeping instruction files under 200 lines. Splitting into focused files improves maintainability and makes it easier for AI agents to load only relevant context.
+
+### 2. Updated Prompt References
+
+Updated three prompts to reference all three TypeScript instruction files instead of the single file:
+
+#### `start.task.prompt.md`
+**Before:** Referenced `typescript.instructions.md`
+**After:** References `typescript-types.instructions.md`, `typescript-modules.instructions.md`, `typescript-patterns.instructions.md`
+
+#### `review.task.prompt.md`
+**Before:** Referenced `typescript.instructions.md`
+**After:** References `typescript-types.instructions.md`, `typescript-modules.instructions.md`, `typescript-patterns.instructions.md`
+
+#### `submit.task.prompt.md`
+**Before:** Referenced `typescript.instructions.md`
+**After:** References `typescript-types.instructions.md`, `typescript-modules.instructions.md`, `typescript-patterns.instructions.md`
+
+### 3. Enhanced Instruction References in Other Prompts
 
 #### `sync.repo.prompt.md`
 **Before:** No instruction references
@@ -56,13 +88,17 @@ Added comprehensive TypeScript coding standards covering:
 
 #### `submit.task.prompt.md`
 **Before:** Only `typescript.instructions.md` and `testing.instructions.md`
-**After:** Added `security.instructions.md` and `ai-config.instructions.md`
+**After:** Now references all three TypeScript files plus `security.instructions.md` and `ai-config.instructions.md`
 **Rationale:** PR submissions should consider security implications and follow workflow standards.
 
 #### `release.latest.prompt.md`
 **Before:** No instruction references
 **After:** Added `ai-config.instructions.md`
 **Rationale:** Release workflows should follow documented standards for consistency.
+
+### 4. Updated ai-config.instructions.md
+
+Updated the instruction files table to reflect the new TypeScript file structure (three files instead of one).
 
 ## Validation Results
 
@@ -72,10 +108,10 @@ Added comprehensive TypeScript coding standards covering:
 
 | Prompt File | Instruction References | Valid |
 |-------------|----------------------|-------|
-| `start.task.prompt.md` | 4 | ✅ |
-| `review.task.prompt.md` | 7 | ✅ |
+| `start.task.prompt.md` | 6 | ✅ |
+| `review.task.prompt.md` | 9 | ✅ |
 | `sync.repo.prompt.md` | 1 | ✅ |
-| `submit.task.prompt.md` | 4 | ✅ |
+| `submit.task.prompt.md` | 6 | ✅ |
 | `release.latest.prompt.md` | 1 | ✅ |
 | `speckit.*.prompt.md` (9 files) | 0 each | N/A (agent delegation) |
 
@@ -83,7 +119,9 @@ Added comprehensive TypeScript coding standards covering:
 
 | Instruction File | Referenced By | Count |
 |------------------|---------------|-------|
-| `typescript.instructions.md` | start, review, submit | 3 |
+| `typescript-types.instructions.md` | start, review, submit | 3 |
+| `typescript-modules.instructions.md` | start, review, submit | 3 |
+| `typescript-patterns.instructions.md` | start, review, submit | 3 |
 | `testing.instructions.md` | start, review, submit | 3 |
 | `security.instructions.md` | review, submit | 2 |
 | `ai-config.instructions.md` | sync, submit, release | 3 |
@@ -131,9 +169,10 @@ These prompts serve as thin wrappers that invoke specialized agents for spec-rel
 
 ### Future Considerations
 
-1. **Monitor Instruction File Size**: The ai-config standards recommend keeping instruction files under 200 lines. Currently:
-   - `typescript.instructions.md`: 324 lines (acceptable for core language)
-   - All others are within limits
+1. **Monitor Instruction File Size**: The ai-config standards recommend keeping instruction files under 200 lines. All files now comply with this guideline after splitting `typescript.instructions.md` into three focused files:
+   - `typescript-types.instructions.md`: 170 lines
+   - `typescript-modules.instructions.md`: 127 lines
+   - `typescript-patterns.instructions.md`: 200 lines
 
 2. **Consider Additional Instruction Files**: As the project grows, consider creating focused instruction files for:
    - Git workflow standards (currently in copilot-instructions.md)
