@@ -113,9 +113,11 @@ function setupConnectionStateHandler(
   connection.oniceconnectionstatechange = (): void => {
     handlers.onStateChange(connection.iceConnectionState);
 
+    // Only treat 'failed' and 'closed' as terminal states
+    // 'disconnected' is transient and can recover automatically
     if (
       connection.iceConnectionState === 'failed' ||
-      connection.iceConnectionState === 'disconnected'
+      connection.iceConnectionState === 'closed'
     ) {
       handlers.onClose();
     }
