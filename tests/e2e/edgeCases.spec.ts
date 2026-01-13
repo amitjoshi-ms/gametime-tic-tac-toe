@@ -322,7 +322,7 @@ test.describe('Edge Cases and Error Handling', () => {
       await cells.nth(2).click();
       
       // Wait for game to end
-      await expect(status).toContainText('wins', { timeout: 5000 });
+      await expect(status).toContainText('Wins', { timeout: 5000 });
       
       // Verify empty cells are disabled
       await expect(cells.nth(5)).toBeDisabled();
