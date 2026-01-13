@@ -720,13 +720,11 @@ function handleRematchRequest(): void {
     isRematchPending = false;
     // Send acceptance back (they'll get our request, we auto-accept theirs)
     remoteController?.respondToRematch(true);
-    // Reset the game with swapped symbols
+    // Reset the game (symbols stay the same, starting player alternates)
     gameState = resetRemoteGame(gameState);
-    const newRemoteSymbol = gameState.remoteSession?.remotePlayer?.symbol;
     remotePanelState = {
       ...remotePanelState,
       phase: 'connected',
-      ...(newRemoteSymbol && { remoteSymbol: newRemoteSymbol }),
     };
     updateUI();
     return;
@@ -747,13 +745,11 @@ function handleRematchResponse(accepted: boolean): void {
   isRematchPending = false;
 
   if (accepted) {
-    // Reset the game with swapped symbols
+    // Reset the game (symbols stay the same, starting player alternates)
     gameState = resetRemoteGame(gameState);
-    const newRemoteSymbol = gameState.remoteSession?.remotePlayer?.symbol;
     remotePanelState = {
       ...remotePanelState,
       phase: 'connected',
-      ...(newRemoteSymbol && { remoteSymbol: newRemoteSymbol }),
     };
   } else {
     // Opponent declined - stay in connected state, they can try again
@@ -787,13 +783,11 @@ function handleRematchAccept(): void {
   }
 
   remoteController.respondToRematch(true);
-  // Reset the game with swapped symbols
+  // Reset the game (symbols stay the same, starting player alternates)
   gameState = resetRemoteGame(gameState);
-  const newRemoteSymbol = gameState.remoteSession?.remotePlayer?.symbol;
   remotePanelState = {
     ...remotePanelState,
     phase: 'connected',
-    ...(newRemoteSymbol && { remoteSymbol: newRemoteSymbol }),
   };
   updateUI();
 }

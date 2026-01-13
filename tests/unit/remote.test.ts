@@ -61,6 +61,7 @@ describe('isLocalPlayerTurn', () => {
         },
         error: null,
         isHost: localSymbol === 'X',
+        lastStartingPlayer: 'X',
       };
 
       return {

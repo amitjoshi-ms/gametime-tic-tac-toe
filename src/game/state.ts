@@ -201,6 +201,7 @@ export function createRemoteGameState(
       remotePlayer: null,
       error: null,
       isHost,
+      lastStartingPlayer: 'X',
     },
   };
 }
@@ -314,51 +315,31 @@ export function resetRemoteGameKeepSymbols(state: GameState): GameState {
 
 /**
  * Resets the remote game board for a rematch.
- * Swaps symbols between players for the new game.
+ * Keeps symbols fixed but alternates the starting player.
+ * In remote mode, player symbols remain constant throughout
+ * the session - only who goes first changes each game.
  *
  * @param state - Current state
- * @returns New state with reset board and swapped symbols
+ * @returns New state with reset board and alternating starting player
  */
 export function resetRemoteGame(state: GameState): GameState {
   if (!state.remoteSession?.remotePlayer) {
     return state;
   }
 
-  // Swap symbols
-  const newLocalSymbol: Player =
-    state.remoteSession.localPlayer.symbol === 'X' ? 'O' : 'X';
-  const newRemoteSymbol: Player = newLocalSymbol === 'X' ? 'O' : 'X';
-
-  const localName = state.remoteSession.localPlayer.name;
-  const remoteName = state.remoteSession.remotePlayer.name;
-
-  const playerConfigs: PlayerConfigs =
-    newLocalSymbol === 'X'
-      ? {
-          X: { name: localName, symbol: 'X' },
-          O: { name: remoteName, symbol: 'O' },
-        }
-      : {
-          X: { name: remoteName, symbol: 'X' },
-          O: { name: localName, symbol: 'O' },
-        };
+  // Alternate starting player: whoever started last game doesn't start this one
+  const lastStarter = state.remoteSession.lastStartingPlayer;
+  const nextStartingPlayer: Player = lastStarter === 'X' ? 'O' : 'X';
 
   return {
     ...state,
     board: [null, null, null, null, null, null, null, null, null],
-    currentPlayer: 'X',
+    currentPlayer: nextStartingPlayer,
     status: 'playing',
-    playerConfigs,
     remoteSession: {
       ...state.remoteSession,
-      localPlayer: {
-        ...state.remoteSession.localPlayer,
-        symbol: newLocalSymbol,
-      },
-      remotePlayer: {
-        ...state.remoteSession.remotePlayer,
-        symbol: newRemoteSymbol,
-      },
+      lastStartingPlayer: nextStartingPlayer,
     },
+    // Keep playerConfigs unchanged - symbols stay the same throughout session
   };
 }

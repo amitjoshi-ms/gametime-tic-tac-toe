@@ -89,6 +89,8 @@ export interface RemoteSession {
   error: string | null;
   /** Whether local player is the session creator (host) */
   isHost: boolean;
+  /** Who started the last/current game (for alternating starts on rematch) */
+  lastStartingPlayer: Player;
 }
 
 /** Player configuration including name and symbol */
