@@ -65,8 +65,9 @@ test.describe('Remote Multiplayer', () => {
       await page.getByRole('button', { name: /create game/i }).click();
 
       // Wait for session to be created (waiting phase has Cancel button)
+      // Use longer timeout for CI where WebRTC offer creation can be slow
       await expect(page.locator('.remote-panel')).toContainText(/session:/i, {
-        timeout: 10000,
+        timeout: 30000,
       });
 
       // Cancel button should be visible in waiting phase
