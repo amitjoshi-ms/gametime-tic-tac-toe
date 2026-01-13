@@ -34,7 +34,7 @@ This document provides practical examples of how to use the prompt files in `.gi
 **What it does:**
 1. Reviews all current changes (staged and unstaged)
 2. Runs quality gates (typecheck, lint, tests)
-3. Checks against 7 instruction files:
+3. Checks against 9 instruction files:
    - TypeScript standards
    - Testing requirements
    - Security best practices
