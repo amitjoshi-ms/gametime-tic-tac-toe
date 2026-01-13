@@ -17,11 +17,20 @@ import type { PlayerConfigs } from '../../src/game/types';
 
 /**
  * Helper to get the parent .player-config-field element for a given input.
- * Works around jsdom not supporting :has() selector.
+ * Uses parentElement traversal since jsdom may not fully support closest().
  */
 function getPlayerField(container: HTMLElement, inputId: string): Element | null {
   const input = container.querySelector(`#${inputId}`);
-  return input?.closest('.player-config-field') ?? null;
+  if (!input) return null;
+  // Traverse up to find the .player-config-field parent
+  let element: Element | null = input;
+  while (element && element !== container) {
+    if (element.classList.contains('player-config-field')) {
+      return element;
+    }
+    element = element.parentElement;
+  }
+  return null;
 }
 
 describe('renderPlayerNames', () => {
