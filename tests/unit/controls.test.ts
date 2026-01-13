@@ -19,18 +19,20 @@ describe('controls rendering', () => {
   describe('renderControls', () => {
     it('should create a New Game button', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       expect(button).toBeTruthy();
       expect(button?.textContent).toBe('New Game');
     });
 
     it('should set button type to button', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
       const button = container.querySelector('button');
       expect(button?.getAttribute('type')).toBe('button');
@@ -38,19 +40,21 @@ describe('controls rendering', () => {
 
     it('should set aria-label for accessibility', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       expect(button?.getAttribute('aria-label')).toBe('Start a new game');
     });
 
     it('should call onNewGame when button is clicked', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       expect(onNewGame).toHaveBeenCalledTimes(1);
@@ -59,8 +63,9 @@ describe('controls rendering', () => {
     it('should clear container before rendering', () => {
       container.innerHTML = '<div>Old content</div>';
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
       expect(container.innerHTML).not.toContain('Old content');
       expect(container.querySelector('.btn')).toBeTruthy();
@@ -68,10 +73,11 @@ describe('controls rendering', () => {
 
     it('should handle multiple clicks', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -81,11 +87,12 @@ describe('controls rendering', () => {
 
     it('should use event delegation (clicking container works)', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
       // Click on the button element directly
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       expect(onNewGame).toHaveBeenCalledTimes(1);
@@ -93,8 +100,9 @@ describe('controls rendering', () => {
 
     it('should not trigger callback when clicking outside button', () => {
       const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
 
-      renderControls(container, onNewGame);
+      renderControls(container, onNewGame, onDemoToggle, false);
 
       // Add extra content
       const extraDiv = document.createElement('div');
@@ -109,12 +117,13 @@ describe('controls rendering', () => {
 
     it('should support re-rendering with different handler', () => {
       const onNewGame1 = vi.fn();
-      renderControls(container, onNewGame1);
+      const onDemoToggle = vi.fn();
+      renderControls(container, onNewGame1, onDemoToggle, false);
 
       const onNewGame2 = vi.fn();
-      renderControls(container, onNewGame2);
+      renderControls(container, onNewGame2, onDemoToggle, false);
 
-      const button = container.querySelector('.btn');
+      const button = container.querySelector('.btn-new-game');
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       // Only the second handler should be called
