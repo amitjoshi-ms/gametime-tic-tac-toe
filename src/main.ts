@@ -10,15 +10,29 @@ import {
   makeMove,
   setComputerThinking,
   isComputerTurn,
+  createRemoteGameState,
+  updateRemoteSession,
+  clearRemoteSession,
 } from './game/state';
 import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
+import {
+  createRemoteSession,
+  joinRemoteSession,
+  completeHostConnection,
+} from './game/remote';
+import { copyToClipboard } from './network/signaling';
 import { loadGameMode, saveGameMode } from './utils/storage';
 import { renderBoard, updateBoard } from './ui/board';
 import { renderStatus } from './ui/status';
 import { renderControls, updateControls } from './ui/controls';
 import { renderPlayerNames, updatePlayerNames } from './ui/playerNames';
 import { renderModeSelector, updateModeSelector } from './ui/modeSelector';
+import {
+  renderRemotePanel,
+  updateRemotePanel,
+  type RemotePanelState,
+} from './ui/remotePanel';
 import type { GameState, GameMode, PlayerConfigs } from './game/types';
 
 /** Current game state - module-level for simplicity */
@@ -32,6 +46,21 @@ let cancelRestartTimer: (() => void) | null = null;
 
 /** Previous game mode before demo started (to restore on stop) */
 let preDemoMode: GameMode | null = null;
+
+/** Remote session controller for sending messages */
+let remoteController: Awaited<ReturnType<typeof createRemoteSession>>['controller'] | null = null;
+
+// Temporary: export to suppress unused warning until Phase 5 implementation
+export { remoteController as remoteController };
+
+/** Cleanup function for remote session */
+let remoteCleanup: (() => void) | null = null;
+
+/** Current remote panel state */
+let remotePanelState: RemotePanelState = { phase: 'select' };
+
+/** Remote panel handlers (set during initApp) */
+let remotePanelHandlers: Parameters<typeof renderRemotePanel>[2] | null = null;
 
 /**
  * Handles the computer making its move.
@@ -105,6 +134,12 @@ function handleNewGame(): void {
     cancelPendingMove = null;
   }
 
+  // Don't allow new game in remote mode while connected
+  if (gameState.gameMode === 'remote' && gameState.remoteSession?.connectionStatus === 'connected') {
+    // TODO: Implement rematch flow for remote games
+    return;
+  }
+
   gameState = resetGame(gameState.gameMode);
   updateUI();
 
@@ -125,8 +160,18 @@ function handleModeChange(mode: GameMode): void {
     cancelPendingMove = null;
   }
 
-  // Save mode to localStorage
-  saveGameMode(mode);
+  // Clean up any existing remote session when switching modes
+  if (remoteCleanup) {
+    remoteCleanup();
+    remoteCleanup = null;
+  }
+  remoteController = null;
+  remotePanelState = { phase: 'select' };
+
+  // Save mode to localStorage (except for remote which is transient)
+  if (mode !== 'remote') {
+    saveGameMode(mode);
+  }
 
   // Reset game with new mode
   gameState = resetGame(mode);
@@ -338,37 +383,318 @@ function handleDemoToggle(): void {
   }
 }
 
+// =============================================================================
+// Remote Multiplayer Handlers
+// =============================================================================
+
+/**
+ * Handles creating a new remote session (host flow).
+ */
+async function handleCreateSession(): Promise<void> {
+  const localName = gameState.playerNames.X;
+
+  // Update UI to show creating state
+  remotePanelState = { phase: 'creating' };
+  gameState = createRemoteGameState(true, localName);
+  gameState = updateRemoteSession(gameState, { connectionStatus: 'connecting' });
+  updateUI();
+
+  try {
+    const result = await createRemoteSession(localName, {
+      onConnected: handleRemoteConnected,
+      onRemoteMove: handleRemoteMove,
+      onDisconnected: handleRemoteDisconnect,
+      onError: handleRemoteError,
+      onRematchRequested: handleRematchRequest,
+      onRematchResponse: handleRematchResponse,
+    });
+
+    // Store controller and cleanup
+    remoteController = result.controller;
+    remoteCleanup = result.cleanup;
+
+    // Update state with session info
+    gameState = updateRemoteSession(gameState, {
+      sessionId: result.sessionId,
+      sessionCode: result.sessionCode,
+      connectionStatus: 'waiting-for-peer',
+    });
+
+    // Update panel to waiting state
+    remotePanelState = {
+      phase: 'waiting',
+      sessionId: result.sessionId,
+      sessionCode: result.sessionCode,
+      codeCopied: false,
+    };
+    updateUI();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to create session';
+    remotePanelState = { phase: 'error', error: message };
+    gameState = updateRemoteSession(gameState, {
+      connectionStatus: 'error',
+      error: message,
+    });
+    updateUI();
+  }
+}
+
+/**
+ * Handles joining an existing remote session (guest flow).
+ * @param sessionCode - The session code from the host
+ */
+async function handleJoinSession(sessionCode: string): Promise<void> {
+  const localName = gameState.playerNames.X;
+
+  // Update UI to show joining state
+  remotePanelState = { phase: 'joining' };
+  gameState = createRemoteGameState(false, localName);
+  gameState = updateRemoteSession(gameState, { connectionStatus: 'connecting' });
+  updateUI();
+
+  try {
+    const result = await joinRemoteSession(sessionCode, localName, {
+      onConnected: handleRemoteConnected,
+      onRemoteMove: handleRemoteMove,
+      onDisconnected: handleRemoteDisconnect,
+      onError: handleRemoteError,
+      onRematchRequested: handleRematchRequest,
+      onRematchResponse: handleRematchResponse,
+    });
+
+    // Store controller and cleanup
+    remoteController = result.controller;
+    remoteCleanup = result.cleanup;
+
+    // Update panel to answer-input state (guest needs to send answer back)
+    remotePanelState = {
+      phase: 'answer-input',
+      sessionCode: result.answerCode,
+    };
+    updateUI();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to join session';
+    remotePanelState = { phase: 'error', error: message };
+    gameState = updateRemoteSession(gameState, {
+      connectionStatus: 'error',
+      error: message,
+    });
+    updateUI();
+  }
+}
+
+/**
+ * Handles host receiving the answer code from guest.
+ * @param answerCode - The answer code from the guest
+ */
+async function handleAnswerSubmit(answerCode: string): Promise<void> {
+  // Update UI to show connecting state
+  remotePanelState = { phase: 'connecting' };
+  updateUI();
+
+  try {
+    await completeHostConnection(answerCode);
+    // Connection will trigger onConnected callback
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to connect';
+    remotePanelState = { phase: 'error', error: message };
+    gameState = updateRemoteSession(gameState, {
+      connectionStatus: 'error',
+      error: message,
+    });
+    updateUI();
+  }
+}
+
+/**
+ * Handles copying the session code to clipboard.
+ */
+async function handleCopyCode(): Promise<void> {
+  const code = remotePanelState.sessionCode;
+  if (!code) return;
+
+  try {
+    await copyToClipboard(code);
+    remotePanelState = { ...remotePanelState, codeCopied: true };
+    updateUI();
+  } catch {
+    // Clipboard API not available, user can select and copy manually
+  }
+}
+
+/**
+ * Handles leaving/canceling a remote session.
+ */
+function handleLeaveSession(): void {
+  // Clean up remote session
+  if (remoteCleanup) {
+    remoteCleanup();
+    remoteCleanup = null;
+  }
+  remoteController = null;
+  remotePanelState = { phase: 'select' };
+
+  // Clear remote session from game state
+  gameState = clearRemoteSession(gameState);
+  updateUI();
+}
+
+/**
+ * Handles successful remote connection.
+ * @param remoteName - Name of the remote player
+ */
+function handleRemoteConnected(remoteName: string): void {
+  // Update game state with remote player info
+  const remoteSymbol = gameState.remoteSession?.localPlayer.symbol === 'X' ? 'O' : 'X';
+  gameState = updateRemoteSession(gameState, {
+    connectionStatus: 'connected',
+    remotePlayer: {
+      name: remoteName,
+      symbol: remoteSymbol,
+      isLocal: false,
+    },
+  });
+
+  // Update player names with remote player's name
+  gameState = {
+    ...gameState,
+    playerNames: {
+      ...gameState.playerNames,
+      [remoteSymbol]: remoteName,
+    },
+  };
+
+  // Update panel to connected state
+  remotePanelState = {
+    phase: 'connected',
+    remoteName,
+  };
+  updateUI();
+}
+
+/**
+ * Handles receiving a move from the remote player.
+ * @param cellIndex - The cell index where the remote player moved
+ */
+function handleRemoteMove(cellIndex: number): void {
+  // Apply the move to game state
+  const newState = makeMove(gameState, cellIndex);
+  if (newState !== gameState) {
+    gameState = newState;
+    updateUI();
+  }
+}
+
+/**
+ * Handles remote player disconnection.
+ * @param reason - Optional reason for disconnection
+ */
+function handleRemoteDisconnect(reason?: string): void {
+  const message = reason ?? 'Remote player disconnected';
+  remotePanelState = { phase: 'error', error: message };
+  gameState = updateRemoteSession(gameState, {
+    connectionStatus: 'disconnected',
+    error: message,
+  });
+  updateUI();
+}
+
+/**
+ * Handles remote connection error.
+ * @param error - Error message
+ */
+function handleRemoteError(error: string): void {
+  remotePanelState = { phase: 'error', error };
+  gameState = updateRemoteSession(gameState, {
+    connectionStatus: 'error',
+    error,
+  });
+  updateUI();
+}
+
+/**
+ * Handles receiving a rematch request from remote player.
+ */
+function handleRematchRequest(): void {
+  // TODO: Implement rematch request UI
+  console.log('Rematch requested by remote player');
+}
+
+/**
+ * Handles receiving a rematch response from remote player.
+ * @param accepted - Whether the rematch was accepted
+ */
+function handleRematchResponse(accepted: boolean): void {
+  // TODO: Implement rematch response handling
+  console.log('Rematch response:', accepted);
+}
+
 /**
  * Updates all UI components to reflect current game state.
  */
 function updateUI(): void {
   const modeSelectorContainer = document.getElementById('mode-selector');
   const playerNamesContainer = document.getElementById('player-names');
+  const remotePanelContainer = document.getElementById('remote-panel');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
   const controlsContainer = document.getElementById('controls');
 
   const isDemoActive = gameState.gameMode === 'demo';
+  const isRemoteMode = gameState.gameMode === 'remote';
 
   if (modeSelectorContainer) {
-    // Keep mode selector visible but disable it during demo mode.
-    updateModeSelector(modeSelectorContainer, gameState.gameMode, isDemoActive);
+    // Disable mode selector during demo mode or active remote session
+    const isDisabled = isDemoActive || (isRemoteMode && remotePanelState.phase !== 'select');
+    updateModeSelector(modeSelectorContainer, gameState.gameMode, isDisabled);
   }
 
+  // Show/hide remote panel based on mode
+  if (remotePanelContainer && remotePanelHandlers) {
+    if (isRemoteMode) {
+      remotePanelContainer.style.display = 'block';
+      updateRemotePanel(remotePanelContainer, remotePanelState, remotePanelHandlers);
+    } else {
+      remotePanelContainer.style.display = 'none';
+    }
+  }
+
+  // Show/hide player names (hide in remote mode when not connected)
   if (playerNamesContainer) {
-    updatePlayerNames(playerNamesContainer, gameState.playerConfigs);
+    if (isRemoteMode && remotePanelState.phase !== 'connected') {
+      playerNamesContainer.style.display = 'none';
+    } else {
+      playerNamesContainer.style.display = '';
+      updatePlayerNames(playerNamesContainer, gameState.playerConfigs);
+    }
   }
 
+  // Show/hide board (hide in remote mode when not connected)
   if (boardContainer) {
-    updateBoard(boardContainer, gameState);
+    if (isRemoteMode && remotePanelState.phase !== 'connected') {
+      boardContainer.style.display = 'none';
+    } else {
+      boardContainer.style.display = '';
+      updateBoard(boardContainer, gameState);
+    }
   }
 
   if (statusContainer) {
-    renderStatus(statusContainer, gameState);
+    if (isRemoteMode && remotePanelState.phase !== 'connected') {
+      statusContainer.style.display = 'none';
+    } else {
+      statusContainer.style.display = '';
+      renderStatus(statusContainer, gameState);
+    }
   }
 
   if (controlsContainer) {
-    updateControls(controlsContainer, isDemoActive);
+    if (isRemoteMode && remotePanelState.phase !== 'connected') {
+      controlsContainer.style.display = 'none';
+    } else {
+      controlsContainer.style.display = '';
+      updateControls(controlsContainer, isDemoActive);
+    }
   }
 }
 
@@ -387,6 +713,7 @@ function initApp(): void {
   app.innerHTML = `
     <h1 class="game-title">Tic-Tac-Toe</h1>
     <div id="mode-selector" class="mode-selector-container"></div>
+    <div id="remote-panel" class="remote-panel-container" style="display: none;"></div>
     <div id="player-names" class="player-names-container"></div>
     <div id="status" class="status"></div>
     <div id="board" class="board"></div>
@@ -395,6 +722,7 @@ function initApp(): void {
 
   // Get container references
   const modeSelectorContainer = document.getElementById('mode-selector');
+  const remotePanelContainer = document.getElementById('remote-panel');
   const playerNamesContainer = document.getElementById('player-names');
   const boardContainer = document.getElementById('board');
   const statusContainer = document.getElementById('status');
@@ -402,6 +730,7 @@ function initApp(): void {
 
   if (
     !modeSelectorContainer ||
+    !remotePanelContainer ||
     !playerNamesContainer ||
     !boardContainer ||
     !statusContainer ||
@@ -417,6 +746,19 @@ function initApp(): void {
     gameState.gameMode,
     handleModeChange
   );
+
+  // Initialize remote panel handlers (store for updates)
+  remotePanelHandlers = {
+    onCreate: handleCreateSession,
+    onJoin: handleJoinSession,
+    onCopyCode: handleCopyCode,
+    onLeave: handleLeaveSession,
+    onAnswerSubmit: handleAnswerSubmit,
+  };
+
+  // Initialize remote panel (hidden by default)
+  renderRemotePanel(remotePanelContainer, remotePanelState, remotePanelHandlers);
+
   renderPlayerNames(
     playerNamesContainer,
     gameState.playerConfigs,

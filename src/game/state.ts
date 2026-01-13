@@ -5,7 +5,14 @@
  * @module game/state
  */
 
-import type { GameState, GameMode, Player, PlayerConfigs } from './types';
+import type {
+  GameState,
+  GameMode,
+  Player,
+  PlayerConfigs,
+  RemoteSession,
+  ConnectionStatus,
+} from './types';
 import { isValidMove, determineStatus } from './logic';
 import { loadPlayerConfigs } from './playerNames';
 
@@ -38,6 +45,7 @@ export function createInitialState(
     },
     gameMode,
     isComputerThinking: false,
+    remoteSession: null,
   };
 }
 
@@ -75,6 +83,7 @@ export function makeMove(state: GameState, cellIndex: number): GameState {
     playerConfigs: state.playerConfigs,
     gameMode: state.gameMode,
     isComputerThinking: false,
+    remoteSession: state.remoteSession,
   };
 }
 
@@ -107,6 +116,7 @@ export function resetGame(currentMode: GameMode = 'human'): GameState {
     playerConfigs: loadPlayerConfigs(),
     gameMode: currentMode,
     isComputerThinking: false,
+    remoteSession: null,
   };
 }
 
@@ -143,4 +153,180 @@ export function isComputerTurn(state: GameState): boolean {
     state.status === 'playing' &&
     !state.isComputerThinking
   );
+}
+
+// ============================================
+// Remote Game State Functions
+// ============================================
+
+/**
+ * Creates initial state for remote mode.
+ *
+ * @param isHost - Whether local player is creating the session
+ * @param localName - Local player's display name
+ * @returns New game state configured for remote play
+ */
+export function createRemoteGameState(
+  isHost: boolean,
+  localName: string
+): GameState {
+  const localSymbol: Player = isHost ? 'X' : 'O';
+
+  const playerNames: PlayerNames = isHost
+    ? { X: localName, O: 'Opponent' }
+    : { X: 'Opponent', O: localName };
+
+  return {
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: 'X',
+    status: 'playing',
+    playerNames,
+    gameMode: 'remote',
+    isComputerThinking: false,
+    remoteSession: {
+      sessionId: '',
+      sessionCode: null,
+      connectionStatus: 'idle',
+      localPlayer: {
+        name: localName,
+        symbol: localSymbol,
+        isLocal: true,
+      },
+      remotePlayer: null,
+      error: null,
+      isHost,
+    },
+  };
+}
+
+/**
+ * Updates remote session in game state.
+ *
+ * @param state - Current state
+ * @param session - Updated session info (partial)
+ * @returns New state with updated session
+ */
+export function updateRemoteSession(
+  state: GameState,
+  session: Partial<RemoteSession>
+): GameState {
+  if (!state.remoteSession) {
+    return state;
+  }
+
+  return {
+    ...state,
+    remoteSession: {
+      ...state.remoteSession,
+      ...session,
+    },
+  };
+}
+
+/**
+ * Updates only the connection status in remote session.
+ *
+ * @param state - Current state
+ * @param status - New connection status
+ * @returns New state with updated connection status
+ */
+export function setConnectionStatus(
+  state: GameState,
+  status: ConnectionStatus
+): GameState {
+  return updateRemoteSession(state, { connectionStatus: status });
+}
+
+/**
+ * Sets remote player info after handshake.
+ *
+ * @param state - Current state
+ * @param remoteName - Remote player's name
+ * @returns New state with remote player configured
+ */
+export function setRemotePlayer(
+  state: GameState,
+  remoteName: string
+): GameState {
+  if (!state.remoteSession) {
+    return state;
+  }
+
+  const remoteSymbol: Player = state.remoteSession.isHost ? 'O' : 'X';
+
+  return {
+    ...state,
+    playerNames: {
+      ...state.playerNames,
+      [remoteSymbol]: remoteName,
+    },
+    remoteSession: {
+      ...state.remoteSession,
+      connectionStatus: 'connected',
+      remotePlayer: {
+        name: remoteName,
+        symbol: remoteSymbol,
+        isLocal: false,
+      },
+    },
+  };
+}
+
+/**
+ * Clears remote session and returns to normal mode.
+ *
+ * @param state - Current state
+ * @returns New state without remote session
+ */
+export function clearRemoteSession(state: GameState): GameState {
+  return {
+    ...state,
+    gameMode: 'human',
+    remoteSession: null,
+  };
+}
+
+/**
+ * Resets the remote game board for a rematch.
+ * Swaps symbols between players for the new game.
+ *
+ * @param state - Current state
+ * @returns New state with reset board and swapped symbols
+ */
+export function resetRemoteGame(state: GameState): GameState {
+  if (!state.remoteSession?.remotePlayer) {
+    return state;
+  }
+
+  // Swap symbols
+  const newLocalSymbol: Player =
+    state.remoteSession.localPlayer.symbol === 'X' ? 'O' : 'X';
+  const newRemoteSymbol: Player = newLocalSymbol === 'X' ? 'O' : 'X';
+
+  const localName = state.remoteSession.localPlayer.name;
+  const remoteName = state.remoteSession.remotePlayer.name;
+
+  const playerNames: PlayerNames =
+    newLocalSymbol === 'X'
+      ? { X: localName, O: remoteName }
+      : { X: remoteName, O: localName };
+
+  return {
+    ...state,
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: 'X',
+    status: 'playing',
+    playerNames,
+    remoteSession: {
+      ...state.remoteSession,
+      localPlayer: {
+        ...state.remoteSession.localPlayer,
+        symbol: newLocalSymbol,
+      },
+      remotePlayer: {
+        ...state.remoteSession.remotePlayer,
+        symbol: newRemoteSymbol,
+      },
+    },
+  };
 }

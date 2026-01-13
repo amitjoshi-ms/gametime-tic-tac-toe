@@ -16,6 +16,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Bob', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -30,6 +31,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Bob', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -44,6 +46,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Bob', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -58,6 +61,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Bob', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -72,6 +76,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Bob', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -86,6 +91,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Player O', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -100,6 +106,7 @@ describe('getStatusMessage with custom names', () => {
       playerConfigs: { X: { name: "O'Brien", symbol: 'X' as const }, O: { name: 'José', symbol: 'O' as const } },
       gameMode: 'human',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -144,6 +151,7 @@ describe('getStatusMessage with computer thinking', () => {
       playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Computer', symbol: 'O' as const } },
       gameMode: 'computer',
       isComputerThinking: true,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -158,6 +166,7 @@ describe('getStatusMessage with computer thinking', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'HAL 9000', symbol: 'O' as const } },
       gameMode: 'computer',
       isComputerThinking: true,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -172,6 +181,7 @@ describe('getStatusMessage with computer thinking', () => {
       playerConfigs: { X: { name: 'Player X', symbol: 'X' as const }, O: { name: 'Computer', symbol: 'O' as const } },
       gameMode: 'computer',
       isComputerThinking: false,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);
@@ -186,6 +196,7 @@ describe('getStatusMessage with computer thinking', () => {
       playerConfigs: { X: { name: 'Alice', symbol: 'X' as const }, O: { name: 'Computer', symbol: 'O' as const } },
       gameMode: 'computer',
       isComputerThinking: true,
+      remoteSession: null,
     };
 
     const message = getStatusMessage(state);

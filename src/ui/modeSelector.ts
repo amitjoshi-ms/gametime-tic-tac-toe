@@ -45,6 +45,7 @@ export function renderModeSelector(
   const options: { value: GameMode; label: string }[] = [
     { value: 'human', label: 'Human' },
     { value: 'computer', label: 'Computer' },
+    { value: 'remote', label: 'Remote' },
   ];
 
   const optionsContainer = document.createElement('div');
