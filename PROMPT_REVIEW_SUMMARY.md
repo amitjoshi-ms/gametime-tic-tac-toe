@@ -134,7 +134,7 @@ Updated the instruction files table to reflect the new TypeScript file structure
 
 ### Strengths
 
-1. **Comprehensive Coverage**: `review.task.prompt.md` references all 7 relevant instruction files, providing comprehensive guidance for code reviews.
+1. **Comprehensive Coverage**: `review.task.prompt.md` references all 9 relevant instruction files, providing comprehensive guidance for code reviews.
 
 2. **Logical Grouping**: `start.task.prompt.md` appropriately references the 6 core instruction files needed when starting new work (typescript-types, typescript-modules, typescript-patterns, game-logic, testing, ui).
 
