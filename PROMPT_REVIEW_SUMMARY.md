@@ -132,7 +132,7 @@ These prompts serve as thin wrappers that invoke specialized agents for spec-rel
 ### Future Considerations
 
 1. **Monitor Instruction File Size**: The ai-config standards recommend keeping instruction files under 200 lines. Currently:
-   - `typescript.instructions.md`: ~280 lines (acceptable for core language)
+   - `typescript.instructions.md`: 324 lines (acceptable for core language)
    - All others are within limits
 
 2. **Consider Additional Instruction Files**: As the project grows, consider creating focused instruction files for:
