@@ -228,3 +228,94 @@ describe('isValidMove', () => {
     expect(isValidMove(partialBoard, 8, 'playing')).toBe(true);
   });
 });
+
+describe('checkWin with custom symbols', () => {
+  it('should detect win with star symbol in top row', () => {
+    const board: CellValue[] = ['★', '★', '★', null, '🔵', '🔵', null, null, null];
+    expect(checkWin(board, '★')).toBe(true);
+    expect(checkWin(board, '🔵')).toBe(false);
+  });
+
+  it('should detect win with emoji symbols in column', () => {
+    const board: CellValue[] = ['🔵', '★', null, '🔵', '★', null, '🔵', null, null];
+    expect(checkWin(board, '🔵')).toBe(true);
+    expect(checkWin(board, '★')).toBe(false);
+  });
+
+  it('should detect win with shape symbols in diagonal', () => {
+    const board: CellValue[] = ['●', '■', null, '■', '●', null, null, null, '●'];
+    expect(checkWin(board, '●')).toBe(true);
+    expect(checkWin(board, '■')).toBe(false);
+  });
+
+  it('should detect win with moon and sun emojis', () => {
+    const board: CellValue[] = [null, null, '🌙', '★', '🌙', '★', '🌙', null, null];
+    expect(checkWin(board, '🌙')).toBe(true);
+    expect(checkWin(board, '★')).toBe(false);
+  });
+
+  it('should return false when no winner with custom symbols', () => {
+    const board: CellValue[] = ['★', '🔵', '★', null, null, null, null, null, null];
+    expect(checkWin(board, '★')).toBe(false);
+    expect(checkWin(board, '🔵')).toBe(false);
+  });
+});
+
+describe('determineStatus with custom symbols', () => {
+  it('should return x-wins when X wins with star symbol', () => {
+    const board: CellValue[] = ['★', '★', '★', null, '🔵', '🔵', null, null, null];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '★' },
+      O: { name: 'Player O', symbol: '🔵' },
+    };
+    expect(determineStatus(board, 'X', customConfigs)).toBe('x-wins');
+  });
+
+  it('should return o-wins when O wins with emoji symbol', () => {
+    const board: CellValue[] = ['★', null, '★', '🔵', '🔵', '🔵', null, '★', null];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '★' },
+      O: { name: 'Player O', symbol: '🔵' },
+    };
+    expect(determineStatus(board, 'O', customConfigs)).toBe('o-wins');
+  });
+
+  it('should return draw when board is full with custom symbols', () => {
+    // Draw scenario with custom symbols: ● ■ ● / ● ■ ■ / ■ ● ●
+    const board: CellValue[] = ['●', '■', '●', '●', '■', '■', '■', '●', '●'];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '●' },
+      O: { name: 'Player O', symbol: '■' },
+    };
+    expect(determineStatus(board, 'X', customConfigs)).toBe('draw');
+  });
+
+  it('should return playing when game is ongoing with custom symbols', () => {
+    const board: CellValue[] = ['⭐', '🌙', null, null, null, null, null, null, null];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '⭐' },
+      O: { name: 'Player O', symbol: '🌙' },
+    };
+    expect(determineStatus(board, 'O', customConfigs)).toBe('playing');
+  });
+
+  it('should detect early draw with custom symbols', () => {
+    // Board: ◆ ▲ ◆ / ▲ ◆ ▲ / ▲ ◆ _
+    // All lines blocked except main diagonal which has all X, so will be early draw when last move is O
+    const board: CellValue[] = ['◆', '▲', '◆', '▲', '◆', '▲', '▲', '◆', null];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '◆' },
+      O: { name: 'Player O', symbol: '▲' },
+    };
+    expect(determineStatus(board, 'X', customConfigs)).toBe('draw');
+  });
+
+  it('should work with sun and moon emoji symbols', () => {
+    const board: CellValue[] = ['☀️', '☀️', '☀️', null, '🌙', '🌙', null, null, null];
+    const customConfigs: PlayerConfigs = {
+      X: { name: 'Player X', symbol: '☀️' },
+      O: { name: 'Player O', symbol: '🌙' },
+    };
+    expect(determineStatus(board, 'X', customConfigs)).toBe('x-wins');
+  });
+});

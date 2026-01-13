@@ -194,4 +194,79 @@ test.describe('Symbol Selection Feature', () => {
     await page.getByRole('button', { name: 'Cell 5' }).click();
     await expect(page.getByRole('button', { name: 'Cell 5: ☀️' })).toBeVisible();
   });
+
+  test('should handle draw game with custom symbols', async ({ page }) => {
+    const xSelector = page.getByLabel('Symbol for Player X');
+    const oSelector = page.getByLabel('Symbol for Player O');
+
+    // Select custom symbols
+    await xSelector.selectOption('◆');
+    await oSelector.selectOption('▲');
+
+    // Play a draw game: ◆ ▲ ◆ / ▲ ◆ ◆ / ▲ ◆ ▲
+    await page.getByRole('button', { name: 'Cell 1' }).click(); // ◆
+    await page.getByRole('button', { name: 'Cell 2' }).click(); // ▲
+    await page.getByRole('button', { name: 'Cell 3' }).click(); // ◆
+    await page.getByRole('button', { name: 'Cell 4' }).click(); // ▲
+    await page.getByRole('button', { name: 'Cell 5' }).click(); // ◆
+    await page.getByRole('button', { name: 'Cell 6' }).click(); // ▲
+    await page.getByRole('button', { name: 'Cell 8' }).click(); // ◆
+    await page.getByRole('button', { name: 'Cell 7' }).click(); // ▲
+    await page.getByRole('button', { name: 'Cell 9' }).click(); // ◆
+
+    // Check draw message
+    const status = page.locator('.status');
+    await expect(status).toContainText('Draw');
+  });
+
+  test('should detect early draw with custom symbols', async ({ page }) => {
+    const xSelector = page.getByLabel('Symbol for Player X');
+    const oSelector = page.getByLabel('Symbol for Player O');
+
+    // Select custom symbols
+    await xSelector.selectOption('●');
+    await oSelector.selectOption('■');
+
+    // Play moves that lead to early draw: ● ■ ● / ■ ● ■ / ■ ● _
+    await page.getByRole('button', { name: 'Cell 1' }).click(); // ●
+    await page.getByRole('button', { name: 'Cell 2' }).click(); // ■
+    await page.getByRole('button', { name: 'Cell 3' }).click(); // ●
+    await page.getByRole('button', { name: 'Cell 4' }).click(); // ■
+    await page.getByRole('button', { name: 'Cell 5' }).click(); // ●
+    await page.getByRole('button', { name: 'Cell 6' }).click(); // ■
+    await page.getByRole('button', { name: 'Cell 7' }).click(); // ■
+    await page.getByRole('button', { name: 'Cell 8' }).click(); // ●
+
+    // At this point all winning lines are blocked, should detect early draw
+    const status = page.locator('.status');
+    await expect(status).toContainText('Draw');
+  });
+
+  test('should show draw with emoji symbols', async ({ page }) => {
+    const xSelector = page.getByLabel('Symbol for Player X');
+    const oSelector = page.getByLabel('Symbol for Player O');
+
+    // Select emoji symbols
+    await xSelector.selectOption('☀️');
+    await oSelector.selectOption('🔵');
+
+    // Play a draw game
+    await page.getByRole('button', { name: 'Cell 1' }).click(); // ☀️
+    await page.getByRole('button', { name: 'Cell 2' }).click(); // 🔵
+    await page.getByRole('button', { name: 'Cell 3' }).click(); // ☀️
+    await page.getByRole('button', { name: 'Cell 5' }).click(); // 🔵
+    await page.getByRole('button', { name: 'Cell 4' }).click(); // ☀️
+    await page.getByRole('button', { name: 'Cell 6' }).click(); // 🔵
+    await page.getByRole('button', { name: 'Cell 8' }).click(); // ☀️
+    await page.getByRole('button', { name: 'Cell 7' }).click(); // 🔵
+    await page.getByRole('button', { name: 'Cell 9' }).click(); // ☀️
+
+    // Check draw message
+    const status = page.locator('.status');
+    await expect(status).toContainText('Draw');
+
+    // Verify all cells show correct symbols
+    await expect(page.getByRole('button', { name: 'Cell 1: ☀️' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cell 2: 🔵' })).toBeVisible();
+  });
 });
