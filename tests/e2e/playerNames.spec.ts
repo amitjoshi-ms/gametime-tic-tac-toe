@@ -302,8 +302,9 @@ test.describe('Player Names', () => {
         
         if (initialStatus?.includes('Turn')) {
           await cells.nth(4).click();
-          await page.waitForTimeout(3000);
-          
+          await expect
+            .poll(async () => await status.textContent())
+            .not.toBe(initialStatus);
           // Just verify the test completes without error
           // Custom name display is implementation-specific
         }
