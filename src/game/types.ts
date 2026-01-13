@@ -189,6 +189,22 @@ export interface DisconnectMessage {
 }
 
 /**
+ * Game reset notification (New Game clicked).
+ */
+export interface GameResetMessage {
+  type: 'game-reset';
+}
+
+/**
+ * Player info update notification (name/symbol changed).
+ */
+export interface PlayerUpdateMessage {
+  type: 'player-update';
+  name: string;
+  symbol: string;
+}
+
+/**
  * Union type for all messages exchanged over DataChannel.
  */
 export type GameMessage =
@@ -196,4 +212,6 @@ export type GameMessage =
   | MoveMessage
   | RematchRequestMessage
   | RematchResponseMessage
-  | DisconnectMessage;
+  | DisconnectMessage
+  | GameResetMessage
+  | PlayerUpdateMessage;

@@ -14,6 +14,7 @@ import {
   updateRemoteSession,
   clearRemoteSession,
   resetRemoteGame,
+  resetRemoteGameKeepSymbols,
 } from './game/state';
 import { DEFAULT_COMPUTER_NAME, savePlayerConfigs, loadPlayerConfigs } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
@@ -116,9 +117,10 @@ function handleCellClick(cellIndex: number): void {
     // Board interactivity is already handled in ui/board.ts via isBoardInteractive()
     // This is a defensive check - the click handler shouldn't be called for invalid moves
     const newState = makeMove(gameState, cellIndex);
-    if (newState !== gameState) {
-      // Send the move to the remote player
-      remoteController.sendMove(cellIndex);
+    if (newState !== gameState && gameState.remoteSession?.localPlayer) {
+      // Send the move to the remote player with current symbol
+      const localSymbol = gameState.remoteSession.localPlayer.symbol;
+      remoteController.sendMove(cellIndex, localSymbol);
       // Apply move locally
       gameState = newState;
       updateUI();
@@ -142,7 +144,7 @@ function handleCellClick(cellIndex: number): void {
 
 /**
  * Handles the "New Game" button click.
- * In remote mode, this triggers a rematch request instead.
+ * In remote mode, resets the game and syncs with remote player.
  */
 function handleNewGame(): void {
   // Cancel any pending computer move
@@ -151,11 +153,15 @@ function handleNewGame(): void {
     cancelPendingMove = null;
   }
 
-  // In remote mode when connected and game is over, trigger rematch
+  // In remote mode when connected, reset game and sync
   if (gameState.gameMode === 'remote' && gameState.remoteSession?.connectionStatus === 'connected') {
-    const isGameOver = gameState.status !== 'playing';
-    if (isGameOver && !isRematchPending) {
-      handleRequestRematch();
+    if (remoteController) {
+      // Send reset to remote player
+      remoteController.resetGame();
+      // Reset locally - preserve player configs and connection
+      gameState = resetRemoteGameKeepSymbols(gameState);
+      isRematchPending = false;
+      updateUI();
     }
     return;
   }
@@ -235,6 +241,17 @@ function handleConfigChange(configs: PlayerConfigs): void {
     ...gameState,
     playerConfigs: configs,
   };
+
+  // Sync with remote player if in remote mode
+  if (
+    gameState.gameMode === 'remote' &&
+    gameState.remoteSession?.connectionStatus === 'connected' &&
+    remoteController
+  ) {
+    const localSymbol = gameState.remoteSession.localPlayer.symbol;
+    const localConfig = configs[localSymbol];
+    remoteController.updatePlayer(localConfig.name, localSymbol);
+  }
 
   // Update UI to reflect new configs
   updateUI();
@@ -427,6 +444,8 @@ async function handleCreateSession(): Promise<void> {
       onError: handleRemoteError,
       onRematchRequested: handleRematchRequest,
       onRematchResponse: handleRematchResponse,
+      onGameReset: handleRemoteGameReset,
+      onPlayerUpdate: handleRemotePlayerUpdate,
     });
 
     // Store controller and cleanup
@@ -481,6 +500,8 @@ async function handleJoinSession(sessionCode: string): Promise<void> {
       onError: handleRemoteError,
       onRematchRequested: handleRematchRequest,
       onRematchResponse: handleRematchResponse,
+      onGameReset: handleRemoteGameReset,
+      onPlayerUpdate: handleRemotePlayerUpdate,
     });
 
     // Store controller and cleanup
@@ -642,6 +663,50 @@ function handleRemoteError(error: string): void {
 }
 
 /**
+ * Handles game reset from remote player (they clicked New Game).
+ */
+function handleRemoteGameReset(): void {
+  // Reset locally - preserve player configs and connection
+  gameState = resetRemoteGameKeepSymbols(gameState);
+  isRematchPending = false;
+  updateUI();
+}
+
+/**
+ * Handles player info update from remote player (name/symbol changed).
+ * @param name - New player name
+ * @param symbol - New player symbol (display character)
+ */
+function handleRemotePlayerUpdate(name: string, symbol: string): void {
+  if (!gameState.remoteSession?.remotePlayer) {
+    return;
+  }
+
+  const remotePlayerSymbol = gameState.remoteSession.remotePlayer.symbol;
+  gameState = {
+    ...gameState,
+    playerConfigs: {
+      ...gameState.playerConfigs,
+      [remotePlayerSymbol]: { name, symbol },
+    },
+    remoteSession: {
+      ...gameState.remoteSession,
+      remotePlayer: {
+        ...gameState.remoteSession.remotePlayer,
+        name,
+      },
+    },
+  };
+
+  // Update panel with new name
+  remotePanelState = {
+    ...remotePanelState,
+    remoteName: name,
+  };
+  updateUI();
+}
+
+/**
  * Handles receiving a rematch request from remote player.
  * Shows UI to accept/decline the rematch.
  * If we already sent a request (race condition), treat as mutual acceptance.
@@ -778,7 +843,11 @@ function updateUI(): void {
       playerNamesContainer.style.display = 'none';
     } else {
       playerNamesContainer.style.display = '';
-      updatePlayerNames(playerNamesContainer, gameState.playerConfigs);
+      // Pass remote mode options so inputs are properly disabled
+      const playerNamesOptions = isRemoteMode && gameState.remoteSession
+        ? { isRemoteMode: true, localPlayerSymbol: gameState.remoteSession.localPlayer.symbol }
+        : undefined;
+      updatePlayerNames(playerNamesContainer, gameState.playerConfigs, playerNamesOptions);
     }
   }
 
@@ -881,10 +950,18 @@ function initApp(): void {
   // Initialize remote panel (hidden by default)
   renderRemotePanel(remotePanelContainer, remotePanelState, remotePanelHandlers);
 
+  const playerNamesOptions = gameState.gameMode === 'remote' && gameState.remoteSession
+    ? {
+        isRemoteMode: true,
+        localPlayerSymbol: gameState.remoteSession.localPlayer.symbol,
+      }
+    : {};
+
   renderPlayerNames(
     playerNamesContainer,
     gameState.playerConfigs,
-    handleConfigChange
+    handleConfigChange,
+    playerNamesOptions
   );
   renderBoard(boardContainer, gameState, handleCellClick);
   renderStatus(statusContainer, gameState);

@@ -110,21 +110,6 @@ export function renderControls(
     opts.isDemoActive ? 'Stop demo mode' : 'Start demo mode'
   );
 
-  // In remote mode when game is over, change New Game to rematch button
-  const isGameOver = opts.gameStatus !== 'playing';
-  if (opts.gameMode === 'remote' && isGameOver) {
-    newGameBtn.textContent = opts.isRematchPending
-      ? 'Rematch Requested...'
-      : 'Request Rematch';
-    newGameBtn.disabled = opts.isRematchPending ?? false;
-    newGameBtn.setAttribute(
-      'aria-label',
-      opts.isRematchPending
-        ? 'Waiting for opponent to respond to rematch request'
-        : 'Request a rematch with opponent'
-    );
-  }
-
   container.appendChild(newGameBtn);
 
   // Hide demo button in remote mode
@@ -164,25 +149,12 @@ export function updateControls(
   }
 
   // In remote mode, update New Game button to act as rematch when game is over
-  const isGameOver = opts.gameStatus !== 'playing';
   const newGameBtn = container.querySelector<HTMLButtonElement>('.btn-new-game');
   if (newGameBtn) {
-    if (opts.gameMode === 'remote' && isGameOver) {
-      newGameBtn.textContent = opts.isRematchPending
-        ? 'Rematch Requested...'
-        : 'Request Rematch';
-      newGameBtn.disabled = opts.isRematchPending ?? false;
-      newGameBtn.setAttribute(
-        'aria-label',
-        opts.isRematchPending
-          ? 'Waiting for opponent to respond to rematch request'
-          : 'Request a rematch with opponent'
-      );
-    } else {
-      newGameBtn.textContent = 'New Game';
-      newGameBtn.disabled = false;
-      newGameBtn.setAttribute('aria-label', 'Start a new game');
-    }
+    // Always show "New Game" - remote mode uses it to reset game
+    newGameBtn.textContent = 'New Game';
+    newGameBtn.disabled = false;
+    newGameBtn.setAttribute('aria-label', 'Start a new game');
   }
 
   // Show/hide demo button based on mode

@@ -14,6 +14,8 @@ import type {
   RematchRequestMessage,
   RematchResponseMessage,
   DisconnectMessage,
+  GameResetMessage,
+  PlayerUpdateMessage,
 } from '../game/types';
 
 /** Current protocol version - increment on breaking changes */
@@ -127,6 +129,32 @@ function isDisconnectMessage(obj: unknown): obj is DisconnectMessage {
 }
 
 /**
+ * Type guard for GameResetMessage.
+ */
+function isGameResetMessage(obj: unknown): obj is GameResetMessage {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  const candidate = obj as Record<string, unknown>;
+  return candidate.type === 'game-reset';
+}
+
+/**
+ * Type guard for PlayerUpdateMessage.
+ */
+function isPlayerUpdateMessage(obj: unknown): obj is PlayerUpdateMessage {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+  const candidate = obj as Record<string, unknown>;
+  return (
+    candidate.type === 'player-update' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.symbol === 'string'
+  );
+}
+
+/**
  * Deserializes a received message.
  * Validates structure and returns typed message.
  *
@@ -150,6 +178,12 @@ export function deserializeMessage(data: string): GameMessage | null {
       return parsed;
     }
     if (isDisconnectMessage(parsed)) {
+      return parsed;
+    }
+    if (isGameResetMessage(parsed)) {
+      return parsed;
+    }
+    if (isPlayerUpdateMessage(parsed)) {
       return parsed;
     }
 
@@ -270,5 +304,34 @@ export function createDisconnectMessage(
   return {
     type: 'disconnect',
     reason,
+  };
+}
+
+/**
+ * Creates a game reset message.
+ *
+ * @returns Game reset message
+ */
+export function createGameResetMessage(): GameResetMessage {
+  return {
+    type: 'game-reset',
+  };
+}
+
+/**
+ * Creates a player update message.
+ *
+ * @param name - Updated player name
+ * @param symbol - Updated player symbol
+ * @returns Player update message
+ */
+export function createPlayerUpdateMessage(
+  name: string,
+  symbol: string
+): PlayerUpdateMessage {
+  return {
+    type: 'player-update',
+    name,
+    symbol,
   };
 }

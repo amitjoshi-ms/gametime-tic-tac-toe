@@ -133,7 +133,7 @@ describe('controls rendering', () => {
   });
 
   describe('remote mode behavior', () => {
-    it('should show "Request Rematch" instead of "New Game" when game is over in remote mode', () => {
+    it('should show "New Game" in remote mode when game is over', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       const options: ControlsOptions = {
@@ -146,11 +146,11 @@ describe('controls rendering', () => {
       renderControls(container, onNewGame, onDemoToggle, options);
 
       const button = container.querySelector('.btn-new-game');
-      expect(button?.textContent).toBe('Request Rematch');
-      expect(button?.getAttribute('aria-label')).toBe('Request a rematch with opponent');
+      expect(button?.textContent).toBe('New Game');
+      expect(button?.getAttribute('aria-label')).toBe('Start a new game');
     });
 
-    it('should show "Rematch Requested..." when rematch is pending', () => {
+    it('should keep "New Game" when isRematchPending is true (pending state ignored)', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       const options: ControlsOptions = {
@@ -162,9 +162,12 @@ describe('controls rendering', () => {
 
       renderControls(container, onNewGame, onDemoToggle, options);
 
-      const button = container.querySelector('.btn-new-game') as HTMLButtonElement;
-      expect(button?.textContent).toBe('Rematch Requested...');
-      expect(button?.disabled).toBe(true);
+      const button = container.querySelector('.btn-new-game');
+      // Button should still show "New Game" (rematch pending state is no longer used)
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).textContent).toBe('New Game');
+      expect((button as HTMLButtonElement).disabled).toBe(false);
     });
 
     it('should hide demo button in remote mode', () => {
@@ -212,7 +215,7 @@ describe('controls rendering', () => {
       expect(button?.textContent).toBe('New Game');
     });
 
-    it('should call onNewGame handler when Request Rematch is clicked', () => {
+    it('should call onNewGame handler when New Game is clicked in remote mode', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       const options: ControlsOptions = {
@@ -232,7 +235,7 @@ describe('controls rendering', () => {
   });
 
   describe('updateControls in remote mode', () => {
-    it('should update button to "Request Rematch" when game ends', () => {
+    it('should keep "New Game" button when game ends in remote mode', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       
@@ -253,10 +256,11 @@ describe('controls rendering', () => {
         isRematchPending: false,
       });
 
-      expect(container.querySelector('.btn-new-game')?.textContent).toBe('Request Rematch');
+      // Button should still be "New Game" (no rematch button anymore)
+      expect(container.querySelector('.btn-new-game')?.textContent).toBe('New Game');
     });
 
-    it('should update button to disabled when rematch pending', () => {
+    it('should keep button enabled even when isRematchPending is true', () => {
       const onNewGame = vi.fn();
       const onDemoToggle = vi.fn();
       
@@ -267,8 +271,10 @@ describe('controls rendering', () => {
         isRematchPending: false,
       });
 
-      const button = container.querySelector('.btn-new-game') as HTMLButtonElement;
-      expect(button?.disabled).toBe(false);
+      const button = container.querySelector('.btn-new-game');
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).disabled).toBe(false);
 
       updateControls(container, {
         isDemoActive: false,
@@ -277,8 +283,9 @@ describe('controls rendering', () => {
         isRematchPending: true,
       });
 
-      expect(button?.disabled).toBe(true);
-      expect(button?.textContent).toBe('Rematch Requested...');
+      // Button should remain enabled (pending state no longer used)
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+      expect((button as HTMLButtonElement).textContent).toBe('New Game');
     });
 
     it('should restore "New Game" when game resets after rematch', () => {
@@ -301,9 +308,11 @@ describe('controls rendering', () => {
         isRematchPending: false,
       });
 
-      const button = container.querySelector('.btn-new-game') as HTMLButtonElement;
-      expect(button?.textContent).toBe('New Game');
-      expect(button?.disabled).toBe(false);
+      const button = container.querySelector('.btn-new-game');
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).textContent).toBe('New Game');
+      expect((button as HTMLButtonElement).disabled).toBe(false);
     });
 
     it('should hide demo button in remote mode via updateControls', () => {
@@ -317,9 +326,10 @@ describe('controls rendering', () => {
         gameStatus: 'playing',
       });
 
-      const demoBtn = container.querySelector('.btn-demo') as HTMLButtonElement;
+      const demoBtn = container.querySelector('.btn-demo');
       expect(demoBtn).not.toBeNull();
-      expect(demoBtn?.style.display).not.toBe('none');
+      expect(demoBtn).toBeInstanceOf(HTMLButtonElement);
+      expect((demoBtn as HTMLButtonElement).style.display).not.toBe('none');
 
       // Switch to remote mode
       updateControls(container, {
@@ -328,6 +338,6 @@ describe('controls rendering', () => {
         gameStatus: 'playing',
       });
 
-      expect(demoBtn?.style.display).toBe('none');
+      expect((demoBtn as HTMLButtonElement).style.display).toBe('none');
     });
   });});

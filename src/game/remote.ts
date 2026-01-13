@@ -20,6 +20,8 @@ import {
   createRematchRequestMessage,
   createRematchResponseMessage,
   createDisconnectMessage,
+  createGameResetMessage,
+  createPlayerUpdateMessage,
   PROTOCOL_VERSION,
 } from '../network/protocol';
 import {
@@ -35,7 +37,7 @@ import {
  */
 export interface RemoteSessionController {
   /** Send a move to remote peer */
-  sendMove(cellIndex: number): void;
+  sendMove(cellIndex: number, player: Player): void;
   /** Request a rematch */
   requestRematch(): void;
   /** Accept/decline rematch request */
@@ -44,6 +46,10 @@ export interface RemoteSessionController {
   leave(): void;
   /** Get current move count for validation */
   getMoveCount(): number;
+  /** Reset the game (New Game clicked) */
+  resetGame(): void;
+  /** Update local player info (name/symbol changed) */
+  updatePlayer(name: string, symbol: string): void;
 }
 
 /**
@@ -62,6 +68,10 @@ export interface RemoteSessionCallbacks {
   onDisconnected: (reason: string) => void;
   /** Connection error */
   onError: (message: string) => void;
+  /** Game reset by remote player */
+  onGameReset: () => void;
+  /** Remote player updated their info */
+  onPlayerUpdate: (name: string, symbol: string) => void;
 }
 
 /** Current move number for validation */
@@ -156,6 +166,16 @@ function handleMessage(
         message.reason === 'left' ? 'Opponent left the game' : 'Connection error'
       );
       break;
+
+    case 'game-reset':
+      // Reset move counter for new game
+      resetMoveCount();
+      callbacks.onGameReset();
+      break;
+
+    case 'player-update':
+      callbacks.onPlayerUpdate(message.name, message.symbol);
+      break;
   }
 }
 
@@ -198,11 +218,10 @@ export async function createRemoteSession(
   const sessionCode = encodeSessionDescription(offer, sessionId);
 
   const controller: RemoteSessionController = {
-    sendMove(cellIndex: number) {
+    sendMove(cellIndex: number, player: Player) {
       if (hostConnection) {
         moveCount++;
-        const localSymbol: Player = 'X'; // Host is always X
-        const message = createMoveMessage(cellIndex, localSymbol, moveCount);
+        const message = createMoveMessage(cellIndex, player, moveCount);
         hostConnection.send(message);
         expectedPlayer = expectedPlayer === 'X' ? 'O' : 'X';
       }
@@ -229,6 +248,17 @@ export async function createRemoteSession(
     },
     getMoveCount(): number {
       return moveCount;
+    },
+    resetGame(): void {
+      if (hostConnection) {
+        resetMoveCount();
+        hostConnection.send(createGameResetMessage());
+      }
+    },
+    updatePlayer(name: string, symbol: string): void {
+      if (hostConnection) {
+        hostConnection.send(createPlayerUpdateMessage(name, symbol));
+      }
     },
   };
 
@@ -305,11 +335,10 @@ export async function joinRemoteSession(
   const answerCode = encodeSessionDescription(answer, decoded.id);
 
   const controller: RemoteSessionController = {
-    sendMove(cellIndex: number) {
+    sendMove(cellIndex: number, player: Player) {
       if (guestConnection) {
         moveCount++;
-        const localSymbol: Player = 'O'; // Guest is always O
-        const message = createMoveMessage(cellIndex, localSymbol, moveCount);
+        const message = createMoveMessage(cellIndex, player, moveCount);
         guestConnection.send(message);
         expectedPlayer = expectedPlayer === 'X' ? 'O' : 'X';
       }
@@ -336,6 +365,17 @@ export async function joinRemoteSession(
     },
     getMoveCount() {
       return moveCount;
+    },
+    resetGame(): void {
+      if (guestConnection) {
+        resetMoveCount();
+        guestConnection.send(createGameResetMessage());
+      }
+    },
+    updatePlayer(name: string, symbol: string): void {
+      if (guestConnection) {
+        guestConnection.send(createPlayerUpdateMessage(name, symbol));
+      }
     },
   };
 

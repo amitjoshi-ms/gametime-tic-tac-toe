@@ -89,23 +89,45 @@ function escapeHtml(str: string): string {
 }
 
 /**
+ * Options for rendering player names.
+ */
+export interface PlayerNamesOptions {
+  /** Whether in remote mode */
+  isRemoteMode?: boolean;
+  /** Local player symbol in remote mode (X or O) */
+  localPlayerSymbol?: 'X' | 'O';
+}
+
+/** Current options */
+let currentOptions: PlayerNamesOptions = {};
+
+/**
  * Renders the player configuration editor UI (names and symbols).
+ * In remote mode, only the local player's fields are editable.
  *
  * @param container - DOM element to render into
  * @param playerConfigs - Current player configurations
  * @param onChange - Handler for config changes
+ * @param options - Additional rendering options
  */
 export function renderPlayerNames(
   container: HTMLElement,
   playerConfigs: PlayerConfigs,
-  onChange: PlayerConfigChangeHandler
+  onChange: PlayerConfigChangeHandler,
+  options: PlayerNamesOptions = {}
 ): void {
   currentChangeHandler = onChange;
   currentConfigs = playerConfigs;
+  currentOptions = options;
+
+  const isRemote = options.isRemoteMode ?? false;
+  const localSymbol = options.localPlayerSymbol;
+  const xDisabled = isRemote && localSymbol !== 'X';
+  const oDisabled = isRemote && localSymbol !== 'O';
 
   container.innerHTML = `
     <div class="player-configs">
-      <div class="player-config-field">
+      <div class="player-config-field${xDisabled ? ' player-config-field--disabled' : ''}">
         <label for="player-x-name" class="player-name-label player-name-label--x">
           <span class="player-mark">${escapeHtml(playerConfigs.X.symbol)}</span>
         </label>
@@ -118,10 +140,11 @@ export function renderPlayerNames(
           placeholder="${DEFAULT_X_NAME}"
           maxlength="20"
           aria-label="Player X name"
+          ${xDisabled ? 'disabled' : ''}
         />
         <div id="symbol-selector-x-container" class="symbol-selector-container"></div>
       </div>
-      <div class="player-config-field">
+      <div class="player-config-field${oDisabled ? ' player-config-field--disabled' : ''}">
         <label for="player-o-name" class="player-name-label player-name-label--o">
           <span class="player-mark">${escapeHtml(playerConfigs.O.symbol)}</span>
         </label>
@@ -134,26 +157,28 @@ export function renderPlayerNames(
           placeholder="${DEFAULT_O_NAME}"
           maxlength="20"
           aria-label="Player O name"
+          ${oDisabled ? 'disabled' : ''}
         />
         <div id="symbol-selector-o-container" class="symbol-selector-container"></div>
       </div>
     </div>
   `;
 
-  // Set up event listeners for name inputs
-  const inputs = container.querySelectorAll('.player-name-input');
+  // Set up event listeners for name inputs (only enabled ones)
+  const inputs = container.querySelectorAll('.player-name-input:not([disabled])');
   inputs.forEach((input) => {
     input.addEventListener('blur', handleNameBlur);
   });
 
-  // Render symbol selectors
+  // Render symbol selectors (only for local player in remote mode)
   const symbolContainer = document.createElement('div');
   symbolContainer.className = 'symbol-selectors-wrapper';
   renderSymbolSelectors(
     symbolContainer,
     playerConfigs.X.symbol,
     playerConfigs.O.symbol,
-    handleSymbolChange
+    handleSymbolChange,
+    isRemote ? localSymbol : undefined
   );
   container.appendChild(symbolContainer);
 }
@@ -163,21 +188,47 @@ export function renderPlayerNames(
  *
  * @param container - DOM element containing the player configs
  * @param playerConfigs - Current player configurations
+ * @param options - Additional rendering options (uses stored options if not provided)
  */
 export function updatePlayerNames(
   container: HTMLElement,
-  playerConfigs: PlayerConfigs
+  playerConfigs: PlayerConfigs,
+  options?: PlayerNamesOptions
 ): void {
   currentConfigs = playerConfigs;
+  if (options) {
+    currentOptions = options;
+  }
+
+  const isRemote = currentOptions.isRemoteMode ?? false;
+  const localSymbol = currentOptions.localPlayerSymbol;
+  const xDisabled = isRemote && localSymbol !== 'X';
+  const oDisabled = isRemote && localSymbol !== 'O';
 
   const xInput = container.querySelector('#player-x-name');
   const oInput = container.querySelector('#player-o-name');
 
-  if (xInput instanceof HTMLInputElement && xInput.value !== playerConfigs.X.name) {
-    xInput.value = playerConfigs.X.name;
+  if (xInput instanceof HTMLInputElement) {
+    if (xInput.value !== playerConfigs.X.name) {
+      xInput.value = playerConfigs.X.name;
+    }
+    xInput.disabled = xDisabled;
   }
-  if (oInput instanceof HTMLInputElement && oInput.value !== playerConfigs.O.name) {
-    oInput.value = playerConfigs.O.name;
+  if (oInput instanceof HTMLInputElement) {
+    if (oInput.value !== playerConfigs.O.name) {
+      oInput.value = playerConfigs.O.name;
+    }
+    oInput.disabled = oDisabled;
+  }
+
+  // Update field disabled states
+  const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+  const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+  if (xField) {
+    xField.classList.toggle('player-config-field--disabled', xDisabled);
+  }
+  if (oField) {
+    oField.classList.toggle('player-config-field--disabled', oDisabled);
   }
 
   // Update player marks

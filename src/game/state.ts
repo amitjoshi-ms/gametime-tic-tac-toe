@@ -293,6 +293,26 @@ export function clearRemoteSession(state: GameState): GameState {
 }
 
 /**
+ * Resets the remote game board while keeping current symbols.
+ * Used for "New Game" button during gameplay.
+ *
+ * @param state - Current state
+ * @returns New state with reset board, same symbols
+ */
+export function resetRemoteGameKeepSymbols(state: GameState): GameState {
+  if (!state.remoteSession) {
+    return state;
+  }
+
+  return {
+    ...state,
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: 'X',
+    status: 'playing',
+  };
+}
+
+/**
  * Resets the remote game board for a rematch.
  * Swaps symbols between players for the new game.
  *
