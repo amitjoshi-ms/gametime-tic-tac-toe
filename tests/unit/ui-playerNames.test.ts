@@ -15,6 +15,15 @@ import {
 } from '../../src/ui/playerNames';
 import type { PlayerConfigs } from '../../src/game/types';
 
+/**
+ * Helper to get the parent .player-config-field element for a given input.
+ * Works around jsdom not supporting :has() selector.
+ */
+function getPlayerField(container: HTMLElement, inputId: string): Element | null {
+  const input = container.querySelector(`#${inputId}`);
+  return input?.closest('.player-config-field') ?? null;
+}
+
 describe('renderPlayerNames', () => {
   let container: HTMLElement;
   let mockOnChange: PlayerConfigChangeHandler;
@@ -76,8 +85,8 @@ describe('renderPlayerNames', () => {
         localPlayerSymbol: 'O',
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(true);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
@@ -89,8 +98,8 @@ describe('renderPlayerNames', () => {
         localPlayerSymbol: 'X',
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
@@ -102,8 +111,8 @@ describe('renderPlayerNames', () => {
         localPlayerSymbol: 'X',
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
@@ -114,8 +123,8 @@ describe('renderPlayerNames', () => {
         isRemoteMode: false,
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
@@ -124,8 +133,8 @@ describe('renderPlayerNames', () => {
     it('should show both fields when options not provided', () => {
       renderPlayerNames(container, defaultConfigs, mockOnChange);
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
@@ -188,8 +197,8 @@ describe('updatePlayerNames', () => {
         localPlayerSymbol: 'X',
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(false);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
@@ -205,8 +214,8 @@ describe('updatePlayerNames', () => {
         localPlayerSymbol: 'O',
       });
 
-      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const xField = getPlayerField(container, 'player-x-name');
+      const oField = getPlayerField(container, 'player-o-name');
 
       expect(xField?.classList.contains('player-config-field--hidden')).toBe(true);
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(false);
@@ -226,7 +235,7 @@ describe('updatePlayerNames', () => {
       };
       updatePlayerNames(container, newConfigs);
 
-      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+      const oField = getPlayerField(container, 'player-o-name');
       // Should still be hidden from stored options
       expect(oField?.classList.contains('player-config-field--hidden')).toBe(true);
     });
