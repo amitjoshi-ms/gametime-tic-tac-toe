@@ -122,12 +122,12 @@ export function renderPlayerNames(
 
   const isRemote = options.isRemoteMode ?? false;
   const localSymbol = options.localPlayerSymbol;
-  const xDisabled = isRemote && localSymbol !== 'X';
-  const oDisabled = isRemote && localSymbol !== 'O';
+  const xHidden = isRemote && localSymbol !== 'X';
+  const oHidden = isRemote && localSymbol !== 'O';
 
   container.innerHTML = `
     <div class="player-configs">
-      <div class="player-config-field${xDisabled ? ' player-config-field--disabled' : ''}">
+      <div class="player-config-field${xHidden ? ' player-config-field--hidden' : ''}">
         <label for="player-x-name" class="player-name-label player-name-label--x">
           <span class="player-mark">${escapeHtml(playerConfigs.X.symbol)}</span>
         </label>
@@ -140,11 +140,10 @@ export function renderPlayerNames(
           placeholder="${DEFAULT_X_NAME}"
           maxlength="20"
           aria-label="Player X name"
-          ${xDisabled ? 'disabled' : ''}
         />
         <div id="symbol-selector-x-container" class="symbol-selector-container"></div>
       </div>
-      <div class="player-config-field${oDisabled ? ' player-config-field--disabled' : ''}">
+      <div class="player-config-field${oHidden ? ' player-config-field--hidden' : ''}">
         <label for="player-o-name" class="player-name-label player-name-label--o">
           <span class="player-mark">${escapeHtml(playerConfigs.O.symbol)}</span>
         </label>
@@ -157,7 +156,6 @@ export function renderPlayerNames(
           placeholder="${DEFAULT_O_NAME}"
           maxlength="20"
           aria-label="Player O name"
-          ${oDisabled ? 'disabled' : ''}
         />
         <div id="symbol-selector-o-container" class="symbol-selector-container"></div>
       </div>
@@ -202,8 +200,8 @@ export function updatePlayerNames(
 
   const isRemote = currentOptions.isRemoteMode ?? false;
   const localSymbol = currentOptions.localPlayerSymbol;
-  const xDisabled = isRemote && localSymbol !== 'X';
-  const oDisabled = isRemote && localSymbol !== 'O';
+  const xHidden = isRemote && localSymbol !== 'X';
+  const oHidden = isRemote && localSymbol !== 'O';
 
   const xInput = container.querySelector('#player-x-name');
   const oInput = container.querySelector('#player-o-name');
@@ -212,23 +210,21 @@ export function updatePlayerNames(
     if (xInput.value !== playerConfigs.X.name) {
       xInput.value = playerConfigs.X.name;
     }
-    xInput.disabled = xDisabled;
   }
   if (oInput instanceof HTMLInputElement) {
     if (oInput.value !== playerConfigs.O.name) {
       oInput.value = playerConfigs.O.name;
     }
-    oInput.disabled = oDisabled;
   }
 
-  // Update field disabled states
-  const xField = container.querySelector('.player-config-field:has(#player-x-name)');
-  const oField = container.querySelector('.player-config-field:has(#player-o-name)');
-  if (xField) {
-    xField.classList.toggle('player-config-field--disabled', xDisabled);
+  // Update field hidden states for remote mode
+  const xField = xInput?.parentElement;
+  const oField = oInput?.parentElement;
+  if (xField?.classList.contains('player-config-field')) {
+    xField.classList.toggle('player-config-field--hidden', xHidden);
   }
-  if (oField) {
-    oField.classList.toggle('player-config-field--disabled', oDisabled);
+  if (oField?.classList.contains('player-config-field')) {
+    oField.classList.toggle('player-config-field--hidden', oHidden);
   }
 
   // Update player marks
