@@ -14,6 +14,8 @@ import {
   createRematchRequestMessage,
   createRematchResponseMessage,
   createDisconnectMessage,
+  createGameResetMessage,
+  createPlayerUpdateMessage,
   PROTOCOL_VERSION,
   SESSION_ID_CHARS,
   SESSION_ID_LENGTH,
@@ -294,5 +296,49 @@ describe('createMoveMessage', () => {
     expect(message.cellIndex).toBe(3);
     expect(message.player).toBe('O');
     expect(message.moveNumber).toBe(4);
+  });
+});
+
+describe('createGameResetMessage', () => {
+  it('should create valid game reset message', () => {
+    const message = createGameResetMessage();
+    expect(message.type).toBe('game-reset');
+  });
+
+  it('should roundtrip through serialization', () => {
+    const original = createGameResetMessage();
+    const serialized = serializeMessage(original);
+    const deserialized = deserializeMessage(serialized);
+
+    expect(deserialized).toEqual(original);
+    expect(deserialized?.type).toBe('game-reset');
+  });
+});
+
+describe('createPlayerUpdateMessage', () => {
+  it('should create valid player update message', () => {
+    const message = createPlayerUpdateMessage('Alice', '🎮');
+    expect(message.type).toBe('player-update');
+    expect(message.name).toBe('Alice');
+    expect(message.symbol).toBe('🎮');
+  });
+
+  it('should roundtrip through serialization', () => {
+    const original = createPlayerUpdateMessage('Bob', '⭐');
+    const serialized = serializeMessage(original);
+    const deserialized = deserializeMessage(serialized);
+
+    expect(deserialized).toEqual(original);
+    expect(deserialized?.type).toBe('player-update');
+    if (deserialized?.type === 'player-update') {
+      expect(deserialized.name).toBe('Bob');
+      expect(deserialized.symbol).toBe('⭐');
+    }
+  });
+
+  it('should handle empty name', () => {
+    const message = createPlayerUpdateMessage('', 'X');
+    expect(message.name).toBe('');
+    expect(message.symbol).toBe('X');
   });
 });

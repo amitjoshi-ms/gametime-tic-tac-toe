@@ -1,0 +1,234 @@
+/**
+ * Unit tests for player names UI component.
+ * Tests DOM creation, input handling, and remote mode options.
+ *
+ * @vitest-environment jsdom
+ */
+
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
+
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  renderPlayerNames,
+  updatePlayerNames,
+  type PlayerConfigChangeHandler,
+} from '../../src/ui/playerNames';
+import type { PlayerConfigs } from '../../src/game/types';
+
+describe('renderPlayerNames', () => {
+  let container: HTMLElement;
+  let mockOnChange: PlayerConfigChangeHandler;
+  let defaultConfigs: PlayerConfigs;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    mockOnChange = vi.fn();
+    defaultConfigs = {
+      X: { name: 'Player X', symbol: 'X' },
+      O: { name: 'Player O', symbol: 'O' },
+    };
+  });
+
+  it('should create input fields for both players', () => {
+    renderPlayerNames(container, defaultConfigs, mockOnChange);
+
+    const xInput = container.querySelector('#player-x-name');
+    const oInput = container.querySelector('#player-o-name');
+
+    expect(xInput).toBeTruthy();
+    expect(oInput).toBeTruthy();
+    expect(xInput).toBeInstanceOf(HTMLInputElement);
+    expect(oInput).toBeInstanceOf(HTMLInputElement);
+  });
+
+  it('should set correct values from playerConfigs', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    renderPlayerNames(container, configs, mockOnChange);
+
+    const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+    const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+    expect(xInput.value).toBe('Alice');
+    expect(oInput.value).toBe('Bob');
+  });
+
+  it('should display player marks from symbols', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: '★' },
+      O: { name: 'Bob', symbol: '🔵' },
+    };
+    renderPlayerNames(container, configs, mockOnChange);
+
+    const xMark = container.querySelector('.player-name-label--x .player-mark');
+    const oMark = container.querySelector('.player-name-label--o .player-mark');
+
+    expect(xMark?.textContent).toBe('★');
+    expect(oMark?.textContent).toBe('🔵');
+  });
+
+  describe('remote mode options', () => {
+    it('should disable X input when local player is O', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'O',
+      });
+
+      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+      expect(xInput.disabled).toBe(true);
+      expect(oInput.disabled).toBe(false);
+    });
+
+    it('should disable O input when local player is X', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'X',
+      });
+
+      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+      expect(xInput.disabled).toBe(false);
+      expect(oInput.disabled).toBe(true);
+    });
+
+    it('should add disabled class to field when input is disabled', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'X',
+      });
+
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+
+      expect(xField?.classList.contains('player-config-field--disabled')).toBe(false);
+      expect(oField?.classList.contains('player-config-field--disabled')).toBe(true);
+    });
+
+    it('should enable both inputs when not in remote mode', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: false,
+      });
+
+      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+      expect(xInput.disabled).toBe(false);
+      expect(oInput.disabled).toBe(false);
+    });
+
+    it('should enable both inputs when options not provided', () => {
+      renderPlayerNames(container, defaultConfigs, mockOnChange);
+
+      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+      expect(xInput.disabled).toBe(false);
+      expect(oInput.disabled).toBe(false);
+    });
+  });
+});
+
+describe('updatePlayerNames', () => {
+  let container: HTMLElement;
+  let mockOnChange: PlayerConfigChangeHandler;
+  let defaultConfigs: PlayerConfigs;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    mockOnChange = vi.fn();
+    defaultConfigs = {
+      X: { name: 'Player X', symbol: 'X' },
+      O: { name: 'Player O', symbol: 'O' },
+    };
+    // Initial render
+    renderPlayerNames(container, defaultConfigs, mockOnChange);
+  });
+
+  it('should update input values', () => {
+    const newConfigs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    updatePlayerNames(container, newConfigs);
+
+    const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+    const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+    expect(xInput.value).toBe('Alice');
+    expect(oInput.value).toBe('Bob');
+  });
+
+  it('should update player marks', () => {
+    const newConfigs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: '★' },
+      O: { name: 'Bob', symbol: '🔵' },
+    };
+    updatePlayerNames(container, newConfigs);
+
+    const xMark = container.querySelector('.player-name-label--x .player-mark');
+    const oMark = container.querySelector('.player-name-label--o .player-mark');
+
+    expect(xMark?.textContent).toBe('★');
+    expect(oMark?.textContent).toBe('🔵');
+  });
+
+  describe('with remote mode options', () => {
+    it('should disable remote player input on update', () => {
+      // Start in non-remote mode
+      renderPlayerNames(container, defaultConfigs, mockOnChange);
+
+      // Update with remote mode options
+      updatePlayerNames(container, defaultConfigs, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'X',
+      });
+
+      const xInput = container.querySelector('#player-x-name') as HTMLInputElement;
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+
+      expect(xInput.disabled).toBe(false);
+      expect(oInput.disabled).toBe(true);
+    });
+
+    it('should update disabled class on fields', () => {
+      // Start in non-remote mode
+      renderPlayerNames(container, defaultConfigs, mockOnChange);
+
+      // Update with remote mode options
+      updatePlayerNames(container, defaultConfigs, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'O',
+      });
+
+      const xField = container.querySelector('.player-config-field:has(#player-x-name)');
+      const oField = container.querySelector('.player-config-field:has(#player-o-name)');
+
+      expect(xField?.classList.contains('player-config-field--disabled')).toBe(true);
+      expect(oField?.classList.contains('player-config-field--disabled')).toBe(false);
+    });
+
+    it('should use stored options if not provided on update', () => {
+      // Render with remote mode options
+      renderPlayerNames(container, defaultConfigs, mockOnChange, {
+        isRemoteMode: true,
+        localPlayerSymbol: 'X',
+      });
+
+      // Update without options - should preserve remote mode
+      const newConfigs: PlayerConfigs = {
+        X: { name: 'Alice', symbol: 'X' },
+        O: { name: 'Bob', symbol: 'O' },
+      };
+      updatePlayerNames(container, newConfigs);
+
+      const oInput = container.querySelector('#player-o-name') as HTMLInputElement;
+      // Should still be disabled from stored options
+      expect(oInput.disabled).toBe(true);
+    });
+  });
+});
