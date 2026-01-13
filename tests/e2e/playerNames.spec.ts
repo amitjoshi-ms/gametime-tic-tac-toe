@@ -205,8 +205,8 @@ test.describe('Player Names', () => {
         await newGameButton.click();
         // Input change handlers are synchronous
 
-        // Check if name persisted
-        const playerXInputAfterNew = page.locator('input[value="Alice"]').first();
+        // Check if name persisted - use same locator strategy as before
+        const playerXInputAfterNew = page.locator('input[placeholder*="Player X" i], input[value="Player X"]').first();
         const value = await playerXInputAfterNew.inputValue();
         expect(value).toBe('Alice');
       }
