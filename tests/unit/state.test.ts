@@ -12,6 +12,7 @@ import {
   setComputerThinking,
   isComputerTurn,
   resetRemoteGameKeepSymbols,
+  createRemoteGameState,
 } from '../../src/game/state';
 import type { GameState, RemoteSession } from '../../src/game/types';
 
@@ -464,5 +465,68 @@ describe('resetRemoteGameKeepSymbols', () => {
 
     expect(newState).not.toBe(state);
     expect(newState.board).not.toBe(state.board);
+  });
+});
+
+describe('createRemoteGameState', () => {
+  it('should set local player as X when host', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.localPlayer.symbol).toBe('X');
+    expect(state.remoteSession?.localPlayer.name).toBe('Alice');
+    expect(state.remoteSession?.localPlayer.isLocal).toBe(true);
+  });
+
+  it('should set local player as O when not host', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.remoteSession?.localPlayer.symbol).toBe('O');
+    expect(state.remoteSession?.localPlayer.name).toBe('Bob');
+    expect(state.remoteSession?.localPlayer.isLocal).toBe(true);
+  });
+
+  it('should set isHost to true when host creates session', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.isHost).toBe(true);
+  });
+
+  it('should set isHost to false when guest joins session', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.remoteSession?.isHost).toBe(false);
+  });
+
+  it('should set game mode to remote', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.gameMode).toBe('remote');
+  });
+
+  it('should set X name from local player when host', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.playerConfigs.X.name).toBe('Alice');
+    expect(state.playerConfigs.O.name).toBe('Opponent');
+  });
+
+  it('should set O name from local player when guest', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.playerConfigs.X.name).toBe('Opponent');
+    expect(state.playerConfigs.O.name).toBe('Bob');
+  });
+
+  it('should initialize with null remote player', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.remotePlayer).toBeNull();
+  });
+
+  it('should start with idle connection status', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.connectionStatus).toBe('idle');
+  });
+
+  it('should start with empty board', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.board.every((cell) => cell === null)).toBe(true);
+  });
+
+  it('should start with X as current player', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.currentPlayer).toBe('X');
   });
 });
