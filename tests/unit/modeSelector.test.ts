@@ -37,16 +37,16 @@ describe('modeSelector rendering', () => {
       expect(legend?.textContent).toBe('Play Against');
     });
 
-    it('should create two radio button options', () => {
+    it('should create three radio button options', () => {
       const onChange = vi.fn();
 
       renderModeSelector(container, 'human', onChange);
 
       const inputs = container.querySelectorAll('input[type="radio"]');
-      expect(inputs).toHaveLength(2);
+      expect(inputs).toHaveLength(3);
     });
 
-    it('should label options as Human and Computer', () => {
+    it('should label options as Human, Computer, and Remote', () => {
       const onChange = vi.fn();
 
       renderModeSelector(container, 'human', onChange);
@@ -54,6 +54,7 @@ describe('modeSelector rendering', () => {
       const labels = container.querySelectorAll('.mode-selector__label');
       expect(labels[0]?.textContent).toBe('Human');
       expect(labels[1]?.textContent).toBe('Computer');
+      expect(labels[2]?.textContent).toBe('Remote');
     });
 
     it('should set human as checked when currentMode is human', () => {

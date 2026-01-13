@@ -14,7 +14,7 @@ test.describe('Game Mode Selection and Gameplay', () => {
   });
 
   test.describe('Mode Selector UI', () => {
-    test('should display mode selector with Human and Computer options', async ({ page }) => {
+    test('should display mode selector with Human, Computer, and Remote options', async ({ page }) => {
       const modeSelector = page.locator('.mode-selector');
       await expect(modeSelector).toBeVisible();
 
@@ -22,9 +22,10 @@ test.describe('Game Mode Selection and Gameplay', () => {
       await expect(legend).toContainText('Play Against');
 
       const options = page.locator('.mode-selector__option');
-      await expect(options).toHaveCount(2);
+      await expect(options).toHaveCount(3);
       await expect(options.nth(0)).toContainText('Human');
       await expect(options.nth(1)).toContainText('Computer');
+      await expect(options.nth(2)).toContainText('Remote');
     });
 
     test('should have Human mode selected by default', async ({ page }) => {
