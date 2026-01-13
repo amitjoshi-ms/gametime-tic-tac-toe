@@ -644,8 +644,25 @@ function handleRemoteError(error: string): void {
 /**
  * Handles receiving a rematch request from remote player.
  * Shows UI to accept/decline the rematch.
+ * If we already sent a request (race condition), treat as mutual acceptance.
  */
 function handleRematchRequest(): void {
+  // Race condition: both players clicked rematch at the same time
+  // Treat as mutual acceptance - both wanted a rematch
+  if (isRematchPending) {
+    isRematchPending = false;
+    // Send acceptance back (they'll get our request, we auto-accept theirs)
+    remoteController?.respondToRematch(true);
+    // Reset the game with swapped symbols
+    gameState = resetRemoteGame(gameState);
+    remotePanelState = {
+      ...remotePanelState,
+      phase: 'connected',
+    };
+    updateUI();
+    return;
+  }
+
   remotePanelState = {
     ...remotePanelState,
     phase: 'rematch-request',
