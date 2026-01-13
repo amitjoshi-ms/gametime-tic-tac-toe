@@ -312,6 +312,7 @@ test.describe('Edge Cases and Error Handling', () => {
   test.describe('Invalid States', () => {
     test('should handle clicking after game is won', async ({ page }) => {
       const cells = page.locator('.cell');
+      const status = page.locator('.status');
       
       // Quick X win
       await cells.nth(0).click();
@@ -320,17 +321,21 @@ test.describe('Edge Cases and Error Handling', () => {
       await cells.nth(4).click();
       await cells.nth(2).click();
       
-      // Try to make more moves
-      await cells.nth(5).click();
-      await cells.nth(6).click();
+      // Wait for game to end
+      await expect(status).toContainText('wins', { timeout: 5000 });
       
-      // Cells should remain empty (disabled)
+      // Verify empty cells are disabled
+      await expect(cells.nth(5)).toBeDisabled();
+      await expect(cells.nth(6)).toBeDisabled();
+      
+      // Cells should remain empty
       await expect(cells.nth(5)).toHaveText('');
       await expect(cells.nth(6)).toHaveText('');
     });
 
     test('should handle clicking after draw', async ({ page }) => {
       const cells = page.locator('.cell');
+      const status = page.locator('.status');
       
       // Play to early draw
       await cells.nth(0).click(); // X
@@ -342,10 +347,13 @@ test.describe('Edge Cases and Error Handling', () => {
       await cells.nth(6).click(); // X
       await cells.nth(7).click(); // O - Early draw
       
-      // Try to click empty cell
-      await cells.nth(8).click();
+      // Wait for draw to be detected
+      await expect(status).toContainText('Draw', { timeout: 5000 });
       
-      // Should remain empty (disabled)
+      // Verify empty cell is disabled
+      await expect(cells.nth(8)).toBeDisabled();
+      
+      // Should remain empty
       await expect(cells.nth(8)).toHaveText('');
     });
   });
