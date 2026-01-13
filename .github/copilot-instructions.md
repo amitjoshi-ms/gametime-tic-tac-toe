@@ -251,20 +251,24 @@ This project uses structured AI configuration to provide consistent guidance.
 
 Focused rules auto-applied to specific file patterns via `applyTo`:
 
-| File                          | Purpose                       | ApplyTo                                                         |
-| ----------------------------- | ----------------------------- | --------------------------------------------------------------- |
-| `typescript.instructions.md`  | Type system, naming, patterns | `**/*.ts`                                                       |
-| `testing.instructions.md`     | Unit/E2E test structure       | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts`                     |
-| `game-logic.instructions.md`  | Pure functions, state         | `src/game/**/*.ts`                                              |
-| `ui.instructions.md`          | DOM, accessibility, CSS       | `src/ui/**/*.ts, src/styles/**/*.css`                           |
-| `security.instructions.md`    | XSS, validation, storage      | `**/*.ts, **/*.html`                                            |
-| `performance.instructions.md` | Optimization patterns         | `**/*.ts, **/*.css, **/*.html`                                  |
-| `tooling.instructions.md`     | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
-| `ai-config.instructions.md`   | Maintaining these files       | `.github/**/*.md, AGENTS.md`                                    |
+| File                                 | Purpose                       | ApplyTo                                                         |
+| ------------------------------------ | ----------------------------- | --------------------------------------------------------------- |
+| `typescript-types.instructions.md`   | Type system, naming           | `**/*.ts`                                                       |
+| `typescript-modules.instructions.md` | Module system, imports        | `**/*.ts`                                                       |
+| `typescript-patterns.instructions.md`| Functions, immutability       | `**/*.ts`                                                       |
+| `testing.instructions.md`            | Unit/E2E test structure       | `tests/**/*.ts, **/*.test.ts, **/*.spec.ts`                     |
+| `game-logic.instructions.md`         | Pure functions, state         | `src/game/**/*.ts`                                              |
+| `ui.instructions.md`                 | DOM, accessibility, CSS       | `src/ui/**/*.ts, src/styles/**/*.css`                           |
+| `security.instructions.md`           | XSS, validation, storage      | `**/*.ts, **/*.html`                                            |
+| `performance.instructions.md`        | Optimization patterns         | `**/*.ts, **/*.css, **/*.html`                                  |
+| `tooling.instructions.md`            | Build tools, linters, configs | `*.json, *.config.ts, *.config.js, tsconfig.json, package.json` |
+| `ai-config.instructions.md`          | Maintaining these files       | `.github/**/*.md, AGENTS.md`                                    |
 
 ### Prompts (`.github/prompts/`)
 
 Reusable task templates invoked via Copilot Chat (`/` command):
+
+#### Core Workflow Prompts
 
 | Prompt                     | Mode  | Use When                                                         |
 | -------------------------- | ----- | ---------------------------------------------------------------- |
@@ -274,9 +278,45 @@ Reusable task templates invoked via Copilot Chat (`/` command):
 | `submit.task.prompt.md`    | Agent | Preparing changes for PR/merge (summaries, checklists, metadata) |
 | `release.latest.prompt.md` | Agent | Working on the latest release (notes, checks, deployment steps)  |
 
+#### Spec-Kit Prompts
+
+Specification and planning workflow prompts for structured feature development:
+
+| Prompt                             | Use When                                                      |
+| ---------------------------------- | ------------------------------------------------------------- |
+| `speckit.specify.prompt.md`        | Creating or updating feature specifications                   |
+| `speckit.clarify.prompt.md`        | Identifying underspecified areas and asking clarifications    |
+| `speckit.plan.prompt.md`           | Generating implementation plan from spec                      |
+| `speckit.tasks.prompt.md`          | Breaking down plan into actionable tasks                      |
+| `speckit.taskstoissues.prompt.md`  | Converting tasks to GitHub issues                             |
+| `speckit.analyze.prompt.md`        | Cross-artifact consistency analysis (spec/plan/tasks)         |
+| `speckit.checklist.prompt.md`      | Generating custom checklists from requirements                |
+| `speckit.constitution.prompt.md`   | Creating/updating project principles                          |
+| `speckit.implement.prompt.md`      | Executing implementation from tasks                           |
+
 **Usage:** Common commands: `/start`, `/review`, `/sync`, `/submit`, `/release` in Copilot Chat, or reference via `@workspace /start` (and analogous names).
 
-For additional workflow and spec-related prompts (including `speckit.*.prompt.md`), see the full set in `.github/prompts/`.
+### Agents (`.github/agents/`)
+
+Specialized agent configurations for complex workflows. These agents provide domain-specific expertise:
+
+#### Spec-Kit Agents
+
+Agents for structured feature development and specification management:
+
+| Agent                             | Expertise                                                     |
+| --------------------------------- | ------------------------------------------------------------- |
+| `speckit.specify.agent.md`        | Creating and refining feature specifications                  |
+| `speckit.clarify.agent.md`        | Identifying ambiguities and gathering requirements            |
+| `speckit.plan.agent.md`           | Design planning and architecture decisions                    |
+| `speckit.tasks.agent.md`          | Task breakdown and dependency ordering                        |
+| `speckit.taskstoissues.agent.md`  | GitHub issue creation from task definitions                   |
+| `speckit.analyze.agent.md`        | Quality analysis across spec/plan/task artifacts              |
+| `speckit.checklist.agent.md`      | Custom checklist generation from requirements                 |
+| `speckit.constitution.agent.md`   | Project principles and convention management                  |
+| `speckit.implement.agent.md`      | Implementation execution following defined tasks              |
+
+**Note:** Agents are invoked automatically by their corresponding prompts or can be referenced directly when specialized domain knowledge is needed.
 
 ### AGENTS.md (repo root)
 
