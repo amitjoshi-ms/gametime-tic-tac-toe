@@ -15,6 +15,7 @@ import {
   clearRemoteSession,
   resetRemoteGame,
   resetRemoteGameKeepSymbols,
+  resetRemoteGameWithStarter,
 } from './game/state';
 import { savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName, getComputerConfig, saveComputerConfig } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
@@ -35,7 +36,7 @@ import {
   updateRemotePanel,
   type RemotePanelState,
 } from './ui/remotePanel';
-import type { GameState, GameMode, PlayerConfigs } from './game/types';
+import type { GameState, GameMode, PlayerConfigs, Player } from './game/types';
 import { AVAILABLE_SYMBOLS } from './game/types';
 
 /**
@@ -790,18 +791,19 @@ function handleRematchRequest(): void {
 /**
  * Handles receiving a rematch response from remote player.
  * @param accepted - Whether the rematch was accepted
+ * @param startingPlayer - Which player starts the new game (when accepted)
  */
-function handleRematchResponse(accepted: boolean): void {
+function handleRematchResponse(accepted: boolean, startingPlayer?: Player): void {
   isRematchPending = false;
 
-  if (accepted) {
-    // Reset the game (symbols stay the same, starting player alternates)
-    gameState = resetRemoteGame(gameState);
+  if (accepted && startingPlayer) {
+    // Reset the game with the specified starting player
+    gameState = resetRemoteGameWithStarter(gameState, startingPlayer);
     remotePanelState = {
       ...remotePanelState,
       phase: 'connected',
     };
-  } else {
+  } else if (!accepted) {
     // Opponent declined - stay in connected state, they can try again
     remotePanelState = {
       ...remotePanelState,
@@ -828,11 +830,15 @@ function handleRequestRematch(): void {
  * Handles user accepting a rematch request.
  */
 function handleRematchAccept(): void {
-  if (!remoteController) {
+  if (!remoteController || !gameState.remoteSession) {
     return;
   }
 
-  remoteController.respondToRematch(true);
+  // Calculate starting player for new game (alternates)
+  const lastStarter = gameState.remoteSession.lastStartingPlayer;
+  const nextStartingPlayer = lastStarter === 'X' ? 'O' : 'X';
+
+  remoteController.respondToRematch(true, nextStartingPlayer);
   // Reset the game (symbols stay the same, starting player alternates)
   gameState = resetRemoteGame(gameState);
   remotePanelState = {

@@ -108,9 +108,15 @@ function isRematchResponseMessage(obj: unknown): obj is RematchResponseMessage {
     return false;
   }
   const candidate = obj as Record<string, unknown>;
+  // startingPlayer is optional, only present when accepted
+  const hasValidStartingPlayer =
+    candidate.startingPlayer === undefined ||
+    candidate.startingPlayer === 'X' ||
+    candidate.startingPlayer === 'O';
   return (
     candidate.type === 'rematch-response' &&
-    typeof candidate.accepted === 'boolean'
+    typeof candidate.accepted === 'boolean' &&
+    hasValidStartingPlayer
   );
 }
 
@@ -281,11 +287,20 @@ export function createRematchRequestMessage(): RematchRequestMessage {
  * Creates a rematch response message.
  *
  * @param accepted - Whether rematch is accepted
+ * @param startingPlayer - Which player starts (required when accepted)
  * @returns Rematch response message
  */
 export function createRematchResponseMessage(
-  accepted: boolean
+  accepted: boolean,
+  startingPlayer?: Player
 ): RematchResponseMessage {
+  if (accepted && startingPlayer) {
+    return {
+      type: 'rematch-response',
+      accepted,
+      startingPlayer,
+    };
+  }
   return {
     type: 'rematch-response',
     accepted,

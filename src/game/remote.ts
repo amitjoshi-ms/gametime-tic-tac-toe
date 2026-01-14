@@ -40,8 +40,8 @@ export interface RemoteSessionController {
   sendMove(cellIndex: number, player: Player): void;
   /** Request a rematch */
   requestRematch(): void;
-  /** Accept/decline rematch request */
-  respondToRematch(accept: boolean): void;
+  /** Accept/decline rematch request with starting player info */
+  respondToRematch(accept: boolean, startingPlayer?: Player): void;
   /** Leave the session */
   leave(): void;
   /** Get current move count for validation */
@@ -60,8 +60,8 @@ export interface RemoteSessionCallbacks {
   onRemoteMove: (cellIndex: number) => void;
   /** Rematch requested by remote */
   onRematchRequested: () => void;
-  /** Rematch response received */
-  onRematchResponse: (accepted: boolean) => void;
+  /** Rematch response received with starting player when accepted */
+  onRematchResponse: (accepted: boolean, startingPlayer?: Player) => void;
   /** Connection established */
   onConnected: (remoteName: string) => void;
   /** Connection lost */
@@ -87,11 +87,12 @@ let guestConnection: GuestConnection | null = null;
 let expectedPlayer: Player = 'X';
 
 /**
- * Resets the move counter and expected player.
+ * Resets the move counter and sets expected player based on who starts.
+ * @param startingPlayer - Which player makes the first move (defaults to 'X')
  */
-function resetMoveCount(): void {
+function resetMoveCount(startingPlayer: Player = 'X'): void {
   moveCount = 0;
-  expectedPlayer = 'X';
+  expectedPlayer = startingPlayer;
 }
 
 /**
@@ -175,7 +176,11 @@ function handleMessage(
       break;
 
     case 'rematch-response':
-      callbacks.onRematchResponse(message.accepted);
+      // Reset move counter when rematch is accepted, using the starting player
+      if (message.accepted && message.startingPlayer) {
+        resetMoveCount(message.startingPlayer);
+      }
+      callbacks.onRematchResponse(message.accepted, message.startingPlayer);
       break;
 
     case 'disconnect':
@@ -251,11 +256,11 @@ export async function createRemoteSession(
         hostConnection.send(createRematchRequestMessage());
       }
     },
-    respondToRematch(accept: boolean) {
+    respondToRematch(accept: boolean, startingPlayer?: Player) {
       if (hostConnection) {
-        hostConnection.send(createRematchResponseMessage(accept));
-        if (accept) {
-          resetMoveCount();
+        hostConnection.send(createRematchResponseMessage(accept, startingPlayer));
+        if (accept && startingPlayer) {
+          resetMoveCount(startingPlayer);
         }
       }
     },
@@ -369,11 +374,11 @@ export async function joinRemoteSession(
         guestConnection.send(createRematchRequestMessage());
       }
     },
-    respondToRematch(accept: boolean) {
+    respondToRematch(accept: boolean, startingPlayer?: Player) {
       if (guestConnection) {
-        guestConnection.send(createRematchResponseMessage(accept));
-        if (accept) {
-          resetMoveCount();
+        guestConnection.send(createRematchResponseMessage(accept, startingPlayer));
+        if (accept && startingPlayer) {
+          resetMoveCount(startingPlayer);
         }
       }
     },

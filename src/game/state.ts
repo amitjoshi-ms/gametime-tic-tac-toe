@@ -343,3 +343,32 @@ export function resetRemoteGame(state: GameState): GameState {
     // Keep playerConfigs unchanged - symbols stay the same throughout session
   };
 }
+
+/**
+ * Resets a remote game with a specified starting player.
+ * Used when receiving rematch acceptance from remote peer.
+ *
+ * @param state - Current state
+ * @param startingPlayer - Which player should start
+ * @returns New state with reset board and specified starting player
+ */
+export function resetRemoteGameWithStarter(
+  state: GameState,
+  startingPlayer: Player
+): GameState {
+  if (!state.remoteSession?.remotePlayer) {
+    return state;
+  }
+
+  return {
+    ...state,
+    board: [null, null, null, null, null, null, null, null, null],
+    currentPlayer: startingPlayer,
+    status: 'playing',
+    remoteSession: {
+      ...state.remoteSession,
+      lastStartingPlayer: startingPlayer,
+    },
+    // Keep playerConfigs unchanged - symbols stay the same throughout session
+  };
+}

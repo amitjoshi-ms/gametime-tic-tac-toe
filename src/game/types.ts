@@ -180,6 +180,8 @@ export interface RematchRequestMessage {
 export interface RematchResponseMessage {
   type: 'rematch-response';
   accepted: boolean;
+  /** Which player starts the new game (only set when accepted) */
+  startingPlayer?: Player;
 }
 
 /**
