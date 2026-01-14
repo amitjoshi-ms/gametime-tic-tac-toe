@@ -10,6 +10,7 @@ import type {
   GameMode,
   Player,
   PlayerConfigs,
+  PlayerSymbol,
   RemoteSession,
   ConnectionStatus,
 } from './types';
@@ -164,22 +165,26 @@ export function isComputerTurn(state: GameState): boolean {
  *
  * @param isHost - Whether local player is creating the session
  * @param localName - Local player's display name
+ * @param localDisplaySymbol - Local player's display symbol (defaults to X for host, O for guest)
  * @returns New game state configured for remote play
  */
 export function createRemoteGameState(
   isHost: boolean,
-  localName: string
+  localName: string,
+  localDisplaySymbol?: PlayerSymbol
 ): GameState {
   const localSymbol: Player = isHost ? 'X' : 'O';
+  // Use provided display symbol or default based on host/guest role
+  const displaySymbol: PlayerSymbol = localDisplaySymbol ?? (isHost ? 'X' : 'O');
 
   const playerConfigs: PlayerConfigs = isHost
     ? {
-        X: { name: localName, symbol: 'X' },
+        X: { name: localName, symbol: displaySymbol },
         O: { name: 'Opponent', symbol: 'O' },
       }
     : {
         X: { name: 'Opponent', symbol: 'X' },
-        O: { name: localName, symbol: 'O' },
+        O: { name: localName, symbol: displaySymbol },
       };
 
   return {

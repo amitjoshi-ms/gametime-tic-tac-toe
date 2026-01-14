@@ -17,7 +17,7 @@ import {
   resetRemoteGameKeepSymbols,
   resetRemoteGameWithStarter,
 } from './game/state';
-import { savePlayerConfigs, loadPlayerConfigs, getLocalPlayerName, saveLocalPlayerName, getComputerConfig, saveComputerConfig } from './game/playerNames';
+import { savePlayerConfigs, loadPlayerConfigs, getComputerConfig, saveComputerConfig, getRemoteConfig, saveRemoteConfig } from './game/playerNames';
 import { scheduleComputerMove, scheduleDemoRestart } from './game/computer';
 import {
   createRemoteSession,
@@ -274,14 +274,14 @@ function handleConfigChange(configs: PlayerConfigs): void {
     });
     saveComputerConfig(configs.O.name, configs.O.symbol);
   } else if (gameState.gameMode === 'remote') {
-    // Remote mode: save local player name to remote_name
+    // Remote mode: save local player config (name + symbol) for future sessions
     if (gameState.remoteSession?.connectionStatus === 'connected' && remoteController) {
       const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
       const localConfig = configs[localPlayerKey];
       // Send the actual display symbol, not the player key (X/O)
       remoteController.updatePlayer(localConfig.name, localConfig.symbol);
-      // Save the remote name separately for future remote sessions
-      saveLocalPlayerName(localConfig.name);
+      // Save name and symbol for future remote sessions
+      saveRemoteConfig(localConfig.name, localConfig.symbol);
     }
   } else {
     // Human mode: save all configs to localStorage
@@ -463,17 +463,17 @@ function handleDemoToggle(): void {
  * Handles creating a new remote session (host flow).
  */
 async function handleCreateSession(): Promise<void> {
-  // Use the persisted local player name from localStorage
-  const localName = getLocalPlayerName();
+  // Use the persisted local player config (name + symbol) from localStorage
+  const remoteConfig = getRemoteConfig();
 
   // Update UI to show creating state
   remotePanelState = { phase: 'creating' };
-  gameState = createRemoteGameState(true, localName);
+  gameState = createRemoteGameState(true, remoteConfig.name, remoteConfig.symbol);
   gameState = updateRemoteSession(gameState, { connectionStatus: 'connecting' });
   updateUI();
 
   try {
-    const result = await createRemoteSession(localName, {
+    const result = await createRemoteSession(remoteConfig.name, {
       onConnected: handleRemoteConnected,
       onRemoteMove: handleRemoteMove,
       onDisconnected: handleRemoteDisconnect,
@@ -519,17 +519,17 @@ async function handleCreateSession(): Promise<void> {
  * @param sessionCode - The session code from the host
  */
 async function handleJoinSession(sessionCode: string): Promise<void> {
-  // Use the persisted local player name from localStorage
-  const localName = getLocalPlayerName();
+  // Use the persisted local player config (name + symbol) from localStorage
+  const remoteConfig = getRemoteConfig();
 
   // Update UI to show joining state
   remotePanelState = { phase: 'joining' };
-  gameState = createRemoteGameState(false, localName);
+  gameState = createRemoteGameState(false, remoteConfig.name, remoteConfig.symbol);
   gameState = updateRemoteSession(gameState, { connectionStatus: 'connecting' });
   updateUI();
 
   try {
-    const result = await joinRemoteSession(sessionCode, localName, {
+    const result = await joinRemoteSession(sessionCode, remoteConfig.name, {
       onConnected: handleRemoteConnected,
       onRemoteMove: handleRemoteMove,
       onDisconnected: handleRemoteDisconnect,

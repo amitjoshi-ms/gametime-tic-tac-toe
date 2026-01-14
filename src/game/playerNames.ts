@@ -129,27 +129,13 @@ export function resetPlayerConfigs(): PlayerConfigs {
 
 /**
  * Gets the local player's name for remote mode.
- * Uses dedicated remote name storage, falling back to local player names.
+ * Uses dedicated remote config storage, falling back to local player names.
  *
  * @returns The local player's name for remote mode
  */
 export function getLocalPlayerName(): string {
-  // First check for dedicated remote name
-  const remoteName = getStorageItem<string | null>(REMOTE_NAME_KEY, null);
-  if (remoteName) {
-    return remoteName;
-  }
-
-  // Fall back to local player configs
-  const configs = loadPlayerConfigs();
-  // Use X's name as fallback since users typically customize that
-  if (configs.X.name !== DEFAULT_X_NAME) {
-    return configs.X.name;
-  }
-  if (configs.O.name !== DEFAULT_O_NAME) {
-    return configs.O.name;
-  }
-  return DEFAULT_X_NAME;
+  const config = getRemoteConfig();
+  return config.name;
 }
 
 /**
@@ -158,9 +144,62 @@ export function getLocalPlayerName(): string {
  * @param name - The name to save
  */
 export function saveLocalPlayerName(name: string): void {
+  const config = getRemoteConfig();
+  saveRemoteConfig(name, config.symbol);
+}
+
+/** Remote player config type for storage */
+interface RemoteConfig {
+  name: string;
+  symbol: PlayerSymbol;
+}
+
+/**
+ * Gets the local player's configuration for remote mode (name and symbol).
+ * Uses dedicated remote config storage, falling back to local player configs.
+ *
+ * @returns The local player's config (name and symbol)
+ */
+export function getRemoteConfig(): RemoteConfig {
+  const stored = getStorageItem<RemoteConfig | string | null>(REMOTE_NAME_KEY, null);
+  
+  // Handle legacy format (just name string)
+  if (typeof stored === 'string') {
+    return { name: stored, symbol: DEFAULT_X_SYMBOL };
+  }
+  
+  // Handle new format (stored is RemoteConfig | null at this point)
+  if (stored !== null) {
+    // Validate symbol is from available list
+    if (AVAILABLE_SYMBOLS.includes(stored.symbol)) {
+      return stored;
+    }
+    // Symbol invalid, return with valid default symbol
+    return { name: stored.name, symbol: DEFAULT_X_SYMBOL };
+  }
+  
+  // Fall back to local player configs
+  const configs = loadPlayerConfigs();
+  // Use X's config as fallback since users typically customize that
+  if (configs.X.name !== DEFAULT_X_NAME) {
+    return { name: configs.X.name, symbol: configs.X.symbol };
+  }
+  if (configs.O.name !== DEFAULT_O_NAME) {
+    return { name: configs.O.name, symbol: configs.O.symbol };
+  }
+  return { name: DEFAULT_X_NAME, symbol: DEFAULT_X_SYMBOL };
+}
+
+/**
+ * Saves the local player's configuration for remote mode (name and symbol).
+ *
+ * @param name - The name to save
+ * @param symbol - The symbol to save
+ */
+export function saveRemoteConfig(name: string, symbol: PlayerSymbol): void {
   const trimmed = name.trim();
-  if (trimmed) {
-    setStorageItem(REMOTE_NAME_KEY, trimmed);
+  if (trimmed && AVAILABLE_SYMBOLS.includes(symbol)) {
+    setStorageItem(REMOTE_NAME_KEY, { name: trimmed, symbol });
   }
 }
 
