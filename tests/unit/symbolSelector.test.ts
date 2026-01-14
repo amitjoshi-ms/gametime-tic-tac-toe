@@ -1,11 +1,12 @@
 /**
  * Unit tests for symbol selector UI component.
  * Tests DOM creation, option handling, and event callbacks.
- * 
+ *
  * @vitest-environment jsdom
  */
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
@@ -245,5 +246,66 @@ describe('updateSymbolSelectors', () => {
     // And '★' should be disabled
     const starOption = options.find((opt) => opt.value === '★');
     expect(starOption?.disabled).toBe(true);
+  });
+});
+
+describe('renderSymbolSelectors with localPlayerOnly', () => {
+  let container: HTMLElement;
+  let mockOnChange: SymbolChangeHandler;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    mockOnChange = vi.fn();
+  });
+
+  it('should only render X selector when localPlayerOnly is X', () => {
+    renderSymbolSelectors(container, 'X', 'O', mockOnChange, 'X');
+
+    const xSelector = container.querySelector('#symbol-selector-X');
+    const oSelector = container.querySelector('#symbol-selector-O');
+
+    expect(xSelector).toBeTruthy();
+    expect(oSelector).toBeNull();
+  });
+
+  it('should only render O selector when localPlayerOnly is O', () => {
+    renderSymbolSelectors(container, 'X', 'O', mockOnChange, 'O');
+
+    const xSelector = container.querySelector('#symbol-selector-X');
+    const oSelector = container.querySelector('#symbol-selector-O');
+
+    expect(xSelector).toBeNull();
+    expect(oSelector).toBeTruthy();
+  });
+
+  it('should render both selectors when localPlayerOnly is undefined', () => {
+    renderSymbolSelectors(container, 'X', 'O', mockOnChange, undefined);
+
+    const xSelector = container.querySelector('#symbol-selector-X');
+    const oSelector = container.querySelector('#symbol-selector-O');
+
+    expect(xSelector).toBeTruthy();
+    expect(oSelector).toBeTruthy();
+  });
+
+  it('should trigger onChange when local player selector changes', () => {
+    renderSymbolSelectors(container, 'X', 'O', mockOnChange, 'X');
+
+    const xSelector = container.querySelector('#symbol-selector-X') as HTMLSelectElement;
+    xSelector.value = '★';
+    xSelector.dispatchEvent(new Event('change', { bubbles: true }));
+
+    expect(mockOnChange).toHaveBeenCalledWith('X', '★');
+  });
+
+  it('should correctly disable other player symbol in local selector', () => {
+    renderSymbolSelectors(container, 'X', 'O', mockOnChange, 'X');
+
+    const xSelector = container.querySelector('#symbol-selector-X') as HTMLSelectElement;
+    const options = Array.from(xSelector.options);
+    const oOption = options.find((opt) => opt.value === 'O');
+
+    expect(oOption?.disabled).toBe(true);
+    expect(oOption?.textContent).toContain('in use');
   });
 });

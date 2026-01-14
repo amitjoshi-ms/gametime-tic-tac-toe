@@ -11,6 +11,8 @@ import { AVAILABLE_SYMBOLS } from './types';
 
 const STORAGE_KEY = 'player_configs';
 const LEGACY_STORAGE_KEY = 'player_names';
+const REMOTE_NAME_KEY = 'remote_name';
+const COMPUTER_NAME_KEY = 'computer_name';
 
 /** Default name for Player X */
 export const DEFAULT_X_NAME = 'Player X';
@@ -123,6 +125,128 @@ export function resetPlayerConfigs(): PlayerConfigs {
   const defaults = getDefaultPlayerConfigs();
   savePlayerConfigs(defaults);
   return defaults;
+}
+
+/**
+ * Gets the local player's name for remote mode.
+ * Uses dedicated remote config storage, falling back to local player names.
+ *
+ * @returns The local player's name for remote mode
+ */
+export function getLocalPlayerName(): string {
+  const config = getRemoteConfig();
+  return config.name;
+}
+
+/**
+ * Saves the local player's name for remote mode.
+ *
+ * @param name - The name to save
+ */
+export function saveLocalPlayerName(name: string): void {
+  const config = getRemoteConfig();
+  saveRemoteConfig(name, config.symbol);
+}
+
+/** Remote player config type for storage */
+interface RemoteConfig {
+  name: string;
+  symbol: PlayerSymbol;
+}
+
+/**
+ * Gets the local player's configuration for remote mode (name and symbol).
+ * Uses dedicated remote config storage, falling back to local player configs.
+ *
+ * @returns The local player's config (name and symbol)
+ */
+export function getRemoteConfig(): RemoteConfig {
+  const stored = getStorageItem<RemoteConfig | string | null>(REMOTE_NAME_KEY, null);
+  
+  // Handle legacy format (just name string)
+  if (typeof stored === 'string') {
+    return { name: stored, symbol: DEFAULT_X_SYMBOL };
+  }
+  
+  // Handle new format (stored is RemoteConfig | null at this point)
+  if (stored !== null) {
+    // Validate symbol is from available list
+    if (AVAILABLE_SYMBOLS.includes(stored.symbol)) {
+      return stored;
+    }
+    // Symbol invalid, return with valid default symbol
+    return { name: stored.name, symbol: DEFAULT_X_SYMBOL };
+  }
+  
+  // Fall back to local player configs
+  const configs = loadPlayerConfigs();
+  // Use X's config as fallback since users typically customize that
+  if (configs.X.name !== DEFAULT_X_NAME) {
+    return { name: configs.X.name, symbol: configs.X.symbol };
+  }
+  if (configs.O.name !== DEFAULT_O_NAME) {
+    return { name: configs.O.name, symbol: configs.O.symbol };
+  }
+  return { name: DEFAULT_X_NAME, symbol: DEFAULT_X_SYMBOL };
+}
+
+/**
+ * Saves the local player's configuration for remote mode (name and symbol).
+ *
+ * @param name - The name to save
+ * @param symbol - The symbol to save
+ */
+export function saveRemoteConfig(name: string, symbol: PlayerSymbol): void {
+  const trimmed = name.trim();
+  if (trimmed && AVAILABLE_SYMBOLS.includes(symbol)) {
+    setStorageItem(REMOTE_NAME_KEY, { name: trimmed, symbol });
+  }
+}
+
+/** Computer config type for storage */
+interface ComputerConfig {
+  name: string;
+  symbol: PlayerSymbol;
+}
+
+/**
+ * Gets the computer opponent's configuration (name and symbol).
+ * Uses dedicated computer config storage, falling back to defaults.
+ *
+ * @returns The computer's config (name and symbol)
+ */
+export function getComputerConfig(): ComputerConfig {
+  const stored = getStorageItem<ComputerConfig | string | null>(COMPUTER_NAME_KEY, null);
+  
+  // Handle null
+  if (stored === null) {
+    return { name: DEFAULT_COMPUTER_NAME, symbol: DEFAULT_O_SYMBOL };
+  }
+  
+  // Handle legacy format (just name string)
+  if (typeof stored === 'string') {
+    return { name: stored, symbol: DEFAULT_O_SYMBOL };
+  }
+  
+  // Handle new format - validate symbol is from available list
+  if (AVAILABLE_SYMBOLS.includes(stored.symbol)) {
+    return stored;
+  }
+  
+  return { name: DEFAULT_COMPUTER_NAME, symbol: DEFAULT_O_SYMBOL };
+}
+
+/**
+ * Saves the computer opponent's configuration (name and symbol).
+ *
+ * @param name - The name to save
+ * @param symbol - The symbol to save
+ */
+export function saveComputerConfig(name: string, symbol: PlayerSymbol): void {
+  const trimmed = name.trim();
+  if (trimmed && AVAILABLE_SYMBOLS.includes(symbol)) {
+    setStorageItem(COMPUTER_NAME_KEY, { name: trimmed, symbol });
+  }
 }
 
 /**

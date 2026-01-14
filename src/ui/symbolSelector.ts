@@ -66,17 +66,20 @@ function createSymbolSelector(
 
 /**
  * Renders symbol selectors for both players.
+ * In remote mode, only the local player's selector is rendered.
  *
  * @param container - DOM element to render into
  * @param xSymbol - Current symbol for Player X
  * @param oSymbol - Current symbol for Player O
  * @param onChange - Handler for symbol changes
+ * @param localPlayerOnly - Only show selector for this player (remote mode)
  */
 export function renderSymbolSelectors(
   container: HTMLElement,
   xSymbol: PlayerSymbol,
   oSymbol: PlayerSymbol,
-  onChange: SymbolChangeHandler
+  onChange: SymbolChangeHandler,
+  localPlayerOnly?: 'X' | 'O'
 ): void {
   container.innerHTML = '';
 
@@ -84,35 +87,38 @@ export function renderSymbolSelectors(
   wrapper.className = 'symbol-selectors';
 
   // Player X selector
-  const xGroup = document.createElement('div');
-  xGroup.className = 'symbol-selector-group';
+  if (!localPlayerOnly || localPlayerOnly === 'X') {
+    const xGroup = document.createElement('div');
+    xGroup.className = 'symbol-selector-group';
 
-  const xLabel = document.createElement('label');
-  xLabel.htmlFor = `symbol-selector-X`;
-  xLabel.className = 'symbol-selector-label symbol-selector-label--x';
-  xLabel.textContent = 'Symbol:';
+    const xLabel = document.createElement('label');
+    xLabel.htmlFor = `symbol-selector-X`;
+    xLabel.className = 'symbol-selector-label symbol-selector-label--x';
+    xLabel.textContent = 'Symbol:';
 
-  const xSelector = createSymbolSelector('X', xSymbol, oSymbol, onChange);
+    const xSelector = createSymbolSelector('X', xSymbol, oSymbol, onChange);
 
-  xGroup.appendChild(xLabel);
-  xGroup.appendChild(xSelector);
+    xGroup.appendChild(xLabel);
+    xGroup.appendChild(xSelector);
+    wrapper.appendChild(xGroup);
+  }
 
   // Player O selector
-  const oGroup = document.createElement('div');
-  oGroup.className = 'symbol-selector-group';
+  if (!localPlayerOnly || localPlayerOnly === 'O') {
+    const oGroup = document.createElement('div');
+    oGroup.className = 'symbol-selector-group';
 
-  const oLabel = document.createElement('label');
-  oLabel.htmlFor = `symbol-selector-O`;
-  oLabel.className = 'symbol-selector-label symbol-selector-label--o';
-  oLabel.textContent = 'Symbol:';
+    const oLabel = document.createElement('label');
+    oLabel.htmlFor = `symbol-selector-O`;
+    oLabel.className = 'symbol-selector-label symbol-selector-label--o';
+    oLabel.textContent = 'Symbol:';
 
-  const oSelector = createSymbolSelector('O', oSymbol, xSymbol, onChange);
+    const oSelector = createSymbolSelector('O', oSymbol, xSymbol, onChange);
 
-  oGroup.appendChild(oLabel);
-  oGroup.appendChild(oSelector);
-
-  wrapper.appendChild(xGroup);
-  wrapper.appendChild(oGroup);
+    oGroup.appendChild(oLabel);
+    oGroup.appendChild(oSelector);
+    wrapper.appendChild(oGroup);
+  }
 
   container.appendChild(wrapper);
 }
@@ -123,14 +129,26 @@ export function renderSymbolSelectors(
  * @param container - DOM element containing the selectors
  * @param xSymbol - Current symbol for Player X
  * @param oSymbol - Current symbol for Player O
+ * @param localPlayerOnly - Only show selector for this player (remote mode)
  */
 export function updateSymbolSelectors(
   container: HTMLElement,
   xSymbol: PlayerSymbol,
-  oSymbol: PlayerSymbol
+  oSymbol: PlayerSymbol,
+  localPlayerOnly?: 'X' | 'O'
 ): void {
   const xSelector = container.querySelector('#symbol-selector-X');
   const oSelector = container.querySelector('#symbol-selector-O');
+  const xGroup = xSelector?.closest('.symbol-selector-group');
+  const oGroup = oSelector?.closest('.symbol-selector-group');
+
+  // Hide/show selector groups based on localPlayerOnly
+  if (xGroup instanceof HTMLElement) {
+    xGroup.style.display = localPlayerOnly === 'O' ? 'none' : '';
+  }
+  if (oGroup instanceof HTMLElement) {
+    oGroup.style.display = localPlayerOnly === 'X' ? 'none' : '';
+  }
 
   if (xSelector instanceof HTMLSelectElement) {
     if (xSelector.value !== xSymbol) {

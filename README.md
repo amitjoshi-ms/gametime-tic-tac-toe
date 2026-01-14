@@ -8,13 +8,14 @@ A modern Tic-Tac-Toe game built as a static Single Page Application with **zero 
 
 - 🎮 Classic two-player gameplay with alternating starting player
 - 🤖 Computer opponent with random move selection
-- 🎯 Toggle between human vs human and human vs computer modes
+- � **Remote multiplayer** - play with friends via peer-to-peer WebRTC
+- 🎯 Toggle between human vs human, human vs computer, and remote modes
 - 📱 Responsive design (mobile, tablet, desktop)
 - ✨ Clear turn indicator and congratulations messages
 - 🏁 Win & early draw detection
 - 👤 Custom player names with localStorage persistence
 - ♿ Full keyboard & screen reader support
-- ⚡ ~15KB total bundle size
+- ⚡ ~33KB total bundle size (no runtime dependencies!)
 
 ## 🚀 Quick Start
 
@@ -74,12 +75,18 @@ src/
 │   ├── logic.ts    # Win detection, validation
 │   ├── state.ts    # State management
 │   ├── computer.ts # Computer opponent
+│   ├── remote.ts   # Remote multiplayer logic
 │   └── playerNames.ts # Player name persistence
+├── network/        # WebRTC & P2P networking
+│   ├── peer.ts     # RTCPeerConnection wrapper
+│   ├── protocol.ts # Message serialization
+│   └── signaling.ts # SDP encoding/decoding
 ├── ui/             # DOM rendering
 │   ├── board.ts    # Game board
 │   ├── status.ts   # Turn indicator
 │   ├── controls.ts # Game controls
 │   ├── modeSelector.ts # Mode toggle
+│   ├── remotePanel.ts  # Remote session UI
 │   └── playerNames.ts # Name inputs
 ├── utils/          # Shared utilities
 │   └── storage.ts  # localStorage helpers
@@ -88,12 +95,26 @@ src/
 
 ## 🎮 How to Play
 
+### Local Modes
+
 1. **Choose your mode**: Human vs Human or Human vs Computer
 2. **Player X** starts first
 3. Click any empty cell to place your mark
 4. In computer mode, the computer (O) plays automatically after a brief delay
 5. Alternate turns until someone wins or it's a draw
 6. Click **New Game** to play again
+
+### Remote Multiplayer
+
+Play with a friend on different devices using peer-to-peer WebRTC:
+
+1. **Host**: Select "Remote" mode and click "Create Game"
+2. **Host**: Copy the session code and share with your friend
+3. **Guest**: Select "Remote" mode, click "Join Game", paste the code
+4. **Guest**: Copy the response code and share back with host
+5. **Host**: Paste the response code to connect
+6. **Play!** Host plays as X, Guest plays as O
+7. After game ends, either player can request a rematch
 
 ## 🌐 Deployment
 

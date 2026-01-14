@@ -14,6 +14,13 @@ import {
   loadPlayerConfigs,
   savePlayerConfigs,
   getDefaultPlayerConfigs,
+  getLocalPlayerName,
+  saveLocalPlayerName,
+  getComputerConfig,
+  saveComputerConfig,
+  DEFAULT_X_NAME,
+  DEFAULT_O_NAME,
+  DEFAULT_COMPUTER_NAME,
 } from '../../src/game/playerNames';
 import type { PlayerConfigs, PlayerSymbol } from '../../src/game/types';
 
@@ -378,5 +385,202 @@ describe('savePlayerConfigs', () => {
     const loaded = loadPlayerConfigs();
     expect(loaded.X.name).toBe('Charlie');
     expect(loaded.O.name).toBe('Diana');
+  });
+});
+
+describe('getLocalPlayerName', () => {
+  it('should return X name when X is customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+
+  it('should return O name when only O is customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: DEFAULT_X_NAME, symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Bob');
+  });
+
+  it('should prefer X name when both are customized', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+
+  it('should return default X name when neither is customized', () => {
+    // No configs saved, should return default
+    expect(getLocalPlayerName()).toBe(DEFAULT_X_NAME);
+  });
+
+  it('should return default X name when both have default names', () => {
+    const configs: PlayerConfigs = {
+      X: { name: DEFAULT_X_NAME, symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    expect(getLocalPlayerName()).toBe(DEFAULT_X_NAME);
+  });
+
+  it('should use dedicated remote name when set', () => {
+    // Set up local configs
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    // Save dedicated remote name
+    saveLocalPlayerName('OnlinePlayer123');
+
+    // Should prefer dedicated remote name over local configs
+    expect(getLocalPlayerName()).toBe('OnlinePlayer123');
+  });
+
+  it('should fall back to local configs when no remote name set', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: DEFAULT_O_NAME, symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+
+    // No remote name set, should fall back to X's name
+    expect(getLocalPlayerName()).toBe('Alice');
+  });
+});
+
+describe('saveLocalPlayerName', () => {
+  it('should save the remote name', () => {
+    saveLocalPlayerName('TestPlayer');
+    expect(getLocalPlayerName()).toBe('TestPlayer');
+  });
+
+  it('should trim whitespace from name', () => {
+    saveLocalPlayerName('  TestPlayer  ');
+    expect(getLocalPlayerName()).toBe('TestPlayer');
+  });
+
+  it('should not save empty name', () => {
+    saveLocalPlayerName('ValidName');
+    saveLocalPlayerName('');
+    expect(getLocalPlayerName()).toBe('ValidName');
+  });
+
+  it('should not save whitespace-only name', () => {
+    saveLocalPlayerName('ValidName');
+    saveLocalPlayerName('   ');
+    expect(getLocalPlayerName()).toBe('ValidName');
+  });
+});
+
+describe('getComputerConfig', () => {
+  it('should return default computer config when nothing saved', () => {
+    const config = getComputerConfig();
+    expect(config.name).toBe(DEFAULT_COMPUTER_NAME);
+    expect(config.symbol).toBe('O');
+  });
+
+  it('should return saved computer config', () => {
+    saveComputerConfig('HAL 9000', '🔴');
+    const config = getComputerConfig();
+    expect(config.name).toBe('HAL 9000');
+    expect(config.symbol).toBe('🔴');
+  });
+
+  it('should be independent from player configs', () => {
+    const configs: PlayerConfigs = {
+      X: { name: 'Alice', symbol: 'X' },
+      O: { name: 'Bob', symbol: 'O' },
+    };
+    savePlayerConfigs(configs);
+    saveComputerConfig('DeepBlue', '★');
+
+    const computerConfig = getComputerConfig();
+    expect(computerConfig.name).toBe('DeepBlue');
+    expect(computerConfig.symbol).toBe('★');
+    expect(loadPlayerConfigs().O.name).toBe('Bob');
+    expect(loadPlayerConfigs().O.symbol).toBe('O');
+  });
+
+  it('should handle legacy format (name only)', () => {
+    // Simulate legacy format - just a string
+    localStorage.setItem('tictactoe_computer_name', JSON.stringify('OldBot'));
+    const config = getComputerConfig();
+    expect(config.name).toBe('OldBot');
+    expect(config.symbol).toBe('O'); // Default symbol
+  });
+});
+
+describe('saveComputerConfig', () => {
+  it('should save the computer name and symbol', () => {
+    saveComputerConfig('Skynet', '☀️');
+    const config = getComputerConfig();
+    expect(config.name).toBe('Skynet');
+    expect(config.symbol).toBe('☀️');
+  });
+
+  it('should trim whitespace from name', () => {
+    saveComputerConfig('  Watson  ', '🌙');
+    const config = getComputerConfig();
+    expect(config.name).toBe('Watson');
+    expect(config.symbol).toBe('🌙');
+  });
+
+  it('should not save empty name', () => {
+    saveComputerConfig('ValidName', '◆');
+    saveComputerConfig('', '▲');
+    const config = getComputerConfig();
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
+  });
+
+  it('should not save whitespace-only name', () => {
+    saveComputerConfig('ValidName', '◆');
+    saveComputerConfig('   ', '▲');
+    const config = getComputerConfig();
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
+  });
+
+  it('should not save invalid symbol', () => {
+    saveComputerConfig('ValidName', '◆');
+    // Invalid symbol that's not in AVAILABLE_SYMBOLS
+    saveComputerConfig('NewName', '💀' as PlayerSymbol);
+    const config = getComputerConfig();
+    // Should keep previous valid config
+    expect(config.name).toBe('ValidName');
+    expect(config.symbol).toBe('◆');
+  });
+
+  it('should persist symbol separately from human mode', () => {
+    // Save human mode configs
+    savePlayerConfigs({
+      X: { name: 'Alice', symbol: '★' },
+      O: { name: 'Bob', symbol: '☀️' },
+    });
+    
+    // Save computer config
+    saveComputerConfig('CPU', '🌙');
+    
+    // Human configs unchanged
+    const humanConfigs = loadPlayerConfigs();
+    expect(humanConfigs.X.symbol).toBe('★');
+    expect(humanConfigs.O.symbol).toBe('☀️');
+    
+    // Computer config separate
+    const computerConfig = getComputerConfig();
+    expect(computerConfig.symbol).toBe('🌙');
   });
 });

@@ -11,7 +11,11 @@ import {
   resetStartingPlayerState,
   setComputerThinking,
   isComputerTurn,
+  resetRemoteGameKeepSymbols,
+  resetRemoteGame,
+  createRemoteGameState,
 } from '../../src/game/state';
+import type { GameState, RemoteSession } from '../../src/game/types';
 
 describe('createInitialState', () => {
   it('should create an empty board with 9 cells', () => {
@@ -370,5 +374,249 @@ describe('resetGame with game mode', () => {
   it('should reset isComputerThinking to false', () => {
     const state = resetGame('computer');
     expect(state.isComputerThinking).toBe(false);
+  });
+});
+
+describe('resetRemoteGameKeepSymbols', () => {
+  function createRemoteState(
+    localSymbol: 'X' | 'O',
+    currentPlayer: 'X' | 'O'
+  ): GameState {
+    const remoteSession: RemoteSession = {
+      sessionId: 'TEST',
+      sessionCode: 'TEST123',
+      connectionStatus: 'connected',
+      localPlayer: {
+        symbol: localSymbol,
+        name: 'Local Player',
+        isLocal: true,
+      },
+      remotePlayer: {
+        symbol: localSymbol === 'X' ? 'O' : 'X',
+        name: 'Remote Player',
+        isLocal: false,
+      },
+      error: null,
+      isHost: localSymbol === 'X',
+      lastStartingPlayer: 'X',
+    };
+
+    return {
+      ...resetGame('remote'),
+      currentPlayer,
+      board: ['X', 'O', 'X', null, null, null, null, null, null],
+      status: 'x-wins',
+      remoteSession,
+    };
+  }
+
+  it('should reset the board to empty', () => {
+    const state = createRemoteState('X', 'O');
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    expect(newState.board.every((cell) => cell === null)).toBe(true);
+  });
+
+  it('should keep the same current player (not swap)', () => {
+    const state = createRemoteState('X', 'O');
+    // After game ends, currentPlayer was O
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    // Should keep same player order, X starts new game
+    expect(newState.currentPlayer).toBe('X');
+  });
+
+  it('should reset status to playing', () => {
+    const state = createRemoteState('X', 'O');
+    expect(state.status).toBe('x-wins');
+
+    const newState = resetRemoteGameKeepSymbols(state);
+    expect(newState.status).toBe('playing');
+  });
+
+  it('should preserve remote session', () => {
+    const state = createRemoteState('X', 'O');
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    expect(newState.remoteSession).toBeDefined();
+    expect(newState.remoteSession?.localPlayer.symbol).toBe('X');
+    expect(newState.remoteSession?.remotePlayer?.symbol).toBe('O');
+  });
+
+  it('should preserve player configs', () => {
+    const state = createRemoteState('X', 'O');
+    state.playerConfigs.X.name = 'Alice';
+    state.playerConfigs.O.name = 'Bob';
+
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    expect(newState.playerConfigs.X.name).toBe('Alice');
+    expect(newState.playerConfigs.O.name).toBe('Bob');
+  });
+
+  it('should preserve game mode as remote', () => {
+    const state = createRemoteState('X', 'O');
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    expect(newState.gameMode).toBe('remote');
+  });
+
+  it('should create immutable state', () => {
+    const state = createRemoteState('X', 'O');
+    const newState = resetRemoteGameKeepSymbols(state);
+
+    expect(newState).not.toBe(state);
+    expect(newState.board).not.toBe(state.board);
+  });
+});
+
+describe('resetRemoteGame', () => {
+  function createRemoteState(
+    localSymbol: 'X' | 'O',
+    lastStartingPlayer: 'X' | 'O' = 'X'
+  ): GameState {
+    const remoteSession: RemoteSession = {
+      sessionId: 'TEST',
+      sessionCode: 'TEST123',
+      connectionStatus: 'connected',
+      localPlayer: {
+        symbol: localSymbol,
+        name: 'Local Player',
+        isLocal: true,
+      },
+      remotePlayer: {
+        symbol: localSymbol === 'X' ? 'O' : 'X',
+        name: 'Remote Player',
+        isLocal: false,
+      },
+      error: null,
+      isHost: localSymbol === 'X',
+      lastStartingPlayer,
+    };
+
+    return {
+      ...resetGame('remote'),
+      currentPlayer: 'X',
+      board: ['X', 'O', 'X', null, null, null, null, null, null],
+      status: 'x-wins',
+      remoteSession,
+    };
+  }
+
+  it('should alternate starting player (X -> O)', () => {
+    const state = createRemoteState('X', 'X');
+    const newState = resetRemoteGame(state);
+    expect(newState.currentPlayer).toBe('O');
+    expect(newState.remoteSession?.lastStartingPlayer).toBe('O');
+  });
+
+  it('should alternate starting player (O -> X)', () => {
+    const state = createRemoteState('X', 'O');
+    const newState = resetRemoteGame(state);
+    expect(newState.currentPlayer).toBe('X');
+    expect(newState.remoteSession?.lastStartingPlayer).toBe('X');
+  });
+
+  it('should keep player symbols unchanged', () => {
+    const state = createRemoteState('X', 'X');
+    const newState = resetRemoteGame(state);
+    expect(newState.remoteSession?.localPlayer.symbol).toBe('X');
+    expect(newState.remoteSession?.remotePlayer?.symbol).toBe('O');
+  });
+
+  it('should clear the board', () => {
+    const state = createRemoteState('X', 'X');
+    const newState = resetRemoteGame(state);
+    expect(newState.board.every((cell) => cell === null)).toBe(true);
+  });
+
+  it('should set status to playing', () => {
+    const state = createRemoteState('X', 'X');
+    const newState = resetRemoteGame(state);
+    expect(newState.status).toBe('playing');
+  });
+
+  it('should keep playerConfigs unchanged', () => {
+    const state = createRemoteState('X', 'X');
+    state.playerConfigs.X.name = 'Alice';
+    state.playerConfigs.O.name = 'Bob';
+    const newState = resetRemoteGame(state);
+    expect(newState.playerConfigs.X.name).toBe('Alice');
+    expect(newState.playerConfigs.O.name).toBe('Bob');
+  });
+
+  it('should return same state if no remote session', () => {
+    const state = resetGame('human');
+    const newState = resetRemoteGame(state);
+    expect(newState).toBe(state);
+  });
+
+  it('should return same state if no remote player', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    const newState = resetRemoteGame(state);
+    expect(newState).toBe(state);
+  });
+});
+
+describe('createRemoteGameState', () => {
+  it('should set local player as X when host', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.localPlayer.symbol).toBe('X');
+    expect(state.remoteSession?.localPlayer.name).toBe('Alice');
+    expect(state.remoteSession?.localPlayer.isLocal).toBe(true);
+  });
+
+  it('should set local player as O when not host', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.remoteSession?.localPlayer.symbol).toBe('O');
+    expect(state.remoteSession?.localPlayer.name).toBe('Bob');
+    expect(state.remoteSession?.localPlayer.isLocal).toBe(true);
+  });
+
+  it('should set isHost to true when host creates session', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.isHost).toBe(true);
+  });
+
+  it('should set isHost to false when guest joins session', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.remoteSession?.isHost).toBe(false);
+  });
+
+  it('should set game mode to remote', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.gameMode).toBe('remote');
+  });
+
+  it('should set X name from local player when host', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.playerConfigs.X.name).toBe('Alice');
+    expect(state.playerConfigs.O.name).toBe('Opponent');
+  });
+
+  it('should set O name from local player when guest', () => {
+    const state = createRemoteGameState(false, 'Bob');
+    expect(state.playerConfigs.X.name).toBe('Opponent');
+    expect(state.playerConfigs.O.name).toBe('Bob');
+  });
+
+  it('should initialize with null remote player', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.remotePlayer).toBeNull();
+  });
+
+  it('should start with idle connection status', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.remoteSession?.connectionStatus).toBe('idle');
+  });
+
+  it('should start with empty board', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.board.every((cell) => cell === null)).toBe(true);
+  });
+
+  it('should start with X as current player', () => {
+    const state = createRemoteGameState(true, 'Alice');
+    expect(state.currentPlayer).toBe('X');
   });
 });

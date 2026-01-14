@@ -310,6 +310,150 @@ test.describe('Player Names', () => {
         }
       }
     });
+
+    test('should persist computer name and symbol across page reload', async ({ page, context }) => {
+      // Navigate to page (localStorage is already cleared by beforeEach)
+      const computerOption = page.locator('.mode-selector__option').filter({ hasText: 'Computer' });
+
+      // Switch to computer mode
+      await computerOption.click();
+      
+      // Wait for mode switch to complete
+      await expect(page.locator('.mode-selector__option--selected')).toContainText('Computer');
+
+      // Set custom computer name
+      const computerNameInput = page.locator('#player-o-name');
+      await computerNameInput.clear();
+      await computerNameInput.fill('DeepBlue');
+      await computerNameInput.blur();
+      
+      // Wait for blur to complete
+      await page.waitForTimeout(100);
+
+      // Change computer's symbol
+      const oSelector = page.getByLabel('Symbol for Player O');
+      await oSelector.selectOption('★');
+      
+      // Wait for change to persist
+      await page.waitForTimeout(100);
+
+      // Create a new page in the same context (shares localStorage)
+      // This avoids the beforeEach addInitScript that clears localStorage
+      const newPage = await context.newPage();
+      await newPage.goto('/');
+      
+      // Wait for app to initialize
+      await expect(newPage.locator('.board')).toBeVisible();
+
+      // Verify we're still in computer mode
+      await expect(newPage.locator('.mode-selector__option--selected')).toContainText('Computer');
+
+      // Should still have custom name and symbol
+      const newComputerNameInput = newPage.locator('#player-o-name');
+      const newOSelector = newPage.getByLabel('Symbol for Player O');
+      await expect(newComputerNameInput).toHaveValue('DeepBlue');
+      await expect(newOSelector).toHaveValue('★');
+      
+      await newPage.close();
+    });
+
+    test('should keep computer config separate from human mode Player O', async ({ page }) => {
+      const humanOption = page.locator('.mode-selector__option').filter({ hasText: 'Human' });
+      const computerOption = page.locator('.mode-selector__option').filter({ hasText: 'Computer' });
+
+      // Set Player O name in Human mode
+      const playerOInput = page.locator('#player-o-name');
+      await playerOInput.clear();
+      await playerOInput.fill('Bob');
+      await playerOInput.blur();
+
+      // Change Player O symbol
+      const oSelector = page.getByLabel('Symbol for Player O');
+      await oSelector.selectOption('●');
+
+      // Switch to Computer mode and set different config
+      await computerOption.click();
+      await playerOInput.clear();
+      await playerOInput.fill('Skynet');
+      await playerOInput.blur();
+      await oSelector.selectOption('🔴');
+
+      // Switch back to Human mode
+      await humanOption.click();
+
+      // Human mode O should have original config
+      await expect(playerOInput).toHaveValue('Bob');
+      await expect(oSelector).toHaveValue('●');
+
+      // Switch back to Computer mode
+      await computerOption.click();
+
+      // Computer config should be preserved
+      await expect(playerOInput).toHaveValue('Skynet');
+      await expect(oSelector).toHaveValue('🔴');
+    });
+  });
+
+  test.describe('Names in Demo Mode', () => {
+    test('should keep existing names in demo mode', async ({ page }) => {
+      // First set custom names
+      const xInput = page.locator('#player-x-name');
+      const oInput = page.locator('#player-o-name');
+      await xInput.clear();
+      await xInput.fill('Alice');
+      await xInput.blur();
+      await oInput.clear();
+      await oInput.fill('Bob');
+      await oInput.blur();
+
+      // Start demo mode via button
+      const demoButton = page.getByRole('button', { name: /start demo/i });
+      await demoButton.click();
+
+      // Demo should keep the existing names
+      await expect(xInput).toHaveValue('Alice');
+      await expect(oInput).toHaveValue('Bob');
+    });
+
+    test('should preserve names after stopping demo', async ({ page }) => {
+      const demoButton = page.getByRole('button', { name: /start demo/i });
+      const stopDemoButton = page.getByRole('button', { name: /stop demo/i });
+
+      // Set up names in Human mode
+      const xInput = page.locator('#player-x-name');
+      await xInput.clear();
+      await xInput.fill('Alice');
+      await xInput.blur();
+
+      // Start Demo mode
+      await demoButton.click();
+      
+      // Names should still be Alice
+      await expect(xInput).toHaveValue('Alice');
+
+      // Stop demo and return to Human mode
+      await stopDemoButton.click();
+
+      // Human mode name should still be preserved
+      await expect(xInput).toHaveValue('Alice');
+    });
+
+    test('should keep existing symbols in demo mode', async ({ page }) => {
+      const demoButton = page.getByRole('button', { name: /start demo/i });
+
+      // First set custom symbols in Human mode
+      const xSelector = page.getByLabel('Symbol for Player X');
+      const oSelector = page.getByLabel('Symbol for Player O');
+      await xSelector.selectOption('★');
+      await oSelector.selectOption('●');
+
+      // Start Demo mode
+      await demoButton.click();
+
+      // Symbols should be preserved (demo uses existing configs)
+      await expect(xSelector).toHaveValue('★');
+      await expect(oSelector).toHaveValue('●');
+    });
   });
 
   test.describe('Name Reset', () => {

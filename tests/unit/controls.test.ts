@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { renderControls } from '../../src/ui/controls';
+import { renderControls, updateControls, type ControlsOptions } from '../../src/ui/controls';
 
 describe('controls rendering', () => {
   let container: HTMLElement;
@@ -131,4 +131,213 @@ describe('controls rendering', () => {
       expect(onNewGame2).toHaveBeenCalledTimes(1);
     });
   });
-});
+
+  describe('remote mode behavior', () => {
+    it('should show "New Game" in remote mode when game is over', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: false,
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const button = container.querySelector('.btn-new-game');
+      expect(button?.textContent).toBe('New Game');
+      expect(button?.getAttribute('aria-label')).toBe('Start a new game');
+    });
+
+    it('should keep "New Game" when isRematchPending is true (pending state ignored)', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: true,
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const button = container.querySelector('.btn-new-game');
+      // Button should still show "New Game" (rematch pending state is no longer used)
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).textContent).toBe('New Game');
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+    });
+
+    it('should hide demo button in remote mode', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'playing',
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const demoBtn = container.querySelector('.btn-demo');
+      expect(demoBtn).toBeNull();
+    });
+
+    it('should show demo button in human mode', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'human',
+        gameStatus: 'playing',
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const demoBtn = container.querySelector('.btn-demo');
+      expect(demoBtn).not.toBeNull();
+    });
+
+    it('should show "New Game" during playing state in remote mode', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'playing',
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const button = container.querySelector('.btn-new-game');
+      expect(button?.textContent).toBe('New Game');
+    });
+
+    it('should call onNewGame handler when New Game is clicked in remote mode', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      const options: ControlsOptions = {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'o-wins',
+        isRematchPending: false,
+      };
+
+      renderControls(container, onNewGame, onDemoToggle, options);
+
+      const button = container.querySelector('.btn-new-game');
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+      expect(onNewGame).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('updateControls in remote mode', () => {
+    it('should keep "New Game" button when game ends in remote mode', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      
+      // Start with playing state
+      renderControls(container, onNewGame, onDemoToggle, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'playing',
+      });
+
+      expect(container.querySelector('.btn-new-game')?.textContent).toBe('New Game');
+
+      // Game ends
+      updateControls(container, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: false,
+      });
+
+      // Button should still be "New Game" (no rematch button anymore)
+      expect(container.querySelector('.btn-new-game')?.textContent).toBe('New Game');
+    });
+
+    it('should show Waiting state when isRematchPending is true', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      
+      renderControls(container, onNewGame, onDemoToggle, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: false,
+      });
+
+      const button = container.querySelector('.btn-new-game');
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+
+      updateControls(container, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: true,
+      });
+
+      // Button should be disabled and show "Waiting..." when rematch is pending
+      expect((button as HTMLButtonElement).disabled).toBe(true);
+      expect((button as HTMLButtonElement).textContent).toBe('Waiting...');
+    });
+
+    it('should restore "New Game" when game resets after rematch', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      
+      // Game is over with rematch pending
+      renderControls(container, onNewGame, onDemoToggle, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'x-wins',
+        isRematchPending: true,
+      });
+
+      // Rematch accepted, game resets to playing
+      updateControls(container, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'playing',
+        isRematchPending: false,
+      });
+
+      const button = container.querySelector('.btn-new-game');
+      expect(button).not.toBeNull();
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect((button as HTMLButtonElement).textContent).toBe('New Game');
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+    });
+
+    it('should hide demo button in remote mode via updateControls', () => {
+      const onNewGame = vi.fn();
+      const onDemoToggle = vi.fn();
+      
+      // Start in human mode with demo button visible
+      renderControls(container, onNewGame, onDemoToggle, {
+        isDemoActive: false,
+        gameMode: 'human',
+        gameStatus: 'playing',
+      });
+
+      const demoBtn = container.querySelector('.btn-demo');
+      expect(demoBtn).not.toBeNull();
+      expect(demoBtn).toBeInstanceOf(HTMLButtonElement);
+      expect((demoBtn as HTMLButtonElement).style.display).not.toBe('none');
+
+      // Switch to remote mode
+      updateControls(container, {
+        isDemoActive: false,
+        gameMode: 'remote',
+        gameStatus: 'playing',
+      });
+
+      expect((demoBtn as HTMLButtonElement).style.display).toBe('none');
+    });
+  });});

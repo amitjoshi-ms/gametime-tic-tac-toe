@@ -200,6 +200,23 @@ body {
   animation: thinking-dots 1.5s infinite;
 }
 
+/* Remote mode status styles */
+.status--your-turn {
+  border-left: 4px solid var(--color-win);
+  background-color: rgba(46, 204, 113, 0.15);
+}
+
+.status--waiting {
+  border-left: 4px solid var(--color-accent);
+  opacity: 0.8;
+}
+
+.status--waiting::after {
+  content: '';
+  display: inline-block;
+  animation: thinking-dots 1.5s infinite;
+}
+
 @keyframes thinking-dots {
   0% {
     content: '';
@@ -235,6 +252,20 @@ body {
 .board--thinking {
   pointer-events: none;
   opacity: 0.7;
+}
+
+/* Remote mode board styles */
+.board--remote {
+  /* Base styling for remote games */
+}
+
+.board--waiting {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.board--demo {
+  pointer-events: none;
 }
 
 /* ============================================
@@ -326,6 +357,26 @@ body {
 
 .btn-demo:hover {
   background-color: color-mix(in srgb, var(--color-primary) 85%, white);
+}
+
+/* Rematch button in remote mode */
+.btn-rematch {
+  background-color: var(--color-win);
+  color: #1a1a2e;
+}
+
+.btn-rematch:hover {
+  background-color: color-mix(in srgb, var(--color-win) 85%, white);
+}
+
+.btn-rematch:disabled {
+  background-color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-rematch:disabled:hover {
+  transform: none;
 }
 
 /* ============================================
@@ -548,6 +599,10 @@ body {
   max-width: 180px;
 }
 
+.player-config-field--hidden {
+  display: none;
+}
+
 .player-config-field > .player-name-label {
   margin-bottom: -0.25rem;
 }
@@ -572,5 +627,297 @@ body {
 @media (hover: none) {
   .cell:active:not(.cell--occupied):not(.cell--disabled) {
     background-color: var(--color-primary);
+  }
+}
+
+/* ============================================
+   Remote Multiplayer Panel
+   ============================================ */
+.remote-panel {
+  width: 100%;
+  max-width: 350px;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.remote-panel__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.remote-panel__instructions {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.remote-panel__buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.remote-panel__btn {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.remote-panel__btn:hover {
+  transform: scale(1.02);
+}
+
+.remote-panel__btn:active {
+  transform: scale(0.98);
+}
+
+.remote-panel__btn--primary {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.remote-panel__btn--primary:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 85%, white);
+}
+
+.remote-panel__btn--secondary {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.remote-panel__btn--secondary:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 85%, white);
+}
+
+/* Code Input */
+.remote-panel__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.remote-panel__code-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  font-family: monospace;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  resize: none;
+  transition: border-color var(--transition-fast);
+}
+
+.remote-panel__code-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.remote-panel__code-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Code Display */
+.remote-panel__code-display {
+  margin-bottom: 1rem;
+}
+
+.remote-panel__code-text {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  resize: none;
+  word-break: break-all;
+}
+
+/* Answer Section (for host) */
+.remote-panel__answer-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-primary);
+}
+
+.remote-panel__answer-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* Spinner */
+.remote-panel__spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1rem;
+  border: 4px solid var(--color-primary);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spinner-rotate 1s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.remote-panel__status-text {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.remote-panel__waiting-text {
+  margin-top: 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Connected State */
+.remote-panel__connected-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--color-win);
+  margin-bottom: 0.5rem;
+}
+
+.remote-panel__connected-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-win);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.remote-panel__opponent-name {
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+/* Error State */
+.remote-panel__error {
+  text-align: center;
+}
+
+.remote-panel__error-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.remote-panel__error-text {
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+/* Rematch Request State */
+.remote-panel__rematch-request {
+  text-align: center;
+  animation: pulse-border 2s ease-in-out infinite;
+  padding: 1.5rem;
+  border: 2px solid var(--color-win);
+  border-radius: var(--border-radius);
+  background-color: rgba(74, 222, 128, 0.1);
+}
+
+.remote-panel__rematch-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  animation: bounce 1s ease infinite;
+}
+
+.remote-panel__rematch-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: var(--color-win);
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Disconnected State */
+.remote-panel__disconnected {
+  text-align: center;
+}
+
+.remote-panel__disconnected-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.remote-panel__disconnected-text {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments for remote panel */
+@media (max-width: 360px) {
+  .remote-panel {
+    padding: 1rem;
+  }
+
+  .remote-panel__title {
+    font-size: 1.2rem;
+  }
+
+  .remote-panel__btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .remote-panel__code-input,
+  .remote-panel__code-text {
+    font-size: 0.7rem;
   }
 }
