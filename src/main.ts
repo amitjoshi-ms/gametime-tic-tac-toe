@@ -643,6 +643,13 @@ function handleRemoteConnected(remoteName: string): void {
     },
   };
 
+  // Send local player's symbol to remote peer (handshake only includes name)
+  if (remoteController && gameState.remoteSession?.localPlayer) {
+    const localPlayerKey = gameState.remoteSession.localPlayer.symbol;
+    const localConfig = gameState.playerConfigs[localPlayerKey];
+    remoteController.updatePlayer(localConfig.name, localConfig.symbol);
+  }
+
   // Update panel to connected state with remote player's display symbol
   remotePanelState = {
     phase: 'connected',
