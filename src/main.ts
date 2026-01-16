@@ -36,6 +36,7 @@ import {
   updateRemotePanel,
   type RemotePanelState,
 } from './ui/remotePanel';
+import { renderVersion } from './ui/version';
 import type { GameState, GameMode, PlayerConfigs, Player } from './game/types';
 import { AVAILABLE_SYMBOLS } from './game/types';
 
@@ -973,6 +974,9 @@ function initApp(): void {
     <div id="board" class="board"></div>
     <div id="controls" class="controls"></div>
   `;
+
+  // Render version footer
+  renderVersion(app);
 
   // Get container references
   const modeSelectorContainer = document.getElementById('mode-selector');
