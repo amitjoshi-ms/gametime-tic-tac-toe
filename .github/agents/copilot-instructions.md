@@ -1,6 +1,6 @@
 # gametime-tic-tac-toe Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-01-12
+Auto-generated from all feature plans. Last updated: 2026-01-22
 
 ## Active Technologies
 - TypeScript 5.x (strict mode enabled) + None - pure CSS3 transforms (Vite for build) (005-3d-board)
