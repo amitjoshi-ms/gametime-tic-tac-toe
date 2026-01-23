@@ -204,12 +204,12 @@ Phase 3 (US1)    Phase 4 (US2)   Phase 5 (US3)   Phase 6 (US4)   Phase 7     │
 |-------|----------------|
 | Phase 1 | T001, T002 |
 | Phase 2 | T003-T006 are sequential (build on each other) |
-| Phase 3 | T007-T011 (all tests), T012-T015 after tests |
-| Phase 4 | T016-T018 (all tests), T019-T022 after tests |
-| Phase 5 | T023-T024 (tests), T025-T026 after |
-| Phase 6 | T027-T029 (tests), T030-T031 after |
-| Phase 7 | T032-T033 sequential, T034 parallel |
-| Phase 8 | T035-T038 all parallel |
+| Phase 3 | T009-T013 (all tests), T014-T017 after tests |
+| Phase 4 | T018-T020 (all tests), T021-T024 after tests |
+| Phase 5 | T025-T026 (tests), T027-T028 after |
+| Phase 6 | T029-T031 (tests), T032-T033 after |
+| Phase 7 | T034-T035 sequential, T036 parallel |
+| Phase 8 | T037-T042 all parallel |
 
 ---
 
@@ -217,10 +217,10 @@ Phase 3 (US1)    Phase 4 (US2)   Phase 5 (US3)   Phase 6 (US4)   Phase 7     │
 
 ```bash
 # Thread 1: Create test file and test infrastructure
-T007 → T008 → T009 → T010 → T011
+T009 → T010 → T011 → T012 → T013
 
 # Thread 2: After tests written, implement CSS (single file, sequential)
-T012 → T013 → T014 → T015
+T014 → T015 → T016 → T017
 ```
 
 ---
@@ -263,7 +263,7 @@ Complete all phases for:
 - Responsive design (US4)
 - Full accessibility compliance
 
-Total: 40 tasks
+Total: 42 tasks
 
 ---
 
