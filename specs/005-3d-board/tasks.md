@@ -62,7 +62,7 @@
 - [ ] T014 [US1] Verify board perspective transform displays correctly in src/styles/main.css
 - [ ] T015 [US1] Verify cell elevation and shadow styling in src/styles/main.css
 - [ ] T016 [US1] Verify symbols remain visible and properly styled on 3D cells in src/styles/main.css
-- [ ] T017 [US1] Verify winning cells (`.cell--winner`) work with 3D effects in src/styles/main.css
+- [ ] T017 [US1] Implement `.cell--winner` class for winning cells 3D styling in src/styles/main.css and update src/ui/board.ts to apply when win detected
 
 **Checkpoint**: User Story 1 complete - board displays with 3D depth and is fully playable
 
@@ -104,14 +104,14 @@
 ### E2E Tests for User Story 3
 
 - [ ] T025 [P] [US3] Add test: 3D shadows visible in dark theme in tests/e2e/board3d.spec.ts
-- [ ] T026 [P] [US3] Add test: 3D shadows adapt for light theme (if light theme exists) in tests/e2e/board3d.spec.ts
+- [ ] T026 [P] [US3] Add test: 3D shadows adapt for light theme when `prefers-color-scheme: light` applied in tests/e2e/board3d.spec.ts
 
 ### Implementation for User Story 3
 
 - [ ] T027 [US3] Verify dark theme shadow colors work with current variables in src/styles/main.css
-- [ ] T028 [US3] Add `@media (prefers-color-scheme: light)` overrides for shadow colors in src/styles/main.css
+- [ ] T028 [US3] Add `@media (prefers-color-scheme: light)` overrides to introduce light theme support for 3D shadows in src/styles/main.css
 
-**Checkpoint**: User Story 3 complete - 3D effects work with both themes
+**Checkpoint**: User Story 3 complete - 3D effects work in dark theme (existing) and light theme (newly added)
 
 ---
 
@@ -251,9 +251,9 @@ Each PR should be independently mergeable and deliver incremental value:
 **If you prefer one larger PR, complete:**
 - Phase 1: Setup (T001-T002)
 - Phase 2: Foundational (T003-T006)
-- Phase 3: User Story 1 (T007-T015)
+- Phase 3: User Story 1 (T009-T017)
 
-This delivers a fully functional 3D board with ~15 tasks.
+This delivers a fully functional 3D board with ~17 tasks.
 
 ### Full Implementation
 
