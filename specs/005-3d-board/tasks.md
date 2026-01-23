@@ -203,7 +203,7 @@ Phase 3 (US1)    Phase 4 (US2)   Phase 5 (US3)   Phase 6 (US4)   Phase 7     │
 | Phase | Parallel Tasks |
 |-------|----------------|
 | Phase 1 | T001, T002 |
-| Phase 2 | T003-T006 are sequential (build on each other) |
+| Phase 2 | T003-T004 parallel (different selectors), T005-T006 sequential after |
 | Phase 3 | T009-T013 (all tests), T014-T017 after tests |
 | Phase 4 | T018-T020 (all tests), T021-T024 after tests |
 | Phase 5 | T025-T026 (tests), T027-T028 after |
