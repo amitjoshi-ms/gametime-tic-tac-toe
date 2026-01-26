@@ -36,6 +36,17 @@
   /* Transitions */
   --transition-fast: 100ms ease;
   --transition-normal: 200ms ease;
+
+  /* 3D Effect Properties */
+  --board-perspective: clamp(400px, 50vw, 800px);
+  --board-rotate-x: 8deg;
+  --cell-depth: 4px;
+  --cell-hover-depth: 8px;
+  --transition-3d: 150ms ease-out;
+
+  /* 3D Shadow Properties */
+  --shadow-3d-color: rgba(0, 0, 0, 0.4);
+  --shadow-3d-highlight: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================================
@@ -247,6 +258,11 @@ body {
   padding: var(--gap-size);
   border-radius: var(--border-radius);
   transition: opacity var(--transition-normal);
+
+  /* 3D Transform */
+  perspective: var(--board-perspective);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--board-rotate-x));
 }
 
 .board--thinking {
@@ -283,19 +299,29 @@ body {
   justify-content: center;
   font-size: calc(var(--cell-size) * 0.6);
   font-weight: 700;
-  transition: background-color var(--transition-fast),
-    transform var(--transition-fast);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+
+  /* 3D Positioning */
+  transform: translateZ(var(--cell-depth));
+  box-shadow: 0 2px 4px var(--shadow-3d-color);
+  will-change: transform;
+
+  /* 3D Transitions */
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-3d),
+    box-shadow var(--transition-3d);
 }
 
 .cell:hover:not(.cell--occupied):not(.cell--disabled) {
   background-color: var(--color-primary);
-  transform: scale(1.02);
+  transform: translateZ(var(--cell-hover-depth));
+  box-shadow: 0 4px 12px var(--shadow-3d-color);
 }
 
 .cell:active:not(.cell--occupied):not(.cell--disabled) {
-  transform: scale(0.98);
+  transform: translateZ(var(--cell-depth)) scale(0.98);
 }
 
 .cell--x {
@@ -936,4 +962,28 @@ body {
 
 .app-version:hover {
   opacity: 1;
+}
+
+/* ============================================
+   3D Graceful Degradation
+   ============================================ */
+@supports not (transform-style: preserve-3d) {
+  .board {
+    perspective: none;
+    transform: none;
+  }
+
+  .cell {
+    transform: none;
+    /* Shadow-only depth hint for non-3D browsers */
+    box-shadow: 0 2px 4px var(--shadow-3d-color);
+  }
+
+  .cell:hover:not(.cell--occupied):not(.cell--disabled) {
+    transform: scale(1.02);
+  }
+
+  .cell:active:not(.cell--occupied):not(.cell--disabled) {
+    transform: scale(0.98);
+  }
 }

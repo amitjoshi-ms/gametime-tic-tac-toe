@@ -19,8 +19,8 @@
 
 **Purpose**: Add CSS custom properties infrastructure for 3D effects
 
-- [ ] T001 Add 3D effect CSS custom properties to `:root` in src/styles/main.css
-- [ ] T002 Add 3D shadow CSS custom properties to `:root` in src/styles/main.css
+- [x] T001 Add 3D effect CSS custom properties to `:root` in src/styles/main.css
+- [x] T002 Add 3D shadow CSS custom properties to `:root` in src/styles/main.css
 
 ---
 
@@ -30,12 +30,12 @@
 
 **⚠️ CRITICAL**: All user stories depend on this foundation
 
-- [ ] T003 Add 3D perspective and transform-style to `.board` class in src/styles/main.css
-- [ ] T004 Add base 3D translateZ and box-shadow to `.cell` class in src/styles/main.css
-- [ ] T005 Add will-change optimization to `.cell` for GPU acceleration in src/styles/main.css
-- [ ] T006 Add `@supports` graceful degradation fallback for browsers without 3D support in src/styles/main.css
-- [ ] T007 [P] Verify 3D transforms work via manual browser check (Chrome DevTools)
-- [ ] T008 [P] Run existing E2E tests to confirm no regressions in tests/e2e/
+- [x] T003 Add 3D perspective and transform-style to `.board` class in src/styles/main.css
+- [x] T004 Add base 3D translateZ and box-shadow to `.cell` class in src/styles/main.css
+- [x] T005 Add will-change optimization to `.cell` for GPU acceleration in src/styles/main.css
+- [x] T006 Add `@supports` graceful degradation fallback for browsers without 3D support in src/styles/main.css
+- [x] T007 [P] Verify 3D transforms work via manual browser check (Chrome DevTools)
+- [x] T008 [P] Run existing E2E tests to confirm no regressions in tests/e2e/ (168 tests passed)
 
 **Checkpoint**: Foundation ready - board displays with static 3D appearance
 
