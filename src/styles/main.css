@@ -46,7 +46,6 @@
 
   /* 3D Shadow Properties */
   --shadow-3d-color: rgba(0, 0, 0, 0.4);
-  --shadow-3d-highlight: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================================
@@ -305,7 +304,6 @@ body {
   /* 3D Positioning */
   transform: translateZ(var(--cell-depth));
   box-shadow: 0 2px 4px var(--shadow-3d-color);
-  will-change: transform;
 
   /* 3D Transitions */
   transition:
@@ -644,6 +642,20 @@ body {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+
+  /* Disable 3D transforms for users who prefer reduced motion */
+  .board {
+    perspective: none;
+    transform-style: flat;
+    transform: none;
+  }
+
+  .cell,
+  .cell:hover:not(.cell--occupied):not(.cell--disabled),
+  .cell:active:not(.cell--occupied):not(.cell--disabled) {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 }
 
