@@ -32,7 +32,7 @@
 
 - [x] T003 Add 3D perspective and transform-style to `.board` class in src/styles/main.css
 - [x] T004 Add base 3D translateZ and box-shadow to `.cell` class in src/styles/main.css
-- [x] T005 Add will-change optimization to `.cell` for GPU acceleration in src/styles/main.css
+- [x] T005 ~~Add will-change optimization to `.cell`~~ Intentionally skipped - modern browsers handle transforms efficiently without will-change (per performance review)
 - [x] T006 Add `@supports` graceful degradation fallback for browsers without 3D support in src/styles/main.css
 - [x] T007 [P] Verify 3D transforms work via manual browser check (Chrome DevTools)
 - [x] T008 [P] Run existing E2E tests to confirm no regressions in tests/e2e/ (168 tests passed)

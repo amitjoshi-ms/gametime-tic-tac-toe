@@ -982,6 +982,7 @@ body {
 @supports not (transform-style: preserve-3d) {
   .board {
     perspective: none;
+    transform-style: flat;
     transform: none;
   }
 
