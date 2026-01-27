@@ -662,7 +662,8 @@ body {
 
   .cell,
   .cell:hover:not(.cell--occupied):not(.cell--disabled),
-  .cell:active:not(.cell--occupied):not(.cell--disabled) {
+  .cell:active:not(.cell--occupied):not(.cell--disabled),
+  .cell--winner {
     transform: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
