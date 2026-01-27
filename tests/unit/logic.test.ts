@@ -204,6 +204,30 @@ describe('getWinningCells', () => {
     // First matching line is [0, 1, 2]
     expect(getWinningCells(board, 'X')).toEqual([0, 1, 2]);
   });
+
+  it('should return winning cells for star symbol in top row', () => {
+    const board: CellValue[] = ['★', '★', '★', null, '🔵', '🔵', null, null, null];
+    expect(getWinningCells(board, '★')).toEqual([0, 1, 2]);
+    expect(getWinningCells(board, '🔵')).toBeNull();
+  });
+
+  it('should return winning cells for emoji symbols in column', () => {
+    const board: CellValue[] = ['🔵', '★', null, '🔵', '★', null, '🔵', null, null];
+    expect(getWinningCells(board, '🔵')).toEqual([0, 3, 6]);
+    expect(getWinningCells(board, '★')).toBeNull();
+  });
+
+  it('should return winning cells for shape symbols in diagonal', () => {
+    const board: CellValue[] = ['●', '■', null, '■', '●', null, null, null, '●'];
+    expect(getWinningCells(board, '●')).toEqual([0, 4, 8]);
+    expect(getWinningCells(board, '■')).toBeNull();
+  });
+
+  it('should return winning cells for moon emoji in anti-diagonal', () => {
+    const board: CellValue[] = [null, null, '🌙', '★', '🌙', '★', '🌙', null, null];
+    expect(getWinningCells(board, '🌙')).toEqual([2, 4, 6]);
+    expect(getWinningCells(board, '★')).toBeNull();
+  });
 });
 
 describe('isBoardFull', () => {
