@@ -11,6 +11,7 @@ import {
   isValidMove,
   isEarlyDraw,
   WINNING_LINES,
+  getWinningCells,
 } from '../../src/game/logic';
 import type { CellValue, PlayerConfigs } from '../../src/game/types';
 
@@ -167,6 +168,41 @@ describe('checkWin', () => {
       const board: CellValue[] = [null, 'X', 'O', 'X', 'O', null, 'O', null, 'X'];
       expect(checkWin(board, 'O')).toBe(true);
     });
+  });
+});
+
+describe('getWinningCells', () => {
+  it('should return null for empty board', () => {
+    const board: CellValue[] = Array<CellValue>(9).fill(null);
+    expect(getWinningCells(board, 'X')).toBeNull();
+    expect(getWinningCells(board, 'O')).toBeNull();
+  });
+
+  it('should return null when no winner yet', () => {
+    const board: CellValue[] = ['X', 'O', 'X', null, null, null, null, null, null];
+    expect(getWinningCells(board, 'X')).toBeNull();
+  });
+
+  it('should return winning cells for X top row win', () => {
+    const board: CellValue[] = ['X', 'X', 'X', 'O', 'O', null, null, null, null];
+    expect(getWinningCells(board, 'X')).toEqual([0, 1, 2]);
+  });
+
+  it('should return winning cells for X diagonal win', () => {
+    const board: CellValue[] = ['X', 'O', null, 'O', 'X', null, null, null, 'X'];
+    expect(getWinningCells(board, 'X')).toEqual([0, 4, 8]);
+  });
+
+  it('should return winning cells for O middle column win', () => {
+    const board: CellValue[] = ['X', 'O', 'X', null, 'O', null, 'X', 'O', null];
+    expect(getWinningCells(board, 'O')).toEqual([1, 4, 7]);
+  });
+
+  it('should return first winning line when multiple exist', () => {
+    // This is a rare edge case but tests deterministic behavior
+    const board: CellValue[] = ['X', 'X', 'X', 'X', 'X', 'X', null, null, null];
+    // First matching line is [0, 1, 2]
+    expect(getWinningCells(board, 'X')).toEqual([0, 1, 2]);
   });
 });
 
