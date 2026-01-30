@@ -339,6 +339,15 @@ body {
   opacity: 0.7;
 }
 
+/* Winning cells 3D styling - highlighted with enhanced depth and glow */
+.cell--winner {
+  transform: translateZ(calc(var(--cell-hover-depth) * 1.5));
+  box-shadow:
+    0 6px 16px var(--shadow-3d-color),
+    0 0 12px rgba(74, 222, 128, 0.5);
+  background-color: rgba(74, 222, 128, 0.15);
+}
+
 /* ============================================
    Controls (New Game Button)
    ============================================ */
@@ -653,7 +662,8 @@ body {
 
   .cell,
   .cell:hover:not(.cell--occupied):not(.cell--disabled),
-  .cell:active:not(.cell--occupied):not(.cell--disabled) {
+  .cell:active:not(.cell--occupied):not(.cell--disabled),
+  .cell--winner {
     transform: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }

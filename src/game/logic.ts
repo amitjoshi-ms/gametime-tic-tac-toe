@@ -51,6 +51,30 @@ export function checkWin(board: CellValue[], playerSymbol: PlayerSymbol): boolea
 }
 
 /**
+ * Gets the indices of winning cells for a player.
+ *
+ * @param board - Current board state (9 elements)
+ * @param playerSymbol - Player symbol to check
+ * @returns Array of cell indices forming the winning line, or null if no win
+ */
+export function getWinningCells(
+  board: CellValue[],
+  playerSymbol: PlayerSymbol
+): WinningLine | null {
+  for (const line of WINNING_LINES) {
+    const [a, b, c] = line;
+    if (
+      board[a] === playerSymbol &&
+      board[b] === playerSymbol &&
+      board[c] === playerSymbol
+    ) {
+      return line;
+    }
+  }
+  return null;
+}
+
+/**
  * Checks if the board is completely filled.
  *
  * @param board - Current board state

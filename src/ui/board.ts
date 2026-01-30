@@ -5,8 +5,9 @@
  * @module ui/board
  */
 
-import type { GameState, CellValue } from '../game/types';
+import type { GameState, CellValue, WinningLine } from '../game/types';
 import { isLocalPlayerTurn } from '../game/remote';
+import { getWinningCells } from '../game/logic';
 
 /**
  * Callback signature for cell click events.
@@ -173,6 +174,14 @@ export function updateBoard(container: HTMLElement, state: GameState): void {
   const isRemote = state.gameMode === 'remote';
   const isWaitingForOpponent = isRemote && !isInteractive && !isGameOver;
 
+  // Determine winning cells if game is won
+  let winningCells: WinningLine | null = null;
+  if (state.status === 'x-wins') {
+    winningCells = getWinningCells(state.board, state.playerConfigs.X.symbol);
+  } else if (state.status === 'o-wins') {
+    winningCells = getWinningCells(state.board, state.playerConfigs.O.symbol);
+  }
+
   // Handle thinking state class toggling
   container.classList.toggle('board--thinking', state.isComputerThinking);
   // Handle demo mode class toggling
@@ -206,6 +215,11 @@ export function updateBoard(container: HTMLElement, state: GameState): void {
     } else {
       delete button.dataset.symbol;
       button.setAttribute('aria-label', `Cell ${String(index + 1)}`);
+    }
+
+    // Apply winning cell styling if this cell is part of the winning line
+    if (winningCells?.includes(index)) {
+      button.classList.add('cell--winner');
     }
 
     // Handle disabled state:

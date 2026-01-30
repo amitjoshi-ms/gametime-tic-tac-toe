@@ -51,18 +51,18 @@
 
 ### E2E Tests for User Story 1
 
-- [ ] T009 [P] [US1] Create E2E test file tests/e2e/board3d.spec.ts with test structure
-- [ ] T010 [P] [US1] Add test: board displays with 3D perspective in tests/e2e/board3d.spec.ts
-- [ ] T011 [P] [US1] Add test: cells have shadow styling in tests/e2e/board3d.spec.ts
-- [ ] T012 [P] [US1] Add test: all 9 cells remain clickable with 3D transforms in tests/e2e/board3d.spec.ts
-- [ ] T013 [P] [US1] Add test: symbols (X, O) render correctly on 3D surface in tests/e2e/board3d.spec.ts
+- [x] T009 [P] [US1] Create E2E test file tests/e2e/board3d.spec.ts with test structure
+- [x] T010 [P] [US1] Add test: board displays with 3D perspective in tests/e2e/board3d.spec.ts
+- [x] T011 [P] [US1] Add test: cells have shadow styling in tests/e2e/board3d.spec.ts
+- [x] T012 [P] [US1] Add test: all 9 cells remain clickable with 3D transforms in tests/e2e/board3d.spec.ts
+- [x] T013 [P] [US1] Add test: symbols (X, O) render correctly on 3D surface in tests/e2e/board3d.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Verify board perspective transform displays correctly in src/styles/main.css
-- [ ] T015 [US1] Verify cell elevation and shadow styling in src/styles/main.css
-- [ ] T016 [US1] Verify symbols remain visible and properly styled on 3D cells in src/styles/main.css
-- [ ] T017 [US1] Implement `.cell--winner` class for winning cells 3D styling in src/styles/main.css and update src/ui/board.ts to apply when win detected
+- [x] T014 [US1] Verify board perspective transform displays correctly in src/styles/main.css
+- [x] T015 [US1] Verify cell elevation and shadow styling in src/styles/main.css
+- [x] T016 [US1] Verify symbols remain visible and properly styled on 3D cells in src/styles/main.css
+- [x] T017 [US1] Implement `.cell--winner` class for winning cells 3D styling in src/styles/main.css and update src/ui/board.ts to apply when win detected
 
 **Checkpoint**: User Story 1 complete - board displays with 3D depth and is fully playable
 
