@@ -338,4 +338,34 @@ test.describe('3D Board Visual Effects', () => {
       await expect(cells.first()).toHaveText('X');
     });
   });
+
+  test.describe('Accessibility: Reduced Motion', () => {
+    test('board remains fully functional with reduced motion preference', async ({
+      page,
+    }) => {
+      // Emulate reduced motion preference
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.reload();
+
+      const cells = page.locator('.cell');
+
+      // Board should still be fully functional
+      await cells.nth(0).click();
+      await expect(cells.nth(0)).toHaveText('X');
+
+      await cells.nth(1).click();
+      await expect(cells.nth(1)).toHaveText('O');
+
+      // Cells should have shadow (static 3D depth hint)
+      const boxShadow = await getBoxShadow(cells.nth(0));
+      expect(boxShadow).not.toBe('none');
+
+      // Play to a win to verify game completion works
+      await cells.nth(3).click(); // X
+      await cells.nth(4).click(); // O
+      await cells.nth(6).click(); // X wins (left column)
+
+      await expect(page.locator('.status')).toContainText(/wins/i);
+    });
+  });
 });

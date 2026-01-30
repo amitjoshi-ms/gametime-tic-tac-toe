@@ -1046,3 +1046,24 @@ body {
     --cell-hover-depth: 4px;
   }
 }
+
+/* ============================================
+   Reduced Motion Accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Disable all 3D transitions/animations */
+    --transition-3d: 0s;
+    --transition-fast: 0s;
+    --transition-normal: 0s;
+  }
+
+  .cell {
+    /* Static 3D appearance preserved, but no animation */
+    transition: none;
+  }
+
+  .board {
+    transition: none;
+  }
+}
