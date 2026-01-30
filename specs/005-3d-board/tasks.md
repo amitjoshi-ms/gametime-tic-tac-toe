@@ -103,13 +103,13 @@
 
 ### E2E Tests for User Story 3
 
-- [ ] T025 [P] [US3] Add test: 3D shadows visible in dark theme in tests/e2e/board3d.spec.ts
-- [ ] T026 [P] [US3] Add test: 3D shadows adapt for light theme when `prefers-color-scheme: light` applied in tests/e2e/board3d.spec.ts
+- [x] T025 [P] [US3] Add test: 3D shadows visible in dark theme in tests/e2e/board3d.spec.ts
+- [x] T026 [P] [US3] Add test: 3D shadows adapt for light theme when `prefers-color-scheme: light` applied in tests/e2e/board3d.spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Verify dark theme shadow colors work with current variables in src/styles/main.css
-- [ ] T028 [US3] Add `@media (prefers-color-scheme: light)` overrides to introduce light theme support for 3D shadows in src/styles/main.css
+- [x] T027 [US3] Verify dark theme shadow colors work with current variables in src/styles/main.css
+- [x] T028 [US3] Add `@media (prefers-color-scheme: light)` overrides to introduce light theme support for 3D shadows in src/styles/main.css
 
 **Checkpoint**: User Story 3 complete - 3D effects work in dark theme (existing) and light theme (newly added)
 
@@ -123,14 +123,14 @@
 
 ### E2E Tests for User Story 4
 
-- [ ] T029 [P] [US4] Add test: 3D perspective works at desktop width (1024px) in tests/e2e/board3d.spec.ts
-- [ ] T030 [P] [US4] Add test: 3D perspective adapts at mobile width (375px) in tests/e2e/board3d.spec.ts
-- [ ] T031 [P] [US4] Add test: 3D perspective adapts at small mobile width (320px) in tests/e2e/board3d.spec.ts
+- [x] T029 [P] [US4] Add test: 3D perspective works at desktop width (1024px) in tests/e2e/board3d.spec.ts
+- [x] T030 [P] [US4] Add test: 3D perspective adapts at mobile width (375px) in tests/e2e/board3d.spec.ts
+- [x] T031 [P] [US4] Add test: 3D perspective adapts at small mobile width (320px) in tests/e2e/board3d.spec.ts
 
 ### Implementation for User Story 4
 
-- [ ] T032 [US4] Add responsive media query `@media (max-width: 480px)` for mobile perspective in src/styles/main.css
-- [ ] T033 [US4] Add responsive media query `@media (max-width: 320px)` for small mobile in src/styles/main.css
+- [x] T032 [US4] Add responsive media query `@media (max-width: 480px)` for mobile perspective in src/styles/main.css
+- [x] T033 [US4] Add responsive media query `@media (max-width: 320px)` for small mobile in src/styles/main.css
 
 **Checkpoint**: User Story 4 complete - responsive 3D layout works across devices
 
