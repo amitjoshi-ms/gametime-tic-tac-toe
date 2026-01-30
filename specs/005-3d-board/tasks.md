@@ -142,9 +142,9 @@
 
 **Purpose**: Respect user preference for reduced motion
 
-- [ ] T034 Add `@media (prefers-reduced-motion: reduce)` to disable 3D animations in src/styles/main.css
-- [ ] T035 Verify static 3D appearance is preserved when motion is reduced in src/styles/main.css
-- [ ] T036 [P] Add test: reduced motion users see no hover animations in tests/e2e/board3d.spec.ts
+- [x] T034 Add `@media (prefers-reduced-motion: reduce)` to disable 3D animations in src/styles/main.css
+- [x] T035 Verify static 3D appearance is preserved when motion is reduced in src/styles/main.css
+- [x] T036 [P] Add test: reduced motion users see no hover animations in tests/e2e/board3d.spec.ts
 
 ---
 
@@ -152,12 +152,12 @@
 
 **Purpose**: Final verification and documentation
 
-- [ ] T037 [P] Run all E2E tests and verify passing in tests/e2e/board3d.spec.ts
-- [ ] T038 [P] Run existing E2E tests to verify no regressions in tests/e2e/
-- [ ] T039 [P] Cross-browser testing: Chrome, Firefox, Safari, Edge
-- [ ] T040 [P] Performance validation: verify 60fps animations using DevTools
-- [ ] T041 Run quickstart.md validation checklist in specs/005-3d-board/quickstart.md
-- [ ] T042 Update feature spec status to "Complete" in specs/005-3d-board/spec.md
+- [x] T037 [P] Run all E2E tests and verify passing in tests/e2e/board3d.spec.ts
+- [x] T038 [P] Run existing E2E tests to verify no regressions in tests/e2e/
+- [x] T039 [P] Cross-browser testing: Chrome, Firefox, Safari, Edge
+- [x] T040 [P] Performance validation: verify 60fps animations using DevTools
+- [x] T041 Run quickstart.md validation checklist in specs/005-3d-board/quickstart.md
+- [x] T042 Update feature spec status to "Complete" in specs/005-3d-board/spec.md
 
 **PR 5 Complete**: Accessibility + polish + docs ✅
 
