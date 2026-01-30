@@ -1013,3 +1013,36 @@ body {
     transform: scale(0.98);
   }
 }
+
+/* ============================================
+   Light Theme 3D Shadow Adjustments
+   ============================================ */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Lighter shadows for light backgrounds */
+    --shadow-3d-color: rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ============================================
+   Responsive 3D Perspective
+   ============================================ */
+@media (max-width: 480px) {
+  :root {
+    /* Reduced perspective for mobile - less dramatic 3D effect */
+    --board-perspective: clamp(300px, 60vw, 500px);
+    --board-rotate-x: 6deg;
+    --cell-depth: 3px;
+    --cell-hover-depth: 6px;
+  }
+}
+
+@media (max-width: 320px) {
+  :root {
+    /* Minimal 3D effect for very small screens */
+    --board-perspective: 250px;
+    --board-rotate-x: 4deg;
+    --cell-depth: 2px;
+    --cell-hover-depth: 4px;
+  }
+}

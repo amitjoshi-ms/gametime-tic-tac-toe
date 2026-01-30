@@ -261,4 +261,81 @@ test.describe('3D Board Visual Effects', () => {
       expect(afterHover).toBe(beforeHover);
     });
   });
+
+  test.describe('User Story 3: Theme Compatibility (P3)', () => {
+    test('3D shadows visible in dark theme (default)', async ({ page }) => {
+      const cell = page.locator('.cell').first();
+
+      // Dark theme is default - verify shadow is visible
+      const boxShadow = await getBoxShadow(cell);
+      expect(boxShadow).not.toBe('none');
+      expect(boxShadow).toMatch(/rgba?\(/);
+    });
+
+    test('3D shadows adapt for light theme', async ({ page }) => {
+      // Emulate light color scheme
+      await page.emulateMedia({ colorScheme: 'light' });
+      await page.reload();
+
+      const cell = page.locator('.cell').first();
+
+      // Verify shadow is still visible in light theme
+      const boxShadow = await getBoxShadow(cell);
+      expect(boxShadow).not.toBe('none');
+      expect(boxShadow).toMatch(/rgba?\(/);
+    });
+  });
+
+  test.describe('User Story 4: Responsive 3D Layout (P3)', () => {
+    test('3D perspective works at desktop width (1024px)', async ({ page }) => {
+      await page.setViewportSize({ width: 1024, height: 768 });
+      await page.reload();
+
+      const board = page.locator('.board');
+
+      // Verify perspective is applied
+      const perspective = await getPerspective(board);
+      expect(perspective).not.toBe('none');
+      expect(perspective).toMatch(/^\d+(\.\d+)?px$/);
+
+      // Verify transform is applied
+      const transform = await getTransform(board);
+      expect(transform).not.toBe('none');
+    });
+
+    test('3D perspective adapts at mobile width (375px)', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 667 });
+      await page.reload();
+
+      const board = page.locator('.board');
+
+      // Verify perspective is still applied
+      const perspective = await getPerspective(board);
+      expect(perspective).not.toBe('none');
+
+      // Verify board is visible and clickable
+      const cell = page.locator('.cell').first();
+      await cell.click();
+      await expect(cell).toHaveText('X');
+    });
+
+    test('3D perspective adapts at small mobile width (320px)', async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 320, height: 568 });
+      await page.reload();
+
+      const board = page.locator('.board');
+
+      // Verify perspective is still applied (may be reduced)
+      const perspective = await getPerspective(board);
+      expect(perspective).not.toBe('none');
+
+      // Verify board is visible and cells are clickable
+      const cells = page.locator('.cell');
+      await expect(cells).toHaveCount(9);
+      await cells.first().click();
+      await expect(cells.first()).toHaveText('X');
+    });
+  });
 });
