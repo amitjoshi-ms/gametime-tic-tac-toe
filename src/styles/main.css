@@ -539,6 +539,9 @@ body {
 .cell:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
+  /* 3D-enhanced focus state for keyboard navigation */
+  transform: translateZ(var(--cell-hover-depth));
+  box-shadow: 0 4px 12px var(--shadow-3d-color);
 }
 
 /* ============================================

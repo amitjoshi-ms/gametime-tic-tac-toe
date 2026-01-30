@@ -174,4 +174,91 @@ test.describe('3D Board Visual Effects', () => {
       await expect(cells.nth(5)).not.toHaveClass(/cell--winner/);
     });
   });
+
+  test.describe('User Story 2: Interactive 3D Feedback (P2)', () => {
+    test('cell hover triggers visual lift effect', async ({ page }) => {
+      const cell = page.locator('.cell').first();
+
+      // Hover over the cell
+      await cell.hover();
+
+      // Get transform after hover - should show 3D lift
+      const hoverTransform = await getTransform(cell);
+
+      // Transform should be applied (lift effect via translateZ)
+      expect(hoverTransform).not.toBe('none');
+      expect(hoverTransform).toMatch(/matrix/);
+
+      // Verify box-shadow increases on hover
+      const hoverShadow = await getBoxShadow(cell);
+      expect(hoverShadow).not.toBe('none');
+      expect(hoverShadow).toMatch(/rgba?\(/);
+    });
+
+    test('cell focus shows visible focus state', async ({ page }) => {
+      const cell = page.locator('.cell').first();
+
+      // Focus the cell using keyboard
+      await cell.focus();
+
+      // Verify cell has focus-visible styling (outline)
+      const outline = await cell.evaluate(
+        (el) => getComputedStyle(el).outline
+      );
+      expect(outline).not.toBe('none');
+      expect(outline).not.toBe('');
+
+      // Verify 3D transform is applied on focus
+      const transform = await getTransform(cell);
+      expect(transform).not.toBe('none');
+    });
+
+    test('occupied cells do not show hover lift', async ({ page }) => {
+      const cells = page.locator('.cell');
+
+      // Click first cell to make it occupied
+      await cells.nth(0).click();
+      await expect(cells.nth(0)).toHaveText('X');
+      await expect(cells.nth(0)).toHaveClass(/cell--occupied/);
+
+      // Get transform of occupied cell
+      const beforeHover = await getTransform(cells.nth(0));
+
+      // Hover over occupied cell
+      await cells.nth(0).hover();
+
+      // Get transform after hover - should NOT have increased depth
+      const afterHover = await getTransform(cells.nth(0));
+
+      // Transforms should be the same (no hover lift on occupied cells)
+      expect(afterHover).toBe(beforeHover);
+    });
+
+    test('disabled cells do not show hover lift', async ({ page }) => {
+      const cells = page.locator('.cell');
+
+      // Play to game over (X wins)
+      await cells.nth(0).click(); // X
+      await cells.nth(3).click(); // O
+      await cells.nth(1).click(); // X
+      await cells.nth(4).click(); // O
+      await cells.nth(2).click(); // X wins
+
+      // Verify game is over and cells are disabled
+      await expect(page.locator('.status')).toContainText(/wins/i);
+      await expect(cells.nth(5)).toHaveClass(/cell--disabled/);
+
+      // Get transform of disabled cell
+      const beforeHover = await getTransform(cells.nth(5));
+
+      // Hover over disabled cell
+      await cells.nth(5).hover();
+
+      // Get transform after hover
+      const afterHover = await getTransform(cells.nth(5));
+
+      // Transforms should be the same (no hover lift on disabled cells)
+      expect(afterHover).toBe(beforeHover);
+    });
+  });
 });

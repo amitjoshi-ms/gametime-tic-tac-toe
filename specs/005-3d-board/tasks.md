@@ -78,16 +78,16 @@
 
 ### E2E Tests for User Story 2
 
-- [ ] T018 [P] [US2] Add test: cell hover triggers visual lift effect in tests/e2e/board3d.spec.ts
-- [ ] T019 [P] [US2] Add test: cell focus shows visible focus state in tests/e2e/board3d.spec.ts
-- [ ] T020 [P] [US2] Add test: occupied cells do not show hover lift in tests/e2e/board3d.spec.ts
+- [x] T018 [P] [US2] Add test: cell hover triggers visual lift effect in tests/e2e/board3d.spec.ts
+- [x] T019 [P] [US2] Add test: cell focus shows visible focus state in tests/e2e/board3d.spec.ts
+- [x] T020 [P] [US2] Add test: occupied cells do not show hover lift in tests/e2e/board3d.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Add hover transform with increased translateZ to `.cell:hover` in src/styles/main.css
-- [ ] T022 [US2] Add enhanced box-shadow on hover in src/styles/main.css
-- [ ] T023 [US2] Add 3D-enhanced focus-visible state for keyboard navigation in src/styles/main.css
-- [ ] T024 [US2] Ensure `.cell--occupied` and `.cell--disabled` exclude hover effects in src/styles/main.css
+- [x] T021 [US2] Add hover transform with increased translateZ to `.cell:hover` in src/styles/main.css (already implemented in PR1)
+- [x] T022 [US2] Add enhanced box-shadow on hover in src/styles/main.css (already implemented in PR1)
+- [x] T023 [US2] Add 3D-enhanced focus-visible state for keyboard navigation in src/styles/main.css
+- [x] T024 [US2] Ensure `.cell--occupied` and `.cell--disabled` exclude hover effects in src/styles/main.css (already implemented in PR1)
 
 **Checkpoint**: User Story 2 complete - interactive 3D feedback works
 
